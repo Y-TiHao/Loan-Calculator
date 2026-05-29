@@ -1,0 +1,2625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="贷款核算">
+<title>贷款核算</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;height:100%;overflow:hidden}
+body{font-family:-apple-system,'SF Pro Text','PingFang SC',sans-serif;background:#121212;color:#E0E0E0;height:100%;overflow:hidden;-webkit-touch-callout:none}
+input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:none;outline:none;border:none;background:none;font-size:inherit;color:inherit;-webkit-user-select:auto;user-select:auto;pointer-events:auto}
+::-webkit-scrollbar{display:none}
+.app-container{height:100%;display:flex;flex-direction:column;max-width:1024px;margin:0 auto;position:relative;background:#121212;overflow:hidden}
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overflow-x:hidden;padding-bottom:calc(49px + env(safe-area-inset-bottom,0px) + 16px);background:#121212}
+
+/* Nav Bar */
+.nav-bar{position:sticky;top:0;z-index:100;background:rgba(18,18,18,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:0 16px;transition:all .25s ease;border-bottom:.5px solid rgba(255,255,255,0.08)}
+.nav-bar .nav-row{display:flex;align-items:center;justify-content:space-between;height:44px}
+.nav-bar .nav-title-small{font-size:17px;font-weight:600;color:#E0E0E0;opacity:0;transition:opacity .25s}
+.nav-bar.nav-compact .nav-title-small{opacity:1}
+.nav-bar .nav-right{display:flex;align-items:center;gap:8px}
+.nav-bar .large-title{font-size:34px;font-weight:700;color:#E0E0E0;padding:0 0 8px;transition:all .25s}
+.nav-bar.nav-compact .large-title{font-size:0;padding:0;opacity:0;height:0;overflow:hidden}
+
+/* Segmented Control */
+.seg-control{display:flex;background:rgba(255,255,255,0.08);border-radius:8px;padding:2px;position:relative}
+.seg-control .seg-item{flex:1;text-align:center;padding:6px 10px;font-size:13px;font-weight:500;color:#8E8E93;border-radius:7px;cursor:pointer;transition:all .2s;white-space:nowrap;position:relative;z-index:1}
+.seg-control .seg-item.active{color:#fff;background:#0A84FF;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
+.seg-control .seg-item:active{opacity:.7}
+
+/* Nav Buttons */
+.nav-btn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(10,132,255,0.12);color:#0A84FF;cursor:pointer}
+.nav-btn:active{opacity:.6}
+.nav-btn svg{width:18px;height:18px}
+
+/* Section */
+.section{padding:0 16px;margin-bottom:20px}
+.section-title{font-size:14px;font-weight:600;color:#8E8E93;text-transform:uppercase;padding:16px 16px 6px;letter-spacing:.5px}
+.section-card{background:#1C1C1E;border-radius:10px;overflow:hidden}
+.section-card+.section-card{margin-top:10px}
+
+/* Indicator Grid */
+#indicatorGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 16px 0}
+@media(min-width:768px){#indicatorGrid{grid-template-columns:repeat(4,1fr)}}
+.indicator-card{background:#1C1C1E;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center;position:relative;min-height:80px}
+.ind-value{font-size:22px;font-weight:700;color:#E0E0E0;letter-spacing:-.5px;text-align:center;margin-bottom:2px;transition:all .25s}
+@media(min-width:768px){.ind-value{font-size:26px}}
+.ind-value.empty{display:none}
+.ind-label{font-size:12px;color:#8E8E93;font-weight:500;text-align:center;transition:font-size .25s,color .25s;line-height:1.3}
+.ind-label-en{font-size:9px;color:#636366;font-weight:500;text-transform:uppercase;letter-spacing:.03em;text-align:center;transition:font-size .25s,color .25s;line-height:1.2}
+/* 空值状态：标签放大居中 */
+.ind-value.empty ~ .ind-label{font-size:16px;color:#AEAEB2;margin-bottom:2px}
+.ind-value.empty ~ .ind-label-en{font-size:12px;color:#8E8E93}
+/* highlight 仅对非空值生效 */
+.indicator-card.highlight .ind-value:not(.empty){color:#0A84FF}
+
+/* Modular Param Cards */
+.params-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px}
+.params-grid-4{grid-template-columns:repeat(2,1fr)}
+@media(min-width:768px){.params-grid{grid-template-columns:repeat(4,1fr)}.params-grid-4{grid-template-columns:repeat(4,1fr)}}
+/* Combined Card - 3 params in one card */
+.params-combined{display:flex;align-items:stretch;background:#1C1C1E;border-radius:14px;padding:12px 0;margin:0 16px 10px;overflow:hidden}
+.combined-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;padding:0 8px;min-width:0}
+.combined-item .module-label{font-size:14px;color:#8E8E93;font-weight:500;line-height:1.3;white-space:nowrap}
+.combined-item .module-label-en{font-size:10px;color:#636366;font-weight:500;text-transform:uppercase;letter-spacing:.03em;line-height:1.2;white-space:nowrap}
+.combined-item .module-value{display:flex;align-items:center;justify-content:center;gap:1px;margin-top:4px}
+.combined-item .module-value select{font-size:15px;font-weight:600;color:#0A84FF;text-align:center;border:none;background:transparent;outline:none;-webkit-appearance:none;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.combined-item .module-value select option{color:#FFF;background:#2C2C2E}
+.combined-item .module-value input[type="date"]{font-size:14px;font-weight:500;color:#E0E0E0;text-align:center;border:none;background:transparent;outline:none;-webkit-user-select:auto;user-select:auto;pointer-events:auto}
+.combined-divider{width:.5px;background:rgba(255,255,255,0.1);flex-shrink:0;align-self:stretch;margin:4px 0}
+.param-module{background:#1C1C1E;border-radius:14px;padding:12px;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;min-width:0;position:relative;height:auto;min-height:90px;overflow:hidden}
+.param-module:active{cursor:grabbing}
+.param-module.dragging{opacity:.8;transform:scale(1.02);box-shadow:0 8px 24px rgba(0,0,0,0.3);z-index:100}
+.param-module.readonly{background:#2C2C2E}
+.module-content{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0;gap:2px;width:100%;position:relative}
+.module-label{font-size:10px;color:#8E8E93;font-weight:500;margin-bottom:1px;transition:font-size .25s,color .25s;line-height:1.3;text-align:center;white-space:nowrap}
+.module-label-en{font-size:8px;color:#636366;font-weight:500;text-transform:uppercase;letter-spacing:.03em;line-height:1.2;text-align:center;white-space:nowrap;transition:font-size .25s,color .25s}
+/* 空值状态：标签放大居中，数值隐藏，点击标签激活输入 */
+.param-module.is-empty .module-label{font-size:14px;color:#AEAEB2;margin-bottom:2px;cursor:pointer}
+.param-module.is-empty .module-label-en{font-size:10px;color:#8E8E93;cursor:pointer}
+.param-module.is-empty .module-value{display:none}
+.module-value{display:flex;align-items:center;justify-content:center;margin-top:2px;white-space:nowrap;gap:0;position:relative;z-index:1}
+.module-value input[type="number"],.module-value input[type="text"],.module-value input[type="date"]{font-size:20px;font-weight:700;color:#E0E0E0;width:auto;min-width:10px;text-align:center;border:none;background:transparent;outline:none;font-variant-numeric:tabular-nums;padding:0;margin:0;flex-shrink:0;-moz-appearance:textfield;pointer-events:auto;-webkit-user-select:auto;user-select:auto;position:relative;z-index:10}
+.module-value input[type="number"]::-webkit-inner-spin-button,.module-value input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;display:none}
+.module-value input[readonly]{color:#AEAEB2;font-size:16px;pointer-events:none}
+.module-value .unit{font-size:14px;color:#AEAEB2;font-weight:500;display:inline;margin-left:1px;flex-shrink:0}
+.module-value select{font-size:16px;font-weight:600;color:#0A84FF;cursor:pointer;width:auto;text-align:center;border:none;background:transparent;outline:none;-webkit-appearance:none;padding:0;margin:0;display:inline;pointer-events:auto;-webkit-user-select:auto;user-select:auto;position:relative;z-index:10}
+.module-value select option{color:#FFF;background:#2C2C2E}
+
+/* Combined param-module (提前还款) */
+.param-module-combined{display:block;align-items:initial;justify-content:initial;padding:14px 16px;min-height:auto;margin:0 16px}
+.param-module-combined .combined-rows{display:flex;flex-direction:column;gap:10px}
+.param-module-combined .combined-row{display:flex;align-items:center;justify-content:space-between;min-height:36px}
+.param-module-combined .cr-label{font-size:14px;color:#AEAEB2;font-weight:500;flex-shrink:0}
+.param-module-combined .cr-input-wrap{display:flex;align-items:center;gap:2px}
+.param-module-combined .cr-input-wrap input[type="number"]{font-size:18px;font-weight:700;color:#E0E0E0;width:80px;text-align:right;border:none;background:transparent;outline:none;font-variant-numeric:tabular-nums;padding:0;-moz-appearance:textfield;-webkit-user-select:auto;user-select:auto}
+.param-module-combined .cr-input-wrap input[type="number"]::-webkit-inner-spin-button,.param-module-combined .cr-input-wrap input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;display:none}
+.param-module-combined .cr-input-wrap .unit{font-size:13px;color:#8E8E93;font-weight:500;flex-shrink:0}
+/* 小屏适配 */
+@media(max-width:400px){
+  .param-module-combined{padding:12px 14px}
+  .param-module-combined .cr-label{font-size:13px}
+  .param-module-combined .cr-input-wrap input[type="number"]{font-size:16px;width:70px}
+}
+/* 平板适配 */
+@media(min-width:600px){
+  .param-module-combined{padding:16px 20px;margin:0 24px}
+  .param-module-combined .cr-label{font-size:15px}
+  .param-module-combined .cr-input-wrap input[type="number"]{font-size:19px}
+}
+
+/* Pressure single-field centered card */
+.param-module-pressure{padding:20px 16px}
+.param-module-pressure .pressure-row{display:flex;flex-direction:column;align-items:center;gap:12px;min-height:auto}
+.param-module-pressure .cr-label-stack{display:flex;flex-direction:column;align-items:center;gap:1px}
+.param-module-pressure .cr-label-cn{font-size:14px;color:#AEAEB2;font-weight:500}
+.param-module-pressure .cr-label-en{font-size:9px;color:#636366;font-weight:500;text-transform:uppercase;letter-spacing:.03em}
+.param-module-pressure .cr-input-wrap input[type="number"]{font-size:28px;font-weight:700;color:#E0E0E0;width:120px;text-align:center}
+.param-module-pressure .cr-input-wrap .unit{font-size:15px;color:#8E8E93}
+@media(max-width:400px){
+  .param-module-pressure{padding:16px 12px}
+  .param-module-pressure .cr-label-cn{font-size:13px}
+  .param-module-pressure .cr-label-en{font-size:8px}
+  .param-module-pressure .cr-input-wrap input[type="number"]{font-size:24px;width:100px}
+}
+/* Insight values inside param-module */
+.param-module .insight-value{font-size:18px;font-weight:700;color:#E0E0E0;font-variant-numeric:tabular-nums}
+.param-module .insight-value.primary{color:#0A84FF;font-size:20px}
+.param-module .insight-value.warn{color:#FF9500}
+.param-module .insight-value.good{color:#30D158}
+.param-module .insight-value.bad{color:#FF453A}
+/* Capital Card - paired independent cards */
+.capital-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px}
+.capital-item{background:#1C1C1E;border-radius:16px;overflow:hidden}
+.capital-item-title{font-size:14px;font-weight:700;color:#E0E0E0;padding:12px 12px 6px}
+.capital-item-body{padding:0 12px 10px}
+.capital-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:.5px solid rgba(255,255,255,0.05)}
+.capital-label{font-size:12px;color:#8E8E93;font-weight:400}
+.capital-value{font-size:14px;color:#E0E0E0;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.capital-value.primary{color:#0A84FF;font-size:15px;font-weight:700}
+.capital-row:last-child{border-bottom:none}
+.capital-value.warn{color:#FF9500}
+.capital-value.good{color:#30D158}
+.capital-value.bad{color:#FF453A}
+
+/* iOS List Row (保留用于其他区域) */
+.list-row{display:flex;align-items:center;padding:11px 16px;min-height:44px;position:relative}
+.list-row:not(:last-child)::after{content:'';position:absolute;bottom:0;left:16px;right:0;height:.5px;background:rgba(255,255,255,0.08)}
+.list-row .row-label{font-size:17px;color:#E0E0E0;flex-shrink:0;min-width:80px}
+.list-row .row-value{flex:1;text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:4px}
+.list-row input[type="number"],.list-row input[type="text"],.list-row input[type="date"]{text-align:right;font-size:17px;color:#E0E0E0;width:100%;padding:0}
+.list-row input[readonly]{color:#636366}
+.list-row .unit{font-size:15px;color:#8E8E93;flex-shrink:0}
+.list-row select{font-size:17px;color:#0A84FF;text-align:right;cursor:pointer;flex:1;direction:rtl}
+.list-row select option{direction:ltr;color:#FFF;background:#2C2C2E}
+.list-row .chevron{width:7px;height:12px;margin-left:4px;flex-shrink:0}
+.list-row .row-right{display:flex;align-items:center;gap:4px}
+
+/* Special Fields */
+#specialFields{display:none}
+#specialFields .list-row input,#specialFields .list-row select{font-size:17px}
+
+/* Compare Card */
+.compare-tabs{display:flex;overflow-x:auto;padding:12px 16px;gap:6px;-webkit-overflow-scrolling:touch;background:#121212}
+.compare-tabs::-webkit-scrollbar{display:none}
+.compare-tab{padding:6px 14px;border-radius:16px;font-size:13px;font-weight:500;color:#8E8E93;background:#1C1C1E;white-space:nowrap;cursor:pointer;flex-shrink:0}
+.compare-tab.active{background:#0A84FF;color:#fff}
+.compare-tab:active{opacity:.7}
+.compare-result{padding:0 16px 12px}
+.compare-row{display:flex;justify-content:space-between;padding:8px 0;font-size:15px}
+.compare-row .cr-label{color:#8E8E93}
+.compare-row .cr-value{color:#E0E0E0;font-weight:500}
+.compare-row.highlight .cr-value{color:#0A84FF;font-weight:600}
+
+/* Fee Card */
+.fee-result{margin:8px 16px 12px;padding:12px 16px;background:rgba(10,132,255,0.12);border-radius:8px;font-size:15px}
+.fee-result .fee-label{color:#8E8E93;margin-bottom:4px}
+.fee-result .fee-value{font-size:20px;font-weight:700;color:#FF3B30}
+
+/* Early Repayment */
+.early-result{margin:8px 16px 12px;padding:12px 16px;background:rgba(52,199,89,0.12);border-radius:8px}
+.early-row{display:flex;justify-content:space-between;padding:4px 0;font-size:15px}
+.early-row .er-label{color:#8E8E93}
+.early-row .er-value{color:#E0E0E0;font-weight:500}
+
+/* Pressure */
+.pressure-bar-wrap{margin:8px 16px 12px}
+.pressure-bar-bg{height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden}
+.pressure-bar-fill{height:100%;border-radius:4px;transition:width .3s;background:#34C759}
+.pressure-bar-fill.warn{background:#FF9500}
+.pressure-bar-fill.danger{background:#FF3B30}
+.pressure-info{display:flex;justify-content:space-between;margin-top:6px;font-size:13px;color:#8E8E93}
+
+/* Schedule Table */
+.schedule-header{display:grid;grid-template-columns:40px 1fr 1fr 1fr 1fr 1fr;padding:10px 16px;font-size:13px;font-weight:600;color:#8E8E93;background:#1C1C1E;position:sticky;top:0;z-index:2}
+.schedule-body{max-height:400px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+@media(min-width:768px){.schedule-body{max-height:600px}}
+.schedule-row{display:grid;grid-template-columns:40px 1fr 1fr 1fr 1fr 1fr;padding:10px 16px;font-size:14px;color:#E0E0E0;border-bottom:.5px solid rgba(255,255,255,0.06)}
+.schedule-row:last-child{font-weight:600;background:rgba(10,132,255,0.08);color:#0A84FF}
+.schedule-row .sr-num{color:#8E8E93;font-size:13px}
+.schedule-row:last-child .sr-num{color:#0A84FF}
+
+/* Tool Cards */
+.tool-grid{display:grid;grid-template-columns:1fr;gap:10px;padding:0 16px}
+@media(min-width:768px){.tool-grid{grid-template-columns:1fr 1fr}}
+.tool-card{background:#1C1C1E;border-radius:10px;overflow:hidden}
+.tool-card .tool-title{font-size:15px;font-weight:600;color:#E0E0E0;padding:12px 16px 4px}
+.tool-card .tool-row{display:flex;align-items:center;padding:8px 16px;min-height:40px}
+.tool-card .tool-row:not(:last-child){border-bottom:.5px solid rgba(255,255,255,0.08)}
+.tool-card .tool-row label{font-size:15px;color:#E0E0E0;flex-shrink:0;width:80px}
+.tool-card .tool-row input{flex:1;text-align:right;font-size:15px;color:#E0E0E0}
+.tool-card .tool-row .unit{font-size:13px;color:#8E8E93;width:30px;text-align:right}
+.tool-card .tool-btn{margin:8px 16px 12px;padding:10px;background:#0A84FF;color:#fff;border-radius:8px;text-align:center;font-size:15px;font-weight:600;cursor:pointer}
+.tool-card .tool-btn:active{opacity:.7}
+.tool-card .tool-result{margin:0 16px 12px;padding:10px 16px;background:rgba(10,132,255,0.12);border-radius:8px;font-size:15px;color:#E0E0E0;font-weight:500}
+
+/* Tab Bar */
+.tab-bar{position:fixed;bottom:0;left:0;right:0;height:calc(49px + env(safe-area-inset-bottom,0px));background:rgba(20,20,20,0.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:.5px solid rgba(255,255,255,0.1);display:flex;z-index:200;padding-bottom:env(safe-area-inset-bottom,0px);max-width:1024px;left:50%;transform:translateX(-50%)}
+.tab-bar .tab-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:6px 0;-webkit-tap-highlight-color:transparent}
+.tab-bar .tab-item svg{width:24px;height:24px;color:#8E8E93;transition:color .2s}
+.tab-bar .tab-item span{font-size:10px;color:#8E8E93;font-weight:500;transition:color .2s}
+.tab-bar .tab-item.active svg{color:#0A84FF}
+.tab-bar .tab-item.active span{color:#0A84FF}
+.tab-bar .tab-item:active{opacity:.6}
+
+/* Tab Content */
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Settings */
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;min-height:44px}
+.settings-row:not(:last-child){border-bottom:.5px solid rgba(255,255,255,0.08)}
+.settings-row .sr-label{font-size:17px;color:#E0E0E0}
+.settings-row .sr-value{font-size:17px;color:#0A84FF;cursor:pointer}
+.settings-row .sr-desc{font-size:13px;color:#636366;margin-top:2px}
+.settings-btn{margin:16px;padding:12px;background:#FF3B30;color:#fff;border-radius:10px;text-align:center;font-size:17px;font-weight:600;cursor:pointer}
+.settings-btn:active{opacity:.7}
+.settings-btn.blue{background:#0A84FF}
+
+/* Action Sheet Overlay */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.overlay.show{display:flex}
+.action-sheet{background:#1C1C1E;border-radius:12px 12px 0 0;width:100%;max-width:1024px;padding:0 0 env(safe-area-inset-bottom,0px);animation:slideUp .25s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.action-sheet .as-title{text-align:center;font-size:13px;color:#8E8E93;padding:12px 16px 4px}
+.action-sheet .as-item{text-align:center;padding:14px 16px;font-size:20px;color:#0A84FF;cursor:pointer;border-bottom:.5px solid rgba(255,255,255,0.08)}
+.action-sheet .as-item:active{background:rgba(118,118,128,0.12)}
+.action-sheet .as-cancel{margin:8px 16px 0;padding:14px;text-align:center;font-size:20px;font-weight:600;color:#0A84FF;background:#2C2C2E;border-radius:10px;cursor:pointer}
+.action-sheet .as-cancel:active{opacity:.7}
+
+/* Toast */
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.7);color:#fff;padding:12px 24px;border-radius:10px;font-size:15px;z-index:400;pointer-events:none;opacity:0;transition:opacity .3s}
+.toast.show{opacity:1}
+
+/* Plan Badge */
+.plan-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:rgba(10,132,255,0.15);border-radius:12px;font-size:13px;font-weight:600;color:#0A84FF}
+
+/* Small screen adaptation (iPhone SE/mini) */
+@media(max-width:374px){
+  .params-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .param-module{padding:10px 6px;min-height:80px}
+  .module-label{font-size:12px}
+  .module-label-en{font-size:9px}
+  .param-module.is-empty .module-label{font-size:11px}
+  .param-module.is-empty .module-label-en{font-size:9px}
+  .module-value input[type="number"],.module-value input[type="text"]{font-size:16px}
+  .module-value .unit{font-size:12px}
+  .module-value select{font-size:14px}
+  .ind-value{font-size:18px}
+  .ind-label{font-size:11px}
+  .section-title{font-size:12px}
+  .large-title{font-size:28px}
+  .capital-pair{grid-template-columns:1fr;gap:8px;padding:0 12px}
+  .capital-item-title{font-size:13px;padding:10px 10px 4px}
+  .capital-item-body{padding:0 10px 8px}
+  .capital-row{padding:6px 0}
+  .capital-label{font-size:11px}
+  .capital-value{font-size:13px}
+  .capital-value.primary{font-size:14px}
+  .params-combined{margin:0 12px 8px;padding:10px 0}
+  .combined-item .module-label{font-size:12px}
+  .combined-item .module-label-en{font-size:8px}
+  .combined-item .module-value select{font-size:13px}
+  .combined-item .module-value input[type="date"]{font-size:12px}
+  .score-circle{width:80px;height:80px}
+  .score-value{font-size:26px}
+  .slider-wrap{padding:12px 12px 6px}
+  .progress-stats{grid-template-columns:repeat(2,1fr);gap:6px;padding:8px 12px}
+  .progress-stat-value{font-size:13px}
+  .advice-item{padding:10px 12px}
+  .advice-title{font-size:13px}
+  .advice-text{font-size:12px}
+  .form-card{margin:0 12px}
+  .form-row{padding:12px 12px;min-height:42px}
+  .form-label{font-size:13px;min-width:75px}
+  .form-control input[type="number"]{font-size:15px}
+  .form-control select{font-size:13px}
+}
+
+/* Medium screen (iPhone 6/7/8/Plus, Android) */
+@media(min-width:375px) and (max-width:413px){
+  .params-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .param-module{padding:12px 8px;min-height:85px}
+  .module-label{font-size:13px}
+  .module-label-en{font-size:9px}
+  .param-module.is-empty .module-label{font-size:12px}
+  .param-module.is-empty .module-label-en{font-size:9px}
+  .module-value input[type="number"],.module-value input[type="text"]{font-size:18px}
+  .module-value .unit{font-size:13px}
+  .capital-pair{grid-template-columns:1fr 1fr;gap:8px;padding:0 16px}
+  .capital-item-title{font-size:14px;padding:12px 12px 6px}
+  .capital-item-body{padding:0 12px 10px}
+  .capital-row{padding:8px 0}
+  .capital-label{font-size:12px}
+  .capital-value{font-size:14px}
+  .capital-value.primary{font-size:15px}
+  .params-combined{margin:0 16px 10px}
+  .combined-item .module-label{font-size:13px}
+  .combined-item .module-label-en{font-size:9px}
+  .combined-item .module-value select{font-size:14px}
+  .score-circle{width:90px;height:90px}
+  .score-value{font-size:28px}
+  .progress-stats{grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 16px}
+  .progress-stat-value{font-size:14px}
+  .advice-item{padding:12px 16px}
+  .advice-title{font-size:14px}
+  .advice-text{font-size:13px}
+  .form-card{margin:0 16px}
+  .form-row{padding:14px 16px;min-height:48px}
+  .form-label{font-size:14px;min-width:80px}
+}
+
+/* Large phone (iPhone Pro Max, large Android) */
+@media(min-width:414px) and (max-width:767px){
+  .params-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .param-module{padding:14px 10px;min-height:90px}
+  .module-label{font-size:14px}
+  .module-label-en{font-size:10px}
+  .module-value input[type="number"],.module-value input[type="text"]{font-size:20px}
+  .capital-pair{grid-template-columns:1fr 1fr;gap:10px;padding:0 16px}
+  .capital-item-title{font-size:14px;padding:14px 14px 6px}
+  .capital-item-body{padding:0 14px 12px}
+  .capital-label{font-size:13px}
+  .capital-value{font-size:15px}
+  .capital-value.primary{font-size:16px}
+  .params-combined{margin:0 16px 10px}
+  .combined-item .module-label{font-size:14px}
+  .combined-item .module-value select{font-size:15px}
+  .score-circle{width:100px;height:100px}
+  .progress-stats{grid-template-columns:repeat(4,1fr);gap:8px}
+  .progress-stat-value{font-size:15px}
+}
+
+/* Tablet (iPad mini, iPad) */
+@media(min-width:768px) and (max-width:1023px){
+  .params-grid{grid-template-columns:repeat(4,1fr);gap:12px}
+  .param-module{padding:16px 12px;min-height:100px}
+  .module-label{font-size:15px}
+  .module-label-en{font-size:11px}
+  .module-value input[type="number"],.module-value input[type="text"]{font-size:22px}
+  .indicator-card{padding:18px 20px}
+  .ind-value{font-size:26px}
+  .section{padding:0 24px}
+  .section-title{padding:20px 24px 8px}
+  .capital-pair{grid-template-columns:1fr 1fr;gap:12px;padding:0 24px}
+  .capital-item{border-radius:18px}
+  .capital-item-title{font-size:15px;padding:16px 18px 8px}
+  .capital-item-body{padding:0 18px 14px}
+  .capital-label{font-size:13px}
+  .capital-value{font-size:15px}
+  .capital-value.primary{font-size:17px}
+  .params-combined{margin:0 24px 12px}
+  .combined-item .module-label{font-size:15px}
+  .combined-item .module-value select{font-size:16px}
+  .score-circle{width:110px;height:110px}
+  .score-value{font-size:34px}
+  .slider-wrap{padding:16px 24px 10px}
+  .progress-stats{gap:10px;padding:14px 24px}
+  .progress-stat-value{font-size:16px}
+  .advice-item{padding:14px 24px}
+  .advice-title{font-size:15px}
+  .advice-text{font-size:14px}
+  .form-card{margin:0 24px}
+  .form-row{padding:16px 20px;min-height:52px}
+  .form-label{font-size:15px;min-width:100px}
+  .form-control input[type="number"]{font-size:17px}
+}
+
+/* Large tablet/Desktop (iPad Pro, Desktop) */
+@media(min-width:1024px){
+  .params-grid{grid-template-columns:repeat(4,1fr);gap:16px}
+  .param-module{padding:18px 14px;min-height:110px}
+  .module-label{font-size:16px}
+  .module-label-en{font-size:12px}
+  .module-value input[type="number"],.module-value input[type="text"]{font-size:24px}
+  .module-value .unit{font-size:16px}
+  .indicator-card{padding:20px 24px}
+  .ind-value{font-size:30px}
+  .ind-label{font-size:14px}
+  .section{padding:0 32px}
+  .section-title{padding:24px 32px 10px;font-size:16px}
+  .large-title{font-size:40px}
+  .nav-bar{padding:0 32px}
+  .nav-row{height:48px}
+  .compare-tabs{padding:16px 32px}
+  .compare-result{padding:0 32px 16px}
+  .schedule-wrap{margin:0 32px}
+  .tool-card{margin:0 32px 16px}
+  .settings-btn{margin:0 32px 12px}
+  .capital-pair{grid-template-columns:1fr 1fr;gap:16px;padding:0 32px}
+  .capital-item{border-radius:20px}
+  .capital-item-title{font-size:16px;padding:18px 20px 10px}
+  .capital-item-body{padding:0 20px 16px}
+  .capital-label{font-size:14px}
+  .capital-value{font-size:16px}
+  .capital-value.primary{font-size:18px}
+  .params-combined{margin:0 32px 14px;padding:14px 0}
+  .combined-item .module-label{font-size:15px}
+  .combined-item .module-value select{font-size:16px}
+  .score-circle{width:120px;height:120px}
+  .score-value{font-size:38px}
+  .score-label{font-size:16px}
+  .slider-wrap{padding:18px 32px 12px}
+  .progress-stats{gap:12px;padding:16px 32px}
+  .progress-stat-value{font-size:17px}
+  .progress-stat-label{font-size:12px}
+  .advice-item{padding:16px 32px}
+  .advice-title{font-size:15px}
+  .advice-text{font-size:14px}
+  .form-card{margin:0 32px}
+  .form-row{padding:18px 24px;min-height:56px}
+  .form-label{font-size:16px;min-width:110px}
+  .form-control input[type="number"]{font-size:18px}
+  .form-control select{font-size:16px}
+  .ratio-bar{height:32px}
+  .ratio-text{font-size:12px}
+  .ratio-legend{gap:24px;padding:10px 32px 14px}
+  .ratio-legend-item{font-size:14px}
+}
+
+/* Landscape phone */
+@media(max-height:500px) and (orientation:landscape){
+  .param-module{min-height:70px;padding:8px 6px}
+  .module-label{font-size:11px}
+  .module-label-en{font-size:8px}
+  .param-module.is-empty .module-label{font-size:13px}
+  .param-module.is-empty .module-label-en{font-size:9px}
+  .module-value input[type="number"],.module-value input[type="text"]{font-size:16px}
+  .nav-bar .large-title{font-size:24px}
+  .capital-pair{grid-template-columns:1fr 1fr;gap:6px;padding:0 12px}
+  .capital-item-title{font-size:12px;padding:8px 8px 4px}
+  .capital-item-body{padding:0 8px 6px}
+  .capital-row{padding:5px 0}
+  .capital-label{font-size:11px}
+  .capital-value{font-size:12px}
+  .params-combined{margin:0 12px 6px;padding:8px 0}
+  .combined-item .module-label{font-size:11px}
+  .combined-item .module-label-en{font-size:7px}
+  .score-circle{width:70px;height:70px}
+  .score-value{font-size:22px}
+  .progress-stats{grid-template-columns:repeat(4,1fr);gap:4px;padding:6px 12px}
+  .progress-stat-value{font-size:12px}
+  .progress-stat-label{font-size:10px}
+  .advice-item{padding:8px 12px}
+  .advice-title{font-size:12px}
+  .advice-text{font-size:11px}
+}
+
+/* Dark mode support */
+@media(prefers-color-scheme:dark){
+  body{background:#121212;color:#E0E0E0}
+}
+
+/* Reduced motion support */
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+
+/* ========== Form Card (明细页专用) ========== */
+.form-card{background:#1C1C1E;border-radius:12px;overflow:hidden;margin:0 16px}
+.form-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;min-height:48px;border-bottom:.5px solid rgba(255,255,255,0.06)}
+.form-row:last-child{border-bottom:none}
+.form-label{font-size:15px;color:#E0E0E0;font-weight:500;flex-shrink:0;min-width:90px}
+.form-control{display:flex;align-items:center;gap:4px;flex:1;justify-content:flex-end}
+.form-control input[type="number"]{font-size:17px;font-weight:600;color:#0A84FF;width:100%;max-width:160px;text-align:right;border:none;background:transparent;outline:none;font-variant-numeric:tabular-nums;padding:0;-moz-appearance:textfield;-webkit-user-select:auto;user-select:auto;pointer-events:auto}
+.form-control input[type="number"]::-webkit-inner-spin-button,.form-control input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;display:none}
+.form-control input[type="date"]{font-size:15px;font-weight:500;color:#0A84FF;text-align:right;border:none;background:transparent;outline:none;-webkit-user-select:auto;user-select:auto;pointer-events:auto;width:100%;max-width:160px}
+.form-control select{font-size:15px;font-weight:500;color:#0A84FF;text-align:right;cursor:pointer;border:none;background:transparent;outline:none;-webkit-appearance:none;padding:0;flex:1;direction:rtl;-webkit-user-select:auto;user-select:auto;pointer-events:auto}
+.form-control select option{direction:ltr;color:#FFF;background:#2C2C2E}
+.form-unit{font-size:14px;color:#8E8E93;font-weight:500;flex-shrink:0;min-width:20px;text-align:left}
+@media(max-width:374px){
+  .form-card{margin:0 12px}
+  .form-row{padding:12px 14px;min-height:44px}
+  .form-label{font-size:14px;min-width:80px}
+  .form-control input[type="number"]{font-size:16px}
+  .form-unit{font-size:13px}
+}
+@media(min-width:768px){
+  .form-card{margin:0 24px}
+  .form-row{padding:16px 20px;min-height:52px}
+  .form-label{font-size:16px;min-width:100px}
+  .form-control input[type="number"]{font-size:18px;max-width:200px}
+/* ========== Insight Cards ========== */
+.insight-card{background:#1C1C1E;border-radius:12px;padding:4px 0;margin:0 16px;overflow:hidden}
+.insight-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;min-height:44px}
+.insight-row:not(:last-child){border-bottom:.5px solid rgba(255,255,255,0.06)}
+.insight-row.highlight{background:rgba(10,132,255,0.06)}
+.insight-label{font-size:15px;color:#AEAEB2;font-weight:500}
+.insight-value{font-size:16px;color:#E0E0E0;font-weight:600;font-variant-numeric:tabular-nums}
+.insight-value.primary{color:#0A84FF;font-size:18px}
+.insight-value.warn{color:#FF9500}
+.insight-value.good{color:#30D158}
+.insight-value.bad{color:#FF453A}
+.insight-divider{height:1px;background:rgba(255,255,255,0.12);margin:0 16px}
+
+/* Insight Grid (2-col for stat cards) */
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 16px}
+.insight-grid .insight-card{margin:0}
+@media(max-width:440px){
+  .insight-grid{grid-template-columns:1fr;gap:10px}
+}
+@media(min-width:768px){
+  .insight-grid{gap:14px;margin:0 24px}
+}
+
+/* Ratio Bar */
+.ratio-bar-wrap{padding:12px 16px 8px}
+.ratio-bar{display:flex;height:28px;border-radius:8px;overflow:hidden;background:#2C2C2E}
+.ratio-principal{background:#0A84FF;display:flex;align-items:center;justify-content:center;transition:width .4s ease;min-width:0}
+.ratio-interest{background:#FF9500;display:flex;align-items:center;justify-content:center;transition:width .4s ease;min-width:0}
+.ratio-text{font-size:11px;color:#FFF;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
+.ratio-legend{display:flex;gap:20px;padding:8px 16px 12px;justify-content:center}
+.ratio-legend-item{display:flex;align-items:center;gap:6px;font-size:13px;color:#AEAEB2}
+.ratio-legend-item b{color:#E0E0E0;font-weight:600}
+.ratio-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ratio-dot.principal{background:#0A84FF}
+.ratio-dot.interest{background:#FF9500}
+
+/* Score Circle */
+.score-wrap{display:flex;justify-content:center;padding:20px 16px 12px}
+.score-circle{width:100px;height:100px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;border:4px solid #2C2C2E;transition:border-color .4s}
+.score-circle.grade-a{border-color:#30D158}
+.score-circle.grade-b{border-color:#0A84FF}
+.score-circle.grade-c{border-color:#FF9500}
+.score-circle.grade-d{border-color:#FF453A}
+.score-value{font-size:32px;font-weight:700;color:#E0E0E0;line-height:1}
+.score-label{font-size:14px;font-weight:600;color:#AEAEB2;margin-top:2px}
+.score-desc{font-size:13px;color:#8E8E93;text-align:center;padding:0 16px 16px;line-height:1.5}
+
+/* Slider */
+.slider-wrap{padding:16px 16px 8px}
+.slider-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.slider-label span{font-size:14px;color:#AEAEB2}
+.slider-value{font-size:16px;color:#0A84FF;font-weight:600}
+.slider-wrap input[type="range"]{width:100%;height:6px;background:#2C2C2E;border-radius:3px;outline:none;-webkit-appearance:none;appearance:none}
+.slider-wrap input[type="range"]::-webkit-slider-thumb{width:20px;height:20px;background:#0A84FF;border-radius:50%;cursor:pointer;-webkit-appearance:none;box-shadow:0 2px 6px rgba(10,132,255,0.3)}
+.slider-marks{display:flex;justify-content:space-between;font-size:12px;color:#636366;margin-top:8px}
+
+/* Progress Stats */
+.progress-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 16px;border-top:.5px solid rgba(255,255,255,0.06)}
+.progress-stat{text-align:center}
+.progress-stat-value{font-size:15px;font-weight:600;color:#E0E0E0;font-variant-numeric:tabular-nums}
+.progress-stat-label{font-size:11px;color:#8E8E93;margin-top:2px}
+
+/* Progress Bar */
+.progress-bar-wrap{padding:12px 16px 16px}
+.progress-bar-bg{height:8px;background:#2C2C2E;border-radius:4px;overflow:hidden}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,#0A84FF,#30D158);border-radius:4px;transition:width .3s ease}
+.progress-bar-text{font-size:13px;color:#AEAEB2;text-align:center;margin-top:8px}
+
+/* Advice */
+.advice-item{display:flex;gap:12px;padding:14px 16px;border-bottom:.5px solid rgba(255,255,255,0.06)}
+.advice-item:last-child{border-bottom:none}
+.advice-icon{font-size:20px;line-height:1}
+.advice-content{flex:1}
+.advice-title{font-size:14px;font-weight:600;color:#E0E0E0;margin-bottom:3px}
+.advice-text{font-size:13px;color:#AEAEB2;line-height:1.5}
+.advice-item.good .advice-icon{color:#30D158}
+.advice-item.warn .advice-icon{color:#FF9500}
+.advice-item.danger .advice-icon{color:#FF453A}
+.advice-item.info .advice-icon{color:#0A84FF}
+
+/* ========== Card Management Mode ========== */
+/* Manage toggle button */
+.nav-manage-btn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,255,255,0.08);color:#AEAEB2;cursor:pointer;transition:all .2s;margin-right:6px}
+.nav-manage-btn:active{opacity:.6}
+.nav-manage-btn.active{background:rgba(10,132,255,0.2);color:#0A84FF}
+.nav-manage-btn svg{width:18px;height:18px}
+
+/* Section becomes draggable item in manage mode */
+.section.sortable-item{position:relative;transition:transform .2s,box-shadow .2s,opacity .2s}
+.section.sortable-item .section-title{display:flex;align-items:center;gap:8px;padding-right:8px}
+
+/* Drag handle */
+.drag-handle{display:none;width:20px;height:20px;flex-shrink:0;cursor:grab;opacity:.5;transition:opacity .2s;order:-1}
+.drag-handle:active{cursor:grabbing}
+.manage-mode .drag-handle{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5px}
+.manage-mode .drag-handle:hover{opacity:1}
+.drag-handle svg{width:14px;height:14px;fill:none;stroke:#AEAEB2;stroke-width:2;stroke-linecap:round}
+/* 6-dot grid */
+.drag-dots{display:grid;grid-template-columns:repeat(2,1fr);gap:2px}
+.drag-dot{width:3px;height:3px;border-radius:50%;background:#AEAEB2}
+
+/* Section in manage mode */
+.manage-mode .section.sortable-item{border-radius:10px;padding:6px 0;background:transparent;transition:background .2s}
+.manage-mode .section.sortable-item:hover{background:rgba(255,255,255,0.03)}
+.manage-mode .section.sortable-item.drag-over{border:1px dashed rgba(10,132,255,0.5);border-radius:10px;background:rgba(10,132,255,0.05)}
+.manage-mode .section.sortable-item.dragging{opacity:.5;background:rgba(255,255,255,0.04)}
+
+/* Collapse toggle */
+.collapse-toggle{display:none;width:22px;height:22px;flex-shrink:0;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;background:transparent;transition:all .2s;margin-left:auto}
+.collapse-toggle:hover{background:rgba(255,255,255,0.08)}
+.collapse-toggle svg{width:12px;height:12px;transition:transform .3s;fill:none;stroke:#AEAEB2;stroke-width:2;stroke-linecap:round}
+.manage-mode .collapse-toggle{display:flex}
+.section.collapsed .collapse-toggle svg{transform:rotate(-90deg)}
+.section.collapsed > *:not(.section-title){display:none}
+.section.collapsed{margin-bottom:8px}
+
+/* Drag ghost */
+.drag-ghost{position:fixed;pointer-events:none;z-index:9999;opacity:.85;transform:rotate(2deg);box-shadow:0 12px 40px rgba(0,0,0,0.5)}
+
+/* Manage bar */
+.manage-bar{display:none;align-items:center;justify-content:center;gap:12px;padding:6px 16px;background:rgba(10,132,255,0.08);border-bottom:.5px solid rgba(10,132,255,0.15)}
+.manage-bar button{font-size:12px;padding:4px 12px;border-radius:14px;border:1px solid rgba(10,132,255,0.3);background:transparent;color:#0A84FF;cursor:pointer;transition:all .15s}
+.manage-bar button:hover{background:rgba(10,132,255,0.15)}
+.manage-bar button.primary{background:#0A84FF;color:#FFF;border-color:#0A84FF}
+.manage-bar button.primary:hover{opacity:.85}
+.manage-bar .manage-hint{font-size:12px;color:#8E8E93}
+.manage-mode .manage-bar{display:flex}
+.manage-mode .section.sortable-item > .insight-card,.manage-mode .section.sortable-item > .insight-grid{cursor:default}
+</style>
+</head>
+<body>
+<div class="app-container">
+<div class="scroll-area" id="scrollArea">
+
+<!-- Nav Bar -->
+<div class="nav-bar" id="navBar">
+  <div class="nav-row">
+    <div class="nav-title-small">贷款核算</div>
+    <div class="nav-right">
+      <div class="nav-manage-btn" id="manageToggle" onclick="toggleManageMode()" title="卡片管理">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+      </div>
+      <div class="plan-badge" id="planBadge" onclick="showPlanSheet()">方案 1</div>
+      <div class="nav-btn" onclick="showPlanSheet()" title="方案管理">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="large-title">贷款核算</div>
+</div>
+
+<!-- Manage Bar -->
+<div class="manage-bar" id="manageBar">
+  <span class="manage-hint">拖拽模块排序 · 点击折叠</span>
+  <button onclick="resetCardOrder()">恢复默认</button>
+  <button class="primary" onclick="toggleManageMode()">完成</button>
+</div>
+
+<!-- Tab: Overview -->
+<div class="tab-content active" id="tab-overview">
+
+<!-- Indicators -->
+<div class="section">
+  <div id="indicatorGrid">
+    <div class="indicator-card highlight">
+      <div class="ind-value empty" id="indMonthly">--</div>
+      <div class="ind-label">月供</div>
+      <div class="ind-label-en">MONTHLY</div>
+    </div>
+    <div class="indicator-card">
+      <div class="ind-value empty" id="indInterest">--</div>
+      <div class="ind-label">总利息</div>
+      <div class="ind-label-en">INTEREST</div>
+    </div>
+    <div class="indicator-card">
+      <div class="ind-value empty" id="indTotal">--</div>
+      <div class="ind-label">总还款</div>
+      <div class="ind-label-en">TOTAL</div>
+    </div>
+    <div class="indicator-card">
+      <div class="ind-value empty" id="indAPR">--</div>
+      <div class="ind-label">实际年化</div>
+      <div class="ind-label-en">APR</div>
+    </div>
+  </div>
+  <div id="highCostWarning" style="display:none;margin:10px 16px 0;padding:12px 16px;background:rgba(255,149,0,0.15);border-radius:10px;border-left:3px solid #FF9500;">
+    <div style="font-size:13px;color:#FF9500;font-weight:600;margin-bottom:4px;">⚠️ 温馨提示</div>
+    <div style="font-size:12px;color:#FF9500;line-height:1.5;">本计算方式基于名义利率，实际年化利率 (IRR) 可能显著高于名义利率，请参考上方计算出的 APR 指标。</div>
+  </div>
+</div>
+
+<!-- Params - Combined Cards -->
+<div class="section sortable-item" data-section-id="params" id="paramsSection">
+  <div class="section-title">
+    <span class="drag-handle"><svg viewBox="0 0 16 16"><line x1="3" y1="5" x2="13" y2="5"/><line x1="3" y1="8" x2="13" y2="8"/><line x1="3" y1="11" x2="13" y2="11"/></svg></span>
+    <span>贷款参数</span>
+    <span class="collapse-toggle" onclick="event.stopPropagation();toggleCollapse('params')"><svg viewBox="0 0 12 12"><polyline points="3,2 9,6 3,10"/></svg></span>
+  </div>
+    <!-- 上方：选择类参数（合并卡片） -->
+    <div class="params-combined">
+      <div class="combined-item">
+        <div class="module-label">贷款类型</div>
+        <div class="module-label-en">LOAN TYPE</div>
+        <div class="module-value">
+          <select id="loanType" onchange="onTypeChange();calc();onParamChange(this);">
+            <option value="normal">普通贷款</option>
+            <option value="fund">公积金贷款</option>
+            <option value="combo">组合贷款</option>
+            <option value="consumer">消费贷/信用贷</option>
+            <option value="business">经营贷</option>
+            <option value="renovation">装修贷</option>
+            <option value="education">教育贷</option>
+            <option value="car">购车贷款</option>
+            <option value="carfinance">汽车金融贷</option>
+            <option value="house">购房贷款</option>
+            <option value="second">二押贷款</option>
+            <option value="insurance">保单贷</option>
+            <option value="social">社保贷</option>
+            <option value="fundcredit">公积金信用贷</option>
+          </select>
+        </div>
+      </div>
+      <div class="combined-divider"></div>
+      <div class="combined-item">
+        <div class="module-label">还款方式</div>
+        <div class="module-label-en">REPAYMENT</div>
+        <div class="module-value">
+          <select id="repaymentMethod" onchange="calc();onParamChange(this);">
+            <option value="equal_installment">等额本息</option>
+            <option value="equal_principal">等额本金</option>
+            <option value="interest_first">先息后本</option>
+            <option value="bullet">一次性还本付息</option>
+            <option value="equal_principal_interest">等本等息</option>
+            <option value="flexible">随借随还</option>
+          </select>
+        </div>
+      </div>
+      <div class="combined-divider"></div>
+      <div class="combined-item">
+        <div class="module-label">起贷日期</div>
+        <div class="module-label-en">START DATE</div>
+        <div class="module-value">
+          <input type="date" id="startDate" value="2022-07-01" onchange="calc();onParamChange(this);">
+        </div>
+      </div>
+    </div>
+    <!-- 下方：数值类参数（4列） -->
+    <div class="params-grid params-grid-4">
+      <!-- 贷款金额 -->
+      <div class="param-module" data-param="loanAmount">
+        <div class="module-content">
+          <div class="module-label">贷款金额</div>
+          <div class="module-label-en">AMOUNT</div>
+          <div class="module-value">
+            <input type="number" id="loanAmount" value="130000" oninput="calc();onParamChange(this);">
+            <span class="unit">元</span>
+          </div>
+        </div>
+      </div>
+      <!-- 贷款期限 -->
+      <div class="param-module" data-param="loanTerm">
+        <div class="module-content">
+          <div class="module-label">贷款期限</div>
+          <div class="module-label-en">TERM</div>
+          <div class="module-value">
+            <input type="number" id="loanTerm" value="24" oninput="calc();onParamChange(this);">
+            <span class="unit">月</span>
+          </div>
+        </div>
+      </div>
+      <!-- 年利率 -->
+      <div class="param-module" data-param="annualRate">
+        <div class="module-content">
+          <div class="module-label">年利率</div>
+          <div class="module-label-en">ANNUAL RATE</div>
+          <div class="module-value">
+            <input type="number" id="annualRate" value="4.65" step="0.01" oninput="calc();onParamChange(this);">
+            <span class="unit">%</span>
+          </div>
+        </div>
+      </div>
+      <!-- 月利率 -->
+      <div class="param-module readonly" data-param="dispMonthly">
+        <div class="module-content">
+          <div class="module-label">月利率</div>
+          <div class="module-label-en">MONTHLY RATE</div>
+          <div class="module-value">
+            <input type="text" id="dispMonthly" readonly>
+            <span class="unit">%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Special Fields -->
+<div class="section" id="specialFields">
+  <div class="section-title">特殊参数</div>
+  <div class="section-card" id="specialFieldsCard"></div>
+</div>
+
+<!-- Hidden inputs for fee & early repayment (used by savePlan/applyPlan) -->
+<input type="hidden" id="feeAmount" value="0">
+<input type="hidden" id="feeMethod" value="upfront">
+<input type="hidden" id="earlyMonth" value="12">
+<input type="hidden" id="earlyAmount" value="65000">
+<input type="hidden" id="prepaymentPenalty" value="0">
+<input type="hidden" id="feeResult" value="">
+<input type="hidden" id="feeAPR" value="">
+<input type="hidden" id="earlyResult" value="">
+<input type="hidden" id="erPaidInterest" value="">
+<input type="hidden" id="erRemain" value="">
+<input type="hidden" id="erSaved" value="">
+<input type="hidden" id="erAPR" value="">
+
+<!-- 资金分析 & 利率评估 -->
+<div class="section sortable-item" data-section-id="capital">
+  <div class="section-title">
+    <span class="drag-handle"><svg viewBox="0 0 16 16"><line x1="3" y1="5" x2="13" y2="5"/><line x1="3" y1="8" x2="13" y2="8"/><line x1="3" y1="11" x2="13" y2="11"/></svg></span>
+    <span>资金分析 & 利率评估</span>
+    <span class="collapse-toggle" onclick="event.stopPropagation();toggleCollapse('capital')"><svg viewBox="0 0 12 12"><polyline points="3,2 9,6 3,10"/></svg></span>
+  </div>
+  <div class="capital-pair">
+    <!-- 左侧卡片：实际到手 -->
+    <div class="capital-item">
+      <div class="capital-item-title">实际到手</div>
+      <div class="capital-item-body">
+        <div class="capital-row">
+          <span class="capital-label">贷款金额</span>
+          <span class="capital-value" id="insLoanAmount">--</span>
+        </div>
+        <div class="capital-row">
+          <span class="capital-label">- 服务费</span>
+          <span class="capital-value warn" id="insFee">--</span>
+        </div>
+        <div class="capital-row">
+          <span class="capital-label">实际到手</span>
+          <span class="capital-value primary" id="insNetAmount">--</span>
+        </div>
+        <div class="capital-row">
+          <span class="capital-label">到账比例</span>
+          <span class="capital-value" id="insNetRatio">--</span>
+        </div>
+      </div>
+    </div>
+    <!-- 右侧卡片：每万参考 -->
+    <div class="capital-item">
+      <div class="capital-item-title">每万参考</div>
+      <div class="capital-item-body">
+        <div class="capital-row">
+          <span class="capital-label">每万月供</span>
+          <span class="capital-value primary" id="insPer10k">--</span>
+        </div>
+        <div class="capital-row">
+          <span class="capital-label">每万总利息</span>
+          <span class="capital-value" id="insPer10kInterest">--</span>
+        </div>
+        <div class="capital-row">
+          <span class="capital-label">每万总还款</span>
+          <span class="capital-value" id="insPer10kTotal">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="capital-pair" style="margin-top:12px">
+    <!-- 左侧卡片：LPR对比 -->
+    <div class="capital-item">
+      <div class="capital-item-title">LPR对比</div>
+      <div class="capital-item-body">
+        <div class="capital-row">
+          <span class="capital-label">LPR(1年期)</span>
+          <span class="capital-value" id="insLPR1">3.10%</span>
+        </div>
+        <div class="capital-row">
+          <span class="capital-label">LPR(5年期)</span>
+          <span class="capital-value" id="insLPR5">3.60%</span>
+        </div>
+        <div class="capital-row">
+          <span class="capital-label">你的利率</span>
+          <span class="capital-value primary" id="insMyRate">--</span>
+        </div>
+        <div class="capital-row">
+          <span class="capital-label">vs LPR(5年)</span>
+          <span class="capital-value" id="insLPRDiff">--</span>
+        </div>
+      </div>
+    </div>
+    <!-- 右侧卡片：利率敏感度 -->
+    <div class="capital-item">
+      <div class="capital-item-title">利率敏感度</div>
+      <div class="capital-item-body">
+        <div class="capital-row">
+          <span class="capital-label">利率 -0.5%</span>
+          <span class="capital-value good" id="insSensDown50">--</span>
+        </div>
+        <div class="capital-row">
+          <span class="capital-label">利率 -0.1%</span>
+          <span class="capital-value good" id="insSensDown10">--</span>
+        </div>
+        <div class="capital-row">
+          <span class="capital-label">当前月供</span>
+          <span class="capital-value primary" id="insSensCurrent">--</span>
+        </div>
+        <div class="capital-row">
+          <span class="capital-label">利率 +0.1%</span>
+          <span class="capital-value warn" id="insSensUp10">--</span>
+        </div>
+        <div class="capital-row">
+          <span class="capital-label">利率 +0.5%</span>
+          <span class="capital-value warn" id="insSensUp50">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 成本透视 -->
+<div class="section sortable-item" data-section-id="cost">
+  <div class="section-title">
+    <span class="drag-handle"><svg viewBox="0 0 16 16"><line x1="3" y1="5" x2="13" y2="5"/><line x1="3" y1="8" x2="13" y2="8"/><line x1="3" y1="11" x2="13" y2="11"/></svg></span>
+    <span>成本透视</span>
+    <span class="collapse-toggle" onclick="event.stopPropagation();toggleCollapse('cost')"><svg viewBox="0 0 12 12"><polyline points="3,2 9,6 3,10"/></svg></span>
+  </div>
+  <div class="insight-card">
+    <div class="ratio-bar-wrap">
+      <div class="ratio-bar" id="ratioBar">
+        <div class="ratio-principal" id="ratioPrincipal" style="width:0%">
+          <span class="ratio-text" id="ratioPrincipalText">本金</span>
+        </div>
+        <div class="ratio-interest" id="ratioInterest" style="width:0%">
+          <span class="ratio-text" id="ratioInterestText">利息</span>
+        </div>
+      </div>
+    </div>
+    <div class="ratio-legend">
+      <div class="ratio-legend-item"><span class="ratio-dot principal"></span><span>本金 <b id="legendPrincipal">--</b></span></div>
+      <div class="ratio-legend-item"><span class="ratio-dot interest"></span><span>利息 <b id="legendInterest">--</b></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 贷款成本评分 -->
+<div class="section sortable-item" data-section-id="cost-score">
+  <div class="section-title">
+    <span class="drag-handle"><svg viewBox="0 0 16 16"><line x1="3" y1="5" x2="13" y2="5"/><line x1="3" y1="8" x2="13" y2="8"/><line x1="3" y1="11" x2="13" y2="11"/></svg></span>
+    <span>贷款成本评分</span>
+    <span class="collapse-toggle" onclick="event.stopPropagation();toggleCollapse('cost-score')"><svg viewBox="0 0 12 12"><polyline points="3,2 9,6 3,10"/></svg></span>
+  </div>
+  <div class="insight-card">
+    <div class="score-wrap">
+      <div class="score-circle" id="scoreCircle">
+        <span class="score-value" id="scoreValue">--</span>
+        <span class="score-label" id="scoreGrade">--</span>
+      </div>
+    </div>
+    <div class="score-desc" id="scoreDesc">输入贷款参数后自动评估</div>
+  </div>
+</div>
+
+<!-- 还款进度模拟 -->
+<div class="section sortable-item" data-section-id="progress">
+  <div class="section-title">
+    <span class="drag-handle"><svg viewBox="0 0 16 16"><line x1="3" y1="5" x2="13" y2="5"/><line x1="3" y1="8" x2="13" y2="8"/><line x1="3" y1="11" x2="13" y2="11"/></svg></span>
+    <span>还款进度模拟</span>
+    <span class="collapse-toggle" onclick="event.stopPropagation();toggleCollapse('progress')"><svg viewBox="0 0 12 12"><polyline points="3,2 9,6 3,10"/></svg></span>
+  </div>
+  <div class="insight-card">
+    <div class="slider-wrap">
+      <div class="slider-label">
+        <span>已还期数</span>
+        <span class="slider-value" id="sliderValue">0 期</span>
+      </div>
+      <input type="range" id="progressSlider" min="0" max="100" value="0" oninput="updateProgressSim();">
+      <div class="slider-marks">
+        <span>0期</span>
+        <span id="sliderMid">50期</span>
+        <span id="sliderMax">100期</span>
+      </div>
+    </div>
+    <div class="progress-stats">
+      <div class="progress-stat">
+        <div class="progress-stat-value" id="psPaid">--</div>
+        <div class="progress-stat-label">累计还款</div>
+      </div>
+      <div class="progress-stat">
+        <div class="progress-stat-value" id="psPrincipal">--</div>
+        <div class="progress-stat-label">已还本金</div>
+      </div>
+      <div class="progress-stat">
+        <div class="progress-stat-value" id="psInterest">--</div>
+        <div class="progress-stat-label">已还利息</div>
+      </div>
+      <div class="progress-stat">
+        <div class="progress-stat-value" id="psRemain">--</div>
+        <div class="progress-stat-label">剩余本金</div>
+      </div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBarFill" style="width:0%"></div>
+      </div>
+      <div class="progress-bar-text" id="progressBarText">还款进度 0%</div>
+    </div>
+  </div>
+</div>
+
+<!-- Pressure -->
+<div class="section sortable-item" data-section-id="pressure">
+  <div class="section-title">
+    <span class="drag-handle"><svg viewBox="0 0 16 16"><line x1="3" y1="5" x2="13" y2="5"/><line x1="3" y1="8" x2="13" y2="8"/><line x1="3" y1="11" x2="13" y2="11"/></svg></span>
+    <span>月供压力分析</span>
+    <span class="collapse-toggle" onclick="event.stopPropagation();toggleCollapse('pressure')"><svg viewBox="0 0 12 12"><polyline points="3,2 9,6 3,10"/></svg></span>
+  </div>
+  <div class="section-card">
+    <div class="param-module param-module-combined param-module-pressure" style="margin:0;padding:10px 16px">
+    <div class="combined-row pressure-row">
+      <div class="cr-label-stack">
+        <span class="cr-label-cn">月收入</span>
+        <span class="cr-label-en">MONTHLY INCOME</span>
+      </div>
+      <div class="cr-input-wrap">
+        <input type="number" id="monthlyIncome" value="10000" oninput="calcPressure();">
+        <span class="unit">元</span>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="pressure-bar-wrap" id="pressureWrap">
+    <div class="pressure-bar-bg"><div class="pressure-bar-fill" id="pressureBar" style="width:0%"></div></div>
+    <div class="pressure-info"><span id="pressurePct">0%</span><span id="pressureLevel">--</span></div>
+  </div>
+</div>
+
+<!-- 智能建议 -->
+<div class="section sortable-item" data-section-id="advice">
+  <div class="section-title">
+    <span class="drag-handle"><svg viewBox="0 0 16 16"><line x1="3" y1="5" x2="13" y2="5"/><line x1="3" y1="8" x2="13" y2="8"/><line x1="3" y1="11" x2="13" y2="11"/></svg></span>
+    <span>智能建议</span>
+    <span class="collapse-toggle" onclick="event.stopPropagation();toggleCollapse('advice')"><svg viewBox="0 0 12 12"><polyline points="3,2 9,6 3,10"/></svg></span>
+  </div>
+  <div class="insight-card" id="adviceCard">
+    <div class="advice-item" id="adviceMethod">
+      <div class="advice-icon">💡</div>
+      <div class="advice-content">
+        <div class="advice-title">还款方式建议</div>
+        <div class="advice-text" id="adviceMethodText">输入参数后获取建议</div>
+      </div>
+    </div>
+    <div class="advice-item" id="adviceEarly">
+      <div class="advice-icon">⏰</div>
+      <div class="advice-content">
+        <div class="advice-title">提前还款建议</div>
+        <div class="advice-text" id="adviceEarlyText">输入参数后获取建议</div>
+      </div>
+    </div>
+    <div class="advice-item" id="adviceRisk">
+      <div class="advice-icon">⚠️</div>
+      <div class="advice-content">
+        <div class="advice-title">风险提示</div>
+        <div class="advice-text" id="adviceRiskText">输入参数后获取建议</div>
+      </div>
+    </div>
+    <div class="advice-item" id="adviceCompare">
+      <div class="advice-icon">📊</div>
+      <div class="advice-content">
+        <div class="advice-title">替代方案</div>
+        <div class="advice-text" id="adviceCompareText">输入参数后获取建议</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end tab-overview -->
+
+<!-- Tab: Schedule -->
+<div class="tab-content" id="tab-schedule">
+
+<!-- 贷款参数（明细页） -->
+<div class="section">
+  <div class="section-title">贷款参数</div>
+  <div class="form-card">
+    <div class="form-row">
+      <div class="form-label">贷款类型</div>
+      <div class="form-control">
+        <select id="loanType2" onchange="calc();onParamChange(this);">
+          <option value="normal">普通贷款</option>
+          <option value="fund">公积金贷款</option>
+          <option value="combo">组合贷款</option>
+          <option value="consumer">消费贷/信用贷</option>
+          <option value="business">经营贷</option>
+          <option value="renovation">装修贷</option>
+          <option value="education">教育贷</option>
+          <option value="car">购车贷款</option>
+          <option value="carfinance">汽车金融贷</option>
+          <option value="house">购房贷款</option>
+          <option value="second">二押贷款</option>
+          <option value="insurance">保单贷</option>
+          <option value="social">社保贷</option>
+          <option value="fundcredit">公积金信用贷</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">贷款金额</div>
+      <div class="form-control">
+        <input type="number" id="loanAmount2" oninput="calc();onParamChange(this);">
+        <span class="form-unit">元</span>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">贷款期限</div>
+      <div class="form-control">
+        <input type="number" id="loanTerm2" oninput="calc();onParamChange(this);">
+        <span class="form-unit">月</span>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">年利率</div>
+      <div class="form-control">
+        <input type="number" id="annualRate2" step="0.01" oninput="calc();onParamChange(this);">
+        <span class="form-unit">%</span>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">还款方式</div>
+      <div class="form-control">
+        <select id="repaymentMethod2" onchange="calc();onParamChange(this);">
+          <option value="equal_installment">等额本息</option>
+          <option value="equal_principal">等额本金</option>
+          <option value="interest_first">先息后本</option>
+          <option value="bullet">一次性还本付息</option>
+          <option value="equal_principal_interest">等本等息</option>
+          <option value="flexible">随借随还</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">起贷日期</div>
+      <div class="form-control">
+        <input type="date" id="startDate2" onchange="calc();onParamChange(this);">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 金融服务费（明细页） -->
+<div class="section">
+  <div class="section-title">金融服务费</div>
+  <div class="form-card">
+    <div class="form-row">
+      <div class="form-label">服务费金额</div>
+      <div class="form-control">
+        <input type="number" id="feeAmount2" oninput="calc();onParamChange(this);">
+        <span class="form-unit">元</span>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">支付方式</div>
+      <div class="form-control">
+        <select id="feeMethod2" onchange="calc();onParamChange(this);">
+          <option value="upfront">期初一次性</option>
+          <option value="monthly">每月分摊</option>
+          <option value="deduct">从贷款中扣除</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="fee-result" id="feeResult2" style="display:none">
+    <div class="fee-label">含服务费实际年化利率</div>
+    <div class="fee-value" id="feeAPR2">--</div>
+  </div>
+</div>
+
+<!-- 提前还款计算（明细页） -->
+<div class="section">
+  <div class="section-title">提前还款计算</div>
+  <div class="form-card">
+    <div class="form-row">
+      <div class="form-label">还款期数</div>
+      <div class="form-control">
+        <input type="number" id="earlyMonth2" min="1" oninput="calcEarly();onParamChange(this);">
+        <span class="form-unit">期</span>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">还款金额</div>
+      <div class="form-control">
+        <input type="number" id="earlyAmount2" oninput="calcEarly();onParamChange(this);">
+        <span class="form-unit">元</span>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-label">违约金比例</div>
+      <div class="form-control">
+        <input type="number" id="prepaymentPenalty2" step="0.1" min="0" max="100" oninput="calcEarly();onParamChange(this);">
+        <span class="form-unit">%</span>
+      </div>
+    </div>
+  </div>
+  <div class="early-result" id="earlyResult2" style="display:none">
+    <div class="early-row"><span class="er-label">已还利息</span><span class="er-value" id="erPaidInterest2">--</span></div>
+    <div class="early-row"><span class="er-label">剩余本金</span><span class="er-value" id="erRemain2">--</span></div>
+    <div class="early-row"><span class="er-label">节省利息</span><span class="er-value" id="erSaved2">--</span></div>
+    <div class="early-row highlight"><span class="er-label">实际年化</span><span class="er-value" id="erAPR2">--</span></div>
+  </div>
+</div>
+
+<!-- 还款明细 -->
+<div class="section">
+  <div class="section-title">还款明细</div>
+  <div class="section-card" id="scheduleCard">
+    <div class="schedule-header">
+      <span>期</span><span>日期</span><span>月供</span><span>本金</span><span>利息</span><span>剩余</span>
+    </div>
+    <div class="schedule-body" id="scheduleBody"></div>
+  </div>
+</div>
+</div>
+
+<!-- Tab: Compare -->
+<div class="tab-content" id="tab-compare">
+<div class="section">
+  <div class="section-title">还款方式对比</div>
+  <div class="section-card" id="compareCard">
+    <div class="compare-tabs" id="compareTabs"></div>
+    <div class="compare-result" id="compareResult"></div>
+  </div>
+</div>
+</div>
+
+<!-- Tab: Tools -->
+<div class="tab-content" id="tab-tools">
+<div class="section">
+  <div class="section-title">工具</div>
+  <div class="tool-grid">
+    <div class="tool-card" id="irrCard">
+      <div class="tool-title">IRR计算器</div>
+      <div class="tool-row"><label>现金流(逗号分隔)</label></div>
+      <div class="tool-row"><input type="text" id="irrCashflows" placeholder="-130000,5682.93,..."></div>
+      <div class="tool-btn" onclick="calcIRR()">计算IRR</div>
+      <div class="tool-result" id="irrResult" style="display:none"></div>
+    </div>
+    <div class="tool-card" id="penaltyCard">
+      <div class="tool-title">逾期罚息计算</div>
+      <div class="tool-row"><label>逾期本金</label><input type="number" id="penaltyPrincipal" value="10000"><span class="unit">元</span></div>
+      <div class="tool-row"><label>逾期天数</label><input type="number" id="penaltyDays" value="30"><span class="unit">天</span></div>
+      <div class="tool-row"><label>罚息利率</label><input type="number" id="penaltyRate" value="0.05" step="0.01"><span class="unit">%/日</span></div>
+      <div class="tool-btn" onclick="calcPenalty()">计算罚息</div>
+      <div class="tool-result" id="penaltyResult" style="display:none"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Tab: Settings -->
+<div class="tab-content" id="tab-settings">
+<div class="section">
+  <div class="section-title">数据管理</div>
+  <div class="section-card">
+    <div class="settings-row" onclick="exportJSON()"><span class="sr-label">导出方案 (JSON)</span><span class="sr-value">导出</span></div>
+    <div class="settings-row" onclick="document.getElementById('importFile').click()"><span class="sr-label">导入方案 (JSON)</span><span class="sr-value">导入</span></div>
+    <div class="settings-row" onclick="exportCSV()"><span class="sr-label">导出还款明细 (CSV)</span><span class="sr-value">导出</span></div>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">关于</div>
+  <div class="section-card">
+    <div class="settings-row"><div><div class="sr-label">贷款核算工具</div><div class="sr-desc">版本 1.0.0 | 纯前端计算，数据仅存储在本地</div></div></div>
+  </div>
+</div>
+<div class="section">
+  <div class="settings-btn" onclick="clearAllData()">清除所有数据</div>
+</div>
+</div>
+
+</div><!-- end scroll-area -->
+
+<!-- Tab Bar -->
+<div class="tab-bar">
+  <div class="tab-item active" onclick="switchTab('overview',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>概览</span>
+  </div>
+  <div class="tab-item" onclick="switchTab('schedule',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>明细</span>
+  </div>
+  <div class="tab-item" onclick="switchTab('compare',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6m6 0V9a2 2 0 012-2h2a2 2 0 012 2v10m6 0v-4a2 2 0 00-2-2h-2a2 2 0 00-2 2v4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>对比</span>
+  </div>
+  <div class="tab-item" onclick="switchTab('tools',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3"/></svg>
+    <span>工具</span>
+  </div>
+  <div class="tab-item" onclick="switchTab('settings',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>设置</span>
+  </div>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="hideOverlay(event)">
+  <div class="action-sheet" id="actionSheet" onclick="event.stopPropagation()"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+</div><!-- end app-container -->
+
+<script>
+/* ========== State ========== */
+let plans = [];
+let currentPlanIdx = 0;
+let scheduleData = [];
+const METHODS = [
+  {key:'equal_installment',name:'等额本息'},
+  {key:'equal_principal',name:'等额本金'},
+  {key:'interest_first',name:'先息后本'},
+  {key:'bullet',name:'一次性还本付息'},
+  {key:'equal_principal_interest',name:'等本等息'},
+  {key:'flexible',name:'随借随还'}
+];
+const SPECIAL_FIELDS = {
+  combo:[{id:'comboFundAmt',label:'公积金金额',unit:'元'},{id:'comboFundRate',label:'公积金利率',unit:'%'},{id:'comboCommRate',label:'商贷利率',unit:'%'}],
+  fund:[{id:'fundLimit',label:'公积金额度',unit:'元'},{id:'fundBalance',label:'账户余额',unit:'元'}],
+  consumer:[{id:'creditLine',label:'授信额度',unit:'元'}],
+  business:[{id:'bizLicense',label:'营业执照年限',unit:'年'},{id:'bizRevenue',label:'年营收',unit:'万元'}],
+  renovation:[{id:'renoArea',label:'装修面积',unit:'m2'},{id:'renoCost',label:'装修预算',unit:'元'}],
+  education:[{id:'eduSchool',label:'学校类型',type:'select',options:['985/211','普通本科','海外高校']},{id:'eduDegree',label:'学历层次',type:'select',options:['本科','硕士','博士']}],
+  car:[{id:'carPrice',label:'车辆价格',unit:'元'},{id:'carDown',label:'首付比例',unit:'%'}],
+  carfinance:[{id:'cfBrand',label:'金融品牌',type:'select',options:['丰田金融','奔驰金融','宝马金融','奥迪金融','其他']},{id:'cfSubsidy',label:'贴息金额',unit:'元'}],
+  house:[{id:'housePrice',label:'房屋总价',unit:'元'},{id:'houseDown',label:'首付金额',unit:'元'},{id:'houseArea',label:'面积',unit:'m2'}],
+  second:[{id:'secondLTV',label:'抵押率',unit:'%'},{id:'firstRemain',label:'一押剩余',unit:'元'}],
+  insurance:[{id:'insCompany',label:'保险公司',type:'select',options:['平安','国寿','太平洋','泰康','其他']},{id:'insCashValue',label:'现金价值',unit:'元'}],
+  social:[{id:'socMonths',label:'社保缴纳月数',unit:'月'},{id:'socCity',label:'缴纳城市'}],
+  fundcredit:[{id:'fcMonths',label:'公积金月数',unit:'月'},{id:'fcMonthly',label:'月缴金额',unit:'元'}]
+};
+
+/* ========== Cross-page Value Helper ========== */
+// 可同步的参数列表（概览页 ↔ 明细页）
+const SYNC_PARAMS=['loanType','loanAmount','loanTerm','annualRate','repaymentMethod','startDate','feeAmount','feeMethod','earlyMonth','earlyAmount','prepaymentPenalty'];
+
+function getVal(id){
+  const scheduleTab=el('tab-schedule');
+  const isSchedule=scheduleTab&&scheduleTab.classList.contains('active');
+  const suffix=isSchedule?'2':'';
+  const elem=el(id+suffix);
+  return elem?elem.value:'';
+}
+function getNum(id){
+  return parseFloat(getVal(id))||0;
+}
+function getEl(id){
+  const scheduleTab=el('tab-schedule');
+  const isSchedule=scheduleTab&&scheduleTab.classList.contains('active');
+  const suffix=isSchedule?'2':'';
+  return el(id+suffix);
+}
+
+/* 双向同步：将当前页的参数同步到另一个页面 */
+function syncToOtherPage(){
+  const scheduleTab=el('tab-schedule');
+  const isSchedule=scheduleTab&&scheduleTab.classList.contains('active');
+  SYNC_PARAMS.forEach(id=>{
+    const src=isSchedule?el(id+'2'):el(id);
+    const dst=isSchedule?el(id):el(id+'2');
+    if(src&&dst&&src.value!==dst.value){
+      dst.value=src.value;
+    }
+  });
+}
+
+/* 切换Tab时自动同步并计算 */
+function onParamChange(srcEl){
+  // 找到参数名
+  const id=srcEl.id;
+  const baseId=id.replace(/2$/,'');
+  if(!SYNC_PARAMS.includes(baseId))return;
+  // 同步到另一个页面
+  const isSchedule=id.endsWith('2');
+  const otherId=isSchedule?baseId:baseId+'2';
+  const otherEl=el(otherId);
+  if(otherEl&&otherEl.value!==srcEl.value){
+    otherEl.value=srcEl.value;
+  }
+}
+
+/* ========== Init ========== */
+function init(){
+  loadPlans();
+  if(plans.length===0){
+    plans.push({name:'方案 1',loanType:'normal',loanAmount:130000,loanTerm:24,annualRate:4.65,repaymentMethod:'equal_installment',startDate:'2022-07-01',feeAmount:0,feeMethod:'upfront',monthlyIncome:10000,special:{}});
+    savePlans();
+  }
+  applyPlan(0);
+  buildCompareTabs();
+  calc();
+  initModuleLabels();
+}
+
+/* ========== Plans ========== */
+function loadPlans(){
+  try{plans=JSON.parse(localStorage.getItem('loanPlans'))||[];}catch(e){plans=[];}
+}
+function savePlans(){
+  localStorage.setItem('loanPlans',JSON.stringify(plans));
+}
+function clearAllData(){
+  if(!confirm('确定清除所有方案数据？'))return;
+  try{
+    localStorage.removeItem('loanPlans');
+    plans=[];
+    currentPlanIdx=-1;
+    scheduleData=[];
+    // Clear all module inputs
+    document.querySelectorAll('.module-value input[type="number"], .module-value input[type="text"], .module-value input[type="date"]').forEach(inp=>{inp.value='';});
+    document.querySelectorAll('.module-value select').forEach(sel=>{sel.selectedIndex=0;});
+    // Clear list-row inputs (fee, early repayment, income, tools)
+    ['feeAmount','feeMethod','earlyMonth','earlyAmount','prepaymentPenalty','monthlyIncome'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el)return;
+      if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';
+    });
+    // Clear tool inputs
+    ['irrCashflows','penaltyPrincipal','penaltyDays','penaltyRate'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.value='';
+    });
+    // Hide special fields section
+    const sf=document.getElementById('specialFields');if(sf)sf.style.display='none';
+    // Reset all module labels to empty state
+    updateAllModuleLabels();
+    // Reset indicator cards
+    ['indMonthly','indInterest','indTotal','indAPR'].forEach(id=>{
+      const elv=document.getElementById(id);
+      if(elv){elv.textContent='--';elv.classList.add('empty');}
+    });
+    // Clear schedule display
+    const sb=document.getElementById('scheduleBody');if(sb)sb.innerHTML='';
+    // Clear comparison display
+    const cr=document.getElementById('compareResult');if(cr)cr.innerHTML='';
+    const ct=document.getElementById('compareTabs');if(ct)ct.innerHTML='';
+    // Reset plan badge
+    const pb=document.getElementById('planBadge');if(pb)pb.textContent='方案 1';
+    toast('数据已清除');
+  }catch(e){
+    toast('清除失败：'+e.message);
+  }
+}
+function updateAllModuleLabels(){
+  document.querySelectorAll('.param-module').forEach(module=>{
+    const input=module.querySelector('input,select');
+    if(input)updateModuleLabels(input);
+  });
+}
+function applyPlan(idx){
+  currentPlanIdx=idx;
+  const p=plans[idx];
+  el('loanType').value=p.loanType||'normal';
+  el('loanAmount').value=p.loanAmount!==undefined?p.loanAmount:'';
+  el('loanTerm').value=p.loanTerm!==undefined?p.loanTerm:'';
+  el('annualRate').value=p.annualRate!==undefined?p.annualRate:'';
+  el('repaymentMethod').value=p.repaymentMethod||'equal_installment';
+  el('startDate').value=p.startDate||'';
+  el('feeAmount').value=p.feeAmount!==undefined?p.feeAmount:'';
+  el('feeMethod').value=p.feeMethod||'upfront';
+  el('monthlyIncome').value=p.monthlyIncome!==undefined?p.monthlyIncome:'';
+  el('planBadge').textContent=p.name||('方案 '+(idx+1));
+  onTypeChange();
+  // 刷新所有模块卡片的空态/非空态
+  updateAllModuleLabels();
+  calc();
+}
+function saveCurrentPlan(){
+  const p=plans[currentPlanIdx];
+  const v=id=>el(id).value;
+  p.loanType=v('loanType');
+  p.loanAmount=v('loanAmount')!==''?parseFloat(v('loanAmount'))||0:'';
+  p.loanTerm=v('loanTerm')!==''?parseInt(v('loanTerm'))||0:'';
+  p.annualRate=v('annualRate')!==''?parseFloat(v('annualRate'))||0:'';
+  p.repaymentMethod=v('repaymentMethod');
+  p.startDate=v('startDate');
+  p.feeAmount=v('feeAmount')!==''?parseFloat(v('feeAmount'))||0:'';
+  p.feeMethod=v('feeMethod');
+  p.monthlyIncome=v('monthlyIncome')!==''?parseFloat(v('monthlyIncome'))||0:'';
+  p.special=getSpecialValues();
+  savePlans();
+}
+function getSpecialValues(){
+  const v={};const type=el('loanType').value;
+  const fields=SPECIAL_FIELDS[type]||[];
+  fields.forEach(f=>{const e=el(f.id);if(e)v[f.id]=e.value;});
+  return v;
+}
+function showPlanSheet(){
+  saveCurrentPlan();
+  let html='<div class="as-title">方案管理</div>';
+  plans.forEach((p,i)=>{
+    html+=`<div class="as-item" onclick="applyPlan(${i});hideOverlay()">${p.name||('方案 '+(i+1))} ${i===currentPlanIdx?'(当前)':''}</div>`;
+  });
+  html+=`<div class="as-item" onclick="addPlan();hideOverlay()">新增方案</div>`;
+  html+='<div class="as-cancel" onclick="hideOverlay()">取消</div>';
+  el('actionSheet').innerHTML=html;
+  el('overlay').classList.add('show');
+}
+function addPlan(){
+  const n=plans.length+1;
+  // 新方案创建时所有数值字段为空，等待用户填写
+  plans.push({name:'方案 '+n,loanType:'normal',loanAmount:'',loanTerm:'',annualRate:'',repaymentMethod:'equal_installment',startDate:'',feeAmount:'',feeMethod:'upfront',monthlyIncome:'',special:{}});
+  savePlans();
+  applyPlan(plans.length-1);
+}
+function hideOverlay(e){
+  if(e&&e.target!==el('overlay'))return;
+  el('overlay').classList.remove('show');
+}
+
+/* ========== Special Fields ========== */
+function onTypeChange(){
+  const type=el('loanType').value;
+  const fields=SPECIAL_FIELDS[type];
+  const container=el('specialFields');
+  const card=el('specialFieldsCard');
+  if(!fields||fields.length===0){container.style.display='none';return;}
+  container.style.display='block';
+  const p=plans[currentPlanIdx];
+  let html='';
+  fields.forEach(f=>{
+    const val=(p.special&&p.special[f.id])||'';
+    if(f.type==='select'){
+      html+=`<div class="list-row"><div class="row-label">${f.label}</div><div class="row-value"><select id="${f.id}">`;
+      (f.options||[]).forEach(o=>{html+=`<option value="${o}" ${val===o?'selected':''}>${o}</option>`;});
+      html+=`</select><svg class="chevron" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#C7C7CC" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>`;
+    }else{
+      html+=`<div class="list-row"><div class="row-label">${f.label}</div><div class="row-value"><input type="number" id="${f.id}" value="${val}"><span class="unit">${f.unit||''}</span></div></div>`;
+    }
+  });
+  card.innerHTML=html;
+}
+
+/* ========== Tab ========== */
+function switchTab(name,tabEl){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
+  el('tab-'+name).classList.add('active');
+  tabEl.classList.add('active');
+  el('scrollArea').scrollTop=0;
+  if(name==='schedule'){
+    syncToOtherPage();
+    calc();
+    calcEarly();
+    renderSchedule();
+  }
+  if(name==='compare')renderCompare();
+}
+
+/* ========== Nav Scroll ========== */
+el('scrollArea').addEventListener('scroll',function(){
+  el('navBar').classList.toggle('nav-compact',this.scrollTop>40);
+});
+
+/* ========== Format ========== */
+function fmt(n,d=2){const sign=n<0?'-':'';const s=Math.abs(n).toFixed(d);const p=s.split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');return sign+p[0]+(d>0?'.'+p[1]:'');}
+function el(id){return document.getElementById(id);}
+function toast(msg){const t=el('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1500);}
+
+/* ========== Calc Engine ========== */
+function calc(){
+  saveCurrentPlan();
+  const P=getNum('loanAmount');
+  const n=parseInt(getVal('loanTerm'))||0;
+  const ar=getNum('annualRate');
+  const r=ar/100/12;
+  const method=getVal('repaymentMethod');
+
+  el('dispMonthly').value=(r*100).toFixed(4);
+  updateModuleLabels(el('dispMonthly'));
+
+  let monthly=0,totalInterest=0,totalPayment=0;
+  scheduleData=[];
+
+  if(P>0&&n>0&&ar>0){
+    const result=calcMethod(P,n,r,method);
+    monthly=result.monthly;
+    totalInterest=result.totalInterest;
+    totalPayment=result.totalPayment;
+    scheduleData=result.schedule;
+  }
+
+  el('indMonthly').textContent=monthly>0?fmt(monthly):'--';
+  el('indMonthly').classList.toggle('empty',monthly<=0);
+  el('indInterest').textContent=totalInterest>0?fmt(totalInterest):'--';
+  el('indInterest').classList.toggle('empty',totalInterest<=0);
+  el('indTotal').textContent=totalPayment>0?fmt(totalPayment):'--';
+  el('indTotal').classList.toggle('empty',totalPayment<=0);
+
+  // APR with fee
+  const fee=getNum('feeAmount');
+  const feeM=getVal('feeMethod');
+  let apr=ar;
+  if(fee>0){
+    apr=calcAPR(P,n,monthly,fee,feeM);
+  }
+  el('indAPR').textContent=apr>0?apr.toFixed(2)+'%':'--';
+  el('indAPR').classList.toggle('empty',apr<=0);
+
+  // Fee result
+  const feeResultEl=getEl('feeResult');
+  const feeAPREl=getEl('feeAPR');
+  if(fee>0){
+    if(feeResultEl)feeResultEl.style.display='block';
+    if(feeAPREl)feeAPREl.textContent=apr.toFixed(2)+'%';
+  }else{
+    if(feeResultEl)feeResultEl.style.display='none';
+  }
+
+  // High cost loan warning for equal_principal_interest
+  const warningEl=el('highCostWarning');
+  if(method==='equal_principal_interest'){
+    warningEl.style.display='block';
+  }else{
+    warningEl.style.display='none';
+  }
+
+  calcInsights();
+  updateProgressSim();
+  updateAdvice();
+  calcEarly();
+  calcPressure();
+  // 自动更新明细区域
+  renderSchedule();
+}
+
+function calcMethod(P,n,r,method){
+  let monthly=0,totalInterest=0,schedule=[];
+  switch(method){
+    case 'equal_installment':{
+      if(r===0){monthly=P/n;schedule=buildScheduleEqual(P,n,0,monthly);break;}
+      monthly=P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+      let rem=P;
+      for(let i=1;i<=n;i++){
+        const interest=rem*r;
+        const principal=monthly-interest;
+        rem-=principal;
+        schedule.push({i,date:'',payment:monthly,principal,interest,remain:Math.max(0,rem)});
+      }
+      break;
+    }
+    case 'equal_principal':{
+      const mp=P/n;
+      let rem=P;
+      for(let i=1;i<=n;i++){
+        const interest=rem*r;
+        const payment=mp+interest;
+        rem-=mp;
+        schedule.push({i,date:'',payment,principal:mp,interest,remain:Math.max(0,rem)});
+      }
+      monthly=schedule[0]?schedule[0].payment:0;
+      break;
+    }
+    case 'interest_first':{
+      const mi=P*r;
+      monthly=mi;
+      for(let i=1;i<=n;i++){
+        const isLast=i===n;
+        const payment=isLast?P+mi:mi;
+        const principal=isLast?P:0;
+        schedule.push({i,date:'',payment,principal,interest:mi,remain:isLast?0:P});
+      }
+      break;
+    }
+    case 'bullet':{
+      const ti=P*r*n;
+      const payment=P+ti;
+      schedule.push({i:1,date:'',payment,principal:P,interest:ti,remain:0});
+      monthly=payment;
+      break;
+    }
+    case 'equal_principal_interest':{
+      const mp=P/n;
+      const mi=P*r;
+      monthly=mp+mi;
+      let rem=P;
+      for(let i=1;i<=n;i++){
+        rem-=mp;
+        schedule.push({i,date:'',payment:monthly,principal:mp,interest:mi,remain:Math.max(0,rem)});
+      }
+      break;
+    }
+    case 'flexible':{
+      const dr=parseFloat(el('annualRate').value)/100/365;
+      const days=n*30;
+      totalInterest=P*dr*days;
+      monthly=0;
+      schedule.push({i:1,date:'',payment:P+totalInterest,principal:P,interest:totalInterest,remain:0});
+      break;
+    }
+  }
+  totalInterest=schedule.reduce((s,r)=>s+r.interest,0);
+  const totalPayment=schedule.reduce((s,r)=>s+r.payment,0);
+  // Add dates using ACT/365 day count convention
+  const sd=el('startDate').value;
+  if(sd){
+    const startDate=new Date(sd);
+    schedule.forEach(row=>{
+      // Calculate actual date by adding months
+      const rowDate=new Date(startDate);
+      rowDate.setMonth(rowDate.getMonth()+row.i);
+      row.date=rowDate.getFullYear()+'/'+String(rowDate.getMonth()+1).padStart(2,'0')+'/'+String(rowDate.getDate()).padStart(2,'0');
+      // Store actual days from start for ACT/365 calculations
+      row.daysFromStart=Math.round((rowDate-startDate)/(1000*60*60*24));
+    });
+  }
+  return {monthly,totalInterest,totalPayment,schedule};
+}
+
+function buildScheduleEqual(P,n,r,monthly){
+  let rem=P,schedule=[];
+  for(let i=1;i<=n;i++){
+    const interest=rem*r;
+    const principal=monthly-interest;
+    rem-=principal;
+    schedule.push({i,date:'',payment:monthly,principal,interest,remain:Math.max(0,rem)});
+  }
+  return schedule;
+}
+
+/* ========== APR ========== */
+function calcAPR(P,n,monthly,fee,method){
+  // Build cash flows
+  let cf;
+  if(method==='deduct'||method==='upfront')cf=[-(P-fee)];
+  else cf=[-P];
+  for(let i=0;i<n;i++)cf.push(monthly);
+  if(method==='monthly'){
+    const mf=fee/n;
+    cf[0]=-P;
+    cf=cf.map((v,i)=>i===0?v:v-mf);
+  }
+  const rate=solveIRR(cf);
+  return rate>=0?((Math.pow(1+rate,12)-1)*100):0;
+}
+
+function solveIRR(cf,guess=0.01){
+  let rate=guess;
+  for(let iter=0;iter<200;iter++){
+    let npv=0,dnpv=0;
+    for(let i=0;i<cf.length;i++){
+      npv+=cf[i]/Math.pow(1+rate,i);
+      dnpv-=i*cf[i]/Math.pow(1+rate,i+1);
+    }
+    if(Math.abs(npv)<1e-8)break;
+    if(Math.abs(dnpv)<1e-12)break;
+    rate-=npv/dnpv;
+    if(rate<-1)rate=-0.99;
+    if(rate>10)rate=9.99;
+  }
+  return rate;
+}
+
+/* ========== Early Repayment ========== */
+function calcEarly(){
+  const P=getNum('loanAmount');
+  const n=parseInt(getVal('loanTerm'))||0;
+  const ar=getNum('annualRate');
+  const r=ar/100/12;
+  const method=getVal('repaymentMethod');
+  const em=parseInt(getVal('earlyMonth'))||0;
+  const ea=getNum('earlyAmount');
+  const penaltyRate=(getNum('prepaymentPenalty'))/100;
+  const earlyResultEl=getEl('earlyResult');
+  if(P<=0||n<=0||ar<=0||em<=0||ea<=0){if(earlyResultEl)earlyResultEl.style.display='none';return;}
+  const result=calcMethod(P,n,r,method);
+  const sched=result.schedule;
+  if(em>sched.length){if(earlyResultEl)earlyResultEl.style.display='none';return;}
+  const paidInterest=sched.slice(0,em).reduce((s,r)=>s+r.interest,0);
+  const remain=sched[em-1].remain;
+  const currentInterest=sched[em-1].interest;
+  const penalty=remain*penaltyRate;
+  const origTotalInterest=result.totalInterest;
+  const remainInterest=sched.slice(em).reduce((s,r)=>s+r.interest,0);
+  const saved=Math.max(0,remainInterest);
+  // New total paid: paid + current interest + early amount + penalty
+  const totalPaid=sched.slice(0,em-1).reduce((s,r)=>s+r.payment,0)+currentInterest+ea+penalty;
+  const actualMonths=em;
+  const newAPR=calcEarlyAPR(P,totalPaid,actualMonths);
+  if(earlyResultEl)earlyResultEl.style.display='block';
+  const erPaid=getEl('erPaidInterest');
+  const erRemain=getEl('erRemain');
+  const erSaved=getEl('erSaved');
+  const erAPR=getEl('erAPR');
+  if(erPaid)erPaid.textContent=fmt(paidInterest)+' 元';
+  if(erRemain)erRemain.textContent=fmt(remain)+' 元';
+  if(erSaved)erSaved.textContent=fmt(saved)+' 元';
+  if(erAPR)erAPR.textContent=newAPR.toFixed(2)+'%';
+}
+function calcEarlyAPR(P,totalPaid,months){
+  let cf=[-P];
+  for(let i=0;i<months-1;i++)cf.push(0);
+  cf.push(totalPaid);
+  return solveIRR(cf)*100;
+}
+
+/* ========== Pressure ========== */
+function calcPressure(){
+  const income=parseFloat(el('monthlyIncome').value)||0;
+  const monthly=parseFloat(el('indMonthly').textContent.replace(/,/g,''))||0;
+  if(income<=0||monthly<=0){el('pressureBar').style.width='0%';el('pressurePct').textContent='0%';el('pressureLevel').textContent='--';return;}
+  const pct=Math.min(monthly/income*100,100);
+  el('pressureBar').style.width=pct+'%';
+  el('pressurePct').textContent=pct.toFixed(1)+'%';
+  const bar=el('pressureBar');
+  bar.className='pressure-bar-fill';
+  if(pct<=30){el('pressureLevel').textContent='轻松';bar.classList.add('');}
+  else if(pct<=50){el('pressureLevel').textContent='适中';bar.classList.add('warn');}
+  else{el('pressureLevel').textContent='压力较大';bar.classList.add('danger');}
+}
+
+/* ========== Insights ========== */
+function calcInsights(){
+  const P=getNum('loanAmount');
+  const n=parseInt(getVal('loanTerm'))||0;
+  const ar=getNum('annualRate');
+  const r=ar/100/12;
+  const method=getVal('repaymentMethod');
+  const fee=getNum('feeAmount');
+  const feeM=getVal('feeMethod');
+  const monthly=getNum('dispMonthly')||0;
+
+  // 1. 实际到手金额
+  const insLoanEl=el('insLoanAmount');
+  const insFeeEl=el('insFee');
+  const insNetEl=el('insNetAmount');
+  const insRatioEl=el('insNetRatio');
+  if(P>0){
+    if(insLoanEl)insLoanEl.textContent=fmt(P,0)+' 元';
+    let netAmount=P;
+    if(feeM==='deduct'){
+      netAmount=P-fee;
+    }
+    const netRatio=netAmount/P*100;
+    if(insFeeEl){
+      if(feeM==='deduct'&&fee>0){
+        insFeeEl.textContent='-'+fmt(fee,0)+' 元';
+        insFeeEl.className='insight-value warn';
+      }else{
+        insFeeEl.textContent=feeM==='deduct'?'0 元':fmt(fee,0)+' 元';
+        insFeeEl.className='insight-value';
+      }
+    }
+    if(insNetEl)insNetEl.textContent=fmt(netAmount,0)+' 元';
+    if(insRatioEl){
+      insRatioEl.textContent=netRatio.toFixed(1)+'%';
+      insRatioEl.className='insight-value '+(netRatio<95?'warn':'');
+    }
+  }else{
+    [insLoanEl,insFeeEl,insNetEl,insRatioEl].forEach(e=>{if(e)e.textContent='--'});
+  }
+
+  // 2. 每万月供
+  const per10kEl=el('insPer10k');
+  const per10kIntEl=el('insPer10kInterest');
+  const per10kTotalEl=el('insPer10kTotal');
+  if(P>0&&monthly>0&&n>0){
+    const per10k=monthly/P*10000;
+    const result=calcMethod(P,n,r,method);
+    const per10kInt=result.totalInterest/P*10000;
+    const per10kTotal=result.totalPayment/P*10000;
+    if(per10kEl)per10kEl.textContent=fmt(per10k)+' 元';
+    if(per10kIntEl)per10kIntEl.textContent=fmt(per10kInt)+' 元';
+    if(per10kTotalEl)per10kTotalEl.textContent=fmt(per10kTotal)+' 元';
+  }else{
+    if(per10kEl)per10kEl.textContent='--';
+    if(per10kIntEl)per10kIntEl.textContent='--';
+    if(per10kTotalEl)per10kTotalEl.textContent='--';
+  }
+
+  // 3. 利息占比可视化
+  const ratioPEl=el('ratioPrincipal');
+  const ratioIEl=el('ratioInterest');
+  const ratioPTextEl=el('ratioPrincipalText');
+  const ratioITextEl=el('ratioInterestText');
+  const legendPEl=el('legendPrincipal');
+  const legendIEl=el('legendInterest');
+  if(P>0&&n>0&&ar>0){
+    const result=calcMethod(P,n,r,method);
+    const total=result.totalPayment;
+    const interest=result.totalInterest;
+    const pPct=P/total*100;
+    const iPct=interest/total*100;
+    if(ratioPEl)ratioPEl.style.width=Math.max(pPct,5)+'%';
+    if(ratioIEl)ratioIEl.style.width=Math.max(iPct,5)+'%';
+    if(ratioPTextEl)ratioPTextEl.textContent=pPct>=15?pPct.toFixed(0)+'%':'';
+    if(ratioITextEl)ratioITextEl.textContent=iPct>=15?iPct.toFixed(0)+'%':'';
+    if(legendPEl)legendPEl.textContent=fmt(P,0)+' 元';
+    if(legendIEl)legendIEl.textContent=fmt(interest)+' 元';
+  }else{
+    if(ratioPEl)ratioPEl.style.width='50%';
+    if(ratioIEl)ratioIEl.style.width='50%';
+    if(ratioPTextEl)ratioPTextEl.textContent='';
+    if(ratioITextEl)ratioITextEl.textContent='';
+  }
+
+  // 4. LPR对比
+  const LPR1=3.10; // 1年期LPR（2024年参考值）
+  const LPR5=3.60; // 5年期LPR
+  const lpr1El=el('insLPR1');
+  const lpr5El=el('insLPR5');
+  const myRateEl=el('insMyRate');
+  const lprDiffEl=el('insLPRDiff');
+  if(lpr1El)lpr1El.textContent=LPR1.toFixed(2)+'%';
+  if(lpr5El)lpr5El.textContent=LPR5.toFixed(2)+'%';
+  if(ar>0){
+    if(myRateEl)myRateEl.textContent=ar.toFixed(2)+'%';
+    const diff=ar-LPR5;
+    if(lprDiffEl){
+      lprDiffEl.textContent=(diff>=0?'+':'')+diff.toFixed(2)+'%';
+      lprDiffEl.className='insight-value '+(diff>0?'bad':diff<-0.5?'good':'');
+    }
+  }else{
+    if(myRateEl)myRateEl.textContent='--';
+    if(lprDiffEl)lprDiffEl.textContent='--';
+  }
+
+  // 5. 利率敏感度
+  if(P>0&&n>0&&ar>0&&monthly>0){
+    const diffs=[-0.5,-0.1,0,0.1,0.5];
+    const ids=['insSensDown50','insSensDown10','insSensCurrent','insSensUp10','insSensUp50'];
+    diffs.forEach((d,i)=>{
+      const newR=(ar+d)/100/12;
+      const res=calcMethod(P,n,newR,method);
+      const el_=el(ids[i]);
+      if(el_){
+        el_.textContent=fmt(res.monthly)+' 元';
+        if(d===0)el_.className='insight-value primary';
+        else if(d<0)el_.className='insight-value good';
+        else el_.className='insight-value bad';
+      }
+    });
+  }else{
+    ['insSensDown50','insSensDown10','insSensCurrent','insSensUp10','insSensUp50'].forEach(id=>{
+      const el_=el(id);if(el_){el_.textContent='--';el_.className='insight-value';}
+    });
+  }
+
+  // 6. 贷款成本评分
+  const scoreValEl=el('scoreValue');
+  const scoreGradeEl=el('scoreGrade');
+  const scoreCircleEl=el('scoreCircle');
+  const scoreDescEl=el('scoreDesc');
+  if(P>0&&n>0&&ar>0){
+    // 综合评分：基于APR、费用比例、期限
+    const result=calcMethod(P,n,r,method);
+    const totalInterest=result.totalInterest;
+    const interestRatio=totalInterest/P; // 利息/本金比
+    const feeRatio=fee/P; // 费用/本金比
+    const apr=calcAPR(P,n,r,monthly,fee,feeM);
+    
+    let score=100;
+    // 利息占比扣分（超过50%开始扣分）
+    if(interestRatio>0.5) score-=Math.min(30,(interestRatio-0.5)*60);
+    if(interestRatio>1.0) score-=Math.min(20,(interestRatio-1.0)*40);
+    // 费用扣分
+    score-=feeRatio*100;
+    // APR过高扣分
+    if(apr>12) score-=Math.min(15,(apr-12)*2);
+    if(apr>24) score-=Math.min(15,(apr-24)*2);
+    // 期限过长扣分
+    if(n>60) score-=5;
+    
+    score=Math.max(0,Math.min(100,Math.round(score)));
+    let grade,desc,color;
+    if(score>=80){grade='A';desc='贷款成本较低，条件优秀';color='grade-a';}
+    else if(score>=60){grade='B';desc='贷款成本适中，可接受';color='grade-b';}
+    else if(score>=40){grade='C';desc='贷款成本偏高，建议比较';color='grade-c';}
+    else{grade='D';desc='贷款成本很高，谨慎选择';color='grade-d';}
+    
+    if(scoreValEl)scoreValEl.textContent=score;
+    if(scoreGradeEl)scoreGradeEl.textContent=grade;
+    if(scoreCircleEl){scoreCircleEl.className='score-circle '+color;}
+    if(scoreDescEl)scoreDescEl.textContent=desc;
+  }else{
+    if(scoreValEl)scoreValEl.textContent='--';
+    if(scoreGradeEl)scoreGradeEl.textContent='--';
+    if(scoreCircleEl)scoreCircleEl.className='score-circle';
+    if(scoreDescEl)scoreDescEl.textContent='输入贷款参数后自动评估';
+  }
+}
+
+/* ========== Progress Simulation ========== */
+function updateProgressSim(){
+  const slider=el('progressSlider');
+  const paidPeriods=parseInt(slider.value)||0;
+  const P=getNum('loanAmount');
+  const n=parseInt(getVal('loanTerm'))||0;
+  const ar=getNum('annualRate');
+  const r=ar/100/12;
+  const method=getVal('repaymentMethod');
+  
+  // 更新滑块显示
+  const sliderValEl=el('sliderValue');
+  if(sliderValEl)sliderValEl.textContent=paidPeriods+' 期';
+  
+  if(P<=0||n<=0||ar<=0){
+    ['psPaid','psPrincipal','psInterest','psRemain'].forEach(id=>{
+      const el_=el(id);if(el_)el_.textContent='--';
+    });
+    el('progressBarFill').style.width='0%';
+    el('progressBarText').textContent='还款进度 0%';
+    return;
+  }
+  
+  // 设置滑块最大值
+  slider.max=n;
+  el('sliderMax').textContent=n+'期';
+  el('sliderMid').textContent=Math.floor(n/2)+'期';
+  
+  // 计算已还部分
+  const result=calcMethod(P,n,r,method);
+  const sched=result.schedule;
+  const paidSched=sched.slice(0,paidPeriods);
+  const paidTotal=paidSched.reduce((s,r)=>s+r.payment,0);
+  const paidPrincipal=paidSched.reduce((s,r)=>s+r.principal,0);
+  const paidInterest=paidSched.reduce((s,r)=>s+r.interest,0);
+  const remain=paidPeriods>0?sched[paidPeriods-1].remain:P;
+  
+  // 更新显示
+  el('psPaid').textContent=fmt(paidTotal,0)+'元';
+  el('psPrincipal').textContent=fmt(paidPrincipal,0)+'元';
+  el('psInterest').textContent=fmt(paidInterest)+'元';
+  el('psRemain').textContent=fmt(remain,0)+'元';
+  
+  // 进度条
+  const progress=paidPeriods/n*100;
+  el('progressBarFill').style.width=progress+'%';
+  el('progressBarText').textContent='还款进度 '+progress.toFixed(1)+'%';
+}
+
+/* ========== Smart Advice ========== */
+function updateAdvice(){
+  const P=getNum('loanAmount');
+  const n=parseInt(getVal('loanTerm'))||0;
+  const ar=getNum('annualRate');
+  const method=getVal('repaymentMethod');
+  const fee=getNum('feeAmount');
+  const scoreValEl=el('scoreValue');
+  const score=scoreValEl?parseInt(scoreValEl.textContent)||0:0;
+  
+  if(P<=0||n<=0||ar<=0){
+    ['adviceMethodText','adviceEarlyText','adviceRiskText','adviceCompareText'].forEach(id=>{
+      const el_=el(id);if(el_)el_.textContent='输入参数后获取建议';
+    });
+    ['adviceMethod','adviceEarly','adviceRisk','adviceCompare'].forEach(id=>{
+      const el_=el(id);if(el_)el_.className='advice-item';
+    });
+    return;
+  }
+  
+  const r=ar/100/12;
+  
+  // 1. 还款方式建议
+  const methodEl=el('adviceMethod');
+  const methodTextEl=el('adviceMethodText');
+  if(methodEl&&methodTextEl){
+    if(method==='equal_installment'){
+      methodEl.className='advice-item info';
+      methodTextEl.textContent='等额本息月供固定，适合收入稳定的年轻人。若前期还款压力大，可考虑等额本金节省利息。';
+    }else if(method==='equal_principal'){
+      methodEl.className='advice-item good';
+      methodTextEl.textContent='等额本金总利息最少，适合前期还款能力较强的借款人。';
+    }else if(method==='interest_first'){
+      methodEl.className='advice-item warn';
+      methodTextEl.textContent='先息后本前期压力小，但到期一次性还本金压力大，适合短期周转。';
+    }else if(method==='equal_principal_interest'){
+      methodEl.className='advice-item danger';
+      methodTextEl.textContent='等本等息实际利率远高于名义利率，不建议选择。';
+    }else{
+      methodEl.className='advice-item info';
+      methodTextEl.textContent='当前选择的还款方式适合您的资金规划。';
+    }
+  }
+  
+  // 2. 提前还款建议
+  const earlyEl=el('adviceEarly');
+  const earlyTextEl=el('adviceEarlyText');
+  if(earlyEl&&earlyTextEl){
+    // 计算最佳提前还款期（利息占比最高的前1/3期限）
+    const result=calcMethod(P,n,r,method);
+    const sched=result.schedule;
+    let maxInterestPeriod=0;
+    let maxInterest=0;
+    for(let i=0;i<Math.floor(n/3);i++){
+      if(sched[i].interest>maxInterest){
+        maxInterest=sched[i].interest;
+        maxInterestPeriod=i+1;
+      }
+    }
+    if(method==='equal_principal'||method==='equal_installment'){
+      earlyEl.className='advice-item info';
+      earlyTextEl.textContent='建议在第'+maxInterestPeriod+'期前提前还款，可节省最多利息。等额本息前1/3期限提前还款最划算。';
+    }else{
+      earlyEl.className='advice-item info';
+      earlyTextEl.textContent='先息后本建议到期前尽早还款，避免一次性还本金压力。';
+    }
+  }
+  
+  // 3. 风险提示
+  const riskEl=el('adviceRisk');
+  const riskTextEl=el('adviceRiskText');
+  if(riskEl&&riskTextEl){
+    const result=calcMethod(P,n,r,method);
+    const interestRatio=result.totalInterest/P;
+    if(score<40){
+      riskEl.className='advice-item danger';
+      riskTextEl.textContent='⚠️ 贷款成本过高，利息占本金'+interestRatio.toFixed(0)+'%。建议比较其他产品或寻求更低利率渠道。';
+    }else if(score<60){
+      riskEl.className='advice-item warn';
+      riskTextEl.textContent='利息占本金'+interestRatio.toFixed(0)+'%，成本偏高。如有条件建议提前还款或转贷。';
+    }else if(fee>0){
+      riskEl.className='advice-item warn';
+      riskTextEl.textContent='注意服务费'+fee+'元会增加实际成本，到账金额减少。';
+    }else{
+      riskEl.className='advice-item good';
+      riskTextEl.textContent='✓ 贷款条件良好，利息占比合理，无重大风险。';
+    }
+  }
+  
+  // 4. 替代方案
+  const compareEl=el('adviceCompare');
+  const compareTextEl=el('adviceCompareText');
+  if(compareEl&&compareTextEl){
+    // 对比等额本息和等额本金
+    const ei=calcMethod(P,n,r,'equal_installment');
+    const ep=calcMethod(P,n,r,'equal_principal');
+    const saved=ei.totalInterest-ep.totalInterest;
+    if(method==='equal_installment'&&saved>0){
+      compareEl.className='advice-item info';
+      compareTextEl.textContent='若选择等额本金，可节省'+fmt(saved)+'元利息，但前期月供高'+fmt(ep.schedule[0].payment-ei.monthly)+'元。';
+    }else if(method==='equal_principal'){
+      compareEl.className='advice-item good';
+      compareTextEl.textContent='您已选择最省息的还款方式，比等额本息少还'+fmt(saved)+'元。';
+    }else{
+      compareEl.className='advice-item info';
+      compareTextEl.textContent='等额本息和等额本金可节省'+fmt(saved)+'元利息，根据还款能力选择。';
+    }
+  }
+}
+
+/* ========== Schedule ========== */
+function renderSchedule(){
+  if(scheduleData.length===0){el('scheduleBody').innerHTML='<div style="padding:20px;text-align:center;color:#8E8E93">请先在概览页设置参数并计算</div>';return;}
+  let html='';
+  let sumP=0,sumI=0;
+  scheduleData.forEach(row=>{
+    sumP+=row.principal;sumI+=row.interest;
+    html+=`<div class="schedule-row"><span class="sr-num">${row.i}</span><span>${row.date||'--'}</span><span>${fmt(row.payment)}</span><span>${fmt(row.principal)}</span><span>${fmt(row.interest)}</span><span>${fmt(row.remain)}</span></div>`;
+  });
+  html+=`<div class="schedule-row"><span class="sr-num">合计</span><span></span><span>${fmt(sumP+sumI)}</span><span>${fmt(sumP)}</span><span>${fmt(sumI)}</span><span></span></div>`;
+  el('scheduleBody').innerHTML=html;
+}
+
+/* ========== Compare ========== */
+function buildCompareTabs(){
+  let html='';
+  METHODS.forEach((m,i)=>{
+    html+=`<div class="compare-tab ${i===0?'active':''}" onclick="selectCompareTab('${m.key}',this)">${m.name}</div>`;
+  });
+  el('compareTabs').innerHTML=html;
+}
+let activeCompareMethod='equal_installment';
+function selectCompareTab(key,tabEl){
+  activeCompareMethod=key;
+  document.querySelectorAll('.compare-tab').forEach(t=>t.classList.remove('active'));
+  tabEl.classList.add('active');
+  renderCompare();
+}
+function renderCompare(){
+  const P=parseFloat(el('loanAmount').value)||0;
+  const n=parseInt(el('loanTerm').value)||0;
+  const ar=parseFloat(el('annualRate').value)||0;
+  const r=ar/100/12;
+  if(P<=0||n<=0||ar<=0){el('compareResult').innerHTML='<div style="padding:12px;color:#8E8E93">请先设置参数</div>';return;}
+  let html='';
+  METHODS.forEach(m=>{
+    const res=calcMethod(P,n,r,m.key);
+    const isActive=m.key===activeCompareMethod;
+    const firstMonthly=res.schedule.length>0?res.schedule[0].payment:0;
+    const lastMonthly=res.schedule.length>0?res.schedule[res.schedule.length-1].payment:0;
+    html+=`<div style="padding:12px 16px;${isActive?'background:rgba(0,122,255,0.04);':''}">`;
+    html+=`<div style="font-size:15px;font-weight:600;color:#E0E0E0;margin-bottom:8px">${m.name}</div>`;
+    html+=`<div class="compare-row"><span class="cr-label">月供</span><span class="cr-value ${isActive?'':''}">${firstMonthly===lastMonthly?fmt(firstMonthly):fmt(firstMonthly)+' ~ '+fmt(lastMonthly)}</span></div>`;
+    html+=`<div class="compare-row"><span class="cr-label">总利息</span><span class="cr-value">${fmt(res.totalInterest)}</span></div>`;
+    html+=`<div class="compare-row"><span class="cr-label">总还款</span><span class="cr-value">${fmt(res.totalPayment)}</span></div>`;
+    html+=`<div class="compare-row"><span class="cr-label">利息占比</span><span class="cr-value">${(res.totalInterest/res.totalPayment*100).toFixed(1)}%</span></div>`;
+    html+=`</div>`;
+    if(m.key!==METHODS[METHODS.length-1].key)html+='<div style="height:.5px;background:rgba(60,60,67,0.08);margin:0 16px"></div>';
+  });
+  el('compareResult').innerHTML=html;
+}
+
+/* ========== IRR Tool ========== */
+function calcIRR(){
+  const raw=el('irrCashflows').value.trim();
+  if(!raw){toast('请输入现金流');return;}
+  const cf=raw.split(/[,，\s]+/).map(Number).filter(v=>!isNaN(v));
+  if(cf.length<2){toast('至少需要2个现金流');return;}
+  const rate=solveIRR(cf);
+  el('irrResult').style.display='block';
+  el('irrResult').textContent='IRR = '+(rate*100).toFixed(4)+'% (月) | 年化 = '+(rate*12*100).toFixed(4)+'%';
+}
+
+/* ========== Penalty Tool ========== */
+function calcPenalty(){
+  const p=parseFloat(el('penaltyPrincipal').value)||0;
+  const d=parseInt(el('penaltyDays').value)||0;
+  const r=parseFloat(el('penaltyRate').value)||0;
+  if(p<=0||d<=0||r<=0){toast('请填写完整参数');return;}
+  const penalty=p*r/100*d;
+  el('penaltyResult').style.display='block';
+  el('penaltyResult').textContent='逾期罚息 = '+fmt(penalty)+' 元 (本金 '+fmt(p)+' x '+r+'%/日 x '+d+'天)';
+}
+
+/* ========== Export/Import ========== */
+function exportJSON(){
+  saveCurrentPlan();
+  const blob=new Blob([JSON.stringify(plans,null,2)],{type:'application/json'});
+  downloadBlob(blob,'loan-plans.json');
+  toast('已导出');
+}
+function importJSON(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(Array.isArray(data)){plans=data;currentPlanIdx=0;savePlans();applyPlan(0);toast('导入成功');}
+      else toast('格式错误');
+    }catch(err){toast('解析失败');}
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+function exportCSV(){
+  if(scheduleData.length===0){toast('请先计算还款明细');return;}
+  let csv='\uFEFF期数,日期,月供,本金,利息,剩余\n';
+  scheduleData.forEach(r=>{csv+=`${r.i},${r.date},${r.payment.toFixed(2)},${r.principal.toFixed(2)},${r.interest.toFixed(2)},${r.remain.toFixed(2)}\n`;});
+  downloadBlob(new Blob([csv],{type:'text/csv;charset=utf-8'}),'repayment-schedule.csv');
+  toast('已导出');
+}
+function downloadBlob(blob,name){
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href);
+}
+
+/* ========== Module Label Toggle ========== */
+function updateModuleLabels(input){
+  const module=input.closest('.param-module');
+  if(!module)return;
+
+  // 使用隐藏 span 精确测量文本渲染宽度
+  if(input.tagName==='INPUT'&&input.type!=='date'){
+    // 获取或创建隐藏的测量 span
+    let sizer=input.parentElement.querySelector('.input-sizer');
+    if(!sizer){
+      sizer=document.createElement('span');
+      sizer.className='input-sizer';
+      sizer.style.cssText='position:absolute;visibility:hidden;white-space:pre;pointer-events:none;font-variant-numeric:tabular-nums;';
+      input.parentElement.appendChild(sizer);
+    }
+    // 复制输入框的字体样式
+    const cs=getComputedStyle(input);
+    sizer.style.fontSize=cs.fontSize;
+    sizer.style.fontWeight=cs.fontWeight||'700';
+    sizer.style.fontFamily=cs.fontFamily;
+    sizer.style.letterSpacing=cs.letterSpacing;
+    sizer.style.fontVariantNumeric=cs.fontVariantNumeric||'tabular-nums';
+    sizer.textContent=input.value||input.placeholder||'0';
+    // 精确设置输入框宽度为文本实际宽度（+4px 补偿浏览器渲染差异）
+    input.style.width=Math.max(sizer.offsetWidth+4, 10)+'px';
+    input.style.minWidth='auto';
+    input.removeAttribute('size');
+  }
+  // 空值或 ≤0 时标记为 is-empty，隐藏数值区域
+  const valueContainer=input.closest('.module-value');
+  if(valueContainer){
+    const raw=(input.value||'').toString().trim();
+    // date 只检查空值；select 检查 value；number/text 额外检查数值 ≤0
+    const isEmpty=input.tagName==='SELECT'
+      ?!raw
+      :(!raw||(input.type!=='date'&&parseFloat(raw)<=0));
+    module.classList.toggle('is-empty', isEmpty);
+    valueContainer.classList.toggle('empty', isEmpty);
+  }
+}
+
+// 空值状态下点击标签 → 激活输入；非空 select 点击标签 → 打开选择器
+function initModuleLabelClicks(){
+  document.querySelectorAll('.module-label, .module-label-en').forEach(label=>{
+    label.addEventListener('click', function(e){
+      const module=this.closest('.param-module');
+      if(!module||module.classList.contains('readonly'))return;
+      const vc=module.querySelector('.module-value');
+      if(!vc)return;
+      const input=vc.querySelector('input, select');
+      if(!input)return;
+      if(module.classList.contains('is-empty')){
+        // 空值状态 → 激活输入
+        module.classList.remove('is-empty');
+        vc.classList.remove('empty');
+        input.focus();
+        if(input.tagName==='INPUT'&&(input.type==='number'||input.type==='text')){
+          input.select();
+        }
+        if(input.type==='date')input.click();
+      }else if(input.tagName==='SELECT'){
+        // 已有值的 select → 转发点击打开下拉
+        input.focus();
+        input.dispatchEvent(new MouseEvent('mousedown',{bubbles:true}));
+      }
+    });
+  });
+  // blur 回位：输入框失焦时若仍为空则恢复空态
+  document.querySelectorAll('.param-module input, .param-module select').forEach(input=>{
+    input.addEventListener('blur', function(){
+      updateModuleLabels(this);
+    });
+  });
+  // select 值变更后立即刷新显示
+  document.querySelectorAll('.param-module select').forEach(sel=>{
+    sel.addEventListener('change', function(){
+      updateModuleLabels(this);
+    });
+  });
+}
+
+// Init all module labels on page load
+function initModuleLabels(){
+  updateAllModuleLabels();
+  initModuleLabelClicks();
+}
+
+/* ========== Drag & Drop Sorting ========== */
+function initDragSort() {
+  const grid = document.getElementById('paramsGrid');
+  if (!grid) return;
+  
+  let draggedEl = null;
+  let draggedIndex = null;
+  
+  grid.querySelectorAll('.param-module').forEach((item, index) => {
+    item.addEventListener('dragstart', function(e) {
+      draggedEl = this;
+      draggedIndex = index;
+      this.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      // 设置拖拽时的透明图像（隐藏默认拖拽预览）
+      const rect = this.getBoundingClientRect();
+      e.dataTransfer.setDragImage(this, rect.width / 2, rect.height / 2);
+    });
+    
+    item.addEventListener('dragend', function() {
+      this.classList.remove('dragging');
+      draggedEl = null;
+      draggedIndex = null;
+      // 移除所有占位符
+      grid.querySelectorAll('.drop-placeholder').forEach(p => p.remove());
+    });
+    
+    item.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      
+      if (!draggedEl || draggedEl === this) return;
+      
+      const rect = this.getBoundingClientRect();
+      const midX = rect.left + rect.width / 2;
+      
+      // 根据鼠标位置决定插入位置
+      if (e.clientX < midX) {
+        // 插入到当前元素之前
+        if (this.previousElementSibling !== draggedEl) {
+          grid.insertBefore(draggedEl, this);
+        }
+      } else {
+        // 插入到当前元素之后
+        if (this.nextElementSibling !== draggedEl) {
+          grid.insertBefore(draggedEl, this.nextElementSibling);
+        }
+      }
+    });
+    
+    item.addEventListener('dragenter', function(e) {
+      e.preventDefault();
+    });
+  });
+  
+  // 触摸设备支持（使用 touch 事件模拟拖拽）
+  let touchEl = null;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchCurrentEl = null;
+  
+  grid.querySelectorAll('.param-module').forEach(item => {
+    item.addEventListener('touchstart', function(e) {
+      touchEl = item;
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      item.classList.add('dragging');
+      e.preventDefault();
+    }, { passive: false });
+
+    item.addEventListener('touchmove', function(e) {
+      if (!touchEl) return;
+      e.preventDefault();
+
+      const touch = e.touches[0];
+      const elBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (!elBelow) return;
+
+      const targetModule = elBelow.closest('.param-module');
+      if (targetModule && targetModule !== touchEl && targetModule !== touchCurrentEl) {
+        touchCurrentEl = targetModule;
+        const rect = targetModule.getBoundingClientRect();
+        const midX = rect.left + rect.width / 2;
+
+        if (touch.clientX < midX) {
+          if (targetModule.previousElementSibling !== touchEl) {
+            grid.insertBefore(touchEl, targetModule);
+          }
+        } else {
+          if (targetModule.nextElementSibling !== touchEl) {
+            grid.insertBefore(touchEl, targetModule.nextElementSibling);
+          }
+        }
+      }
+    }, { passive: false });
+
+    item.addEventListener('touchend', function() {
+      if (touchEl) {
+        touchEl.classList.remove('dragging');
+        touchEl = null;
+        touchCurrentEl = null;
+      }
+    });
+  });
+}
+
+/* ========== Card Management ========== */
+const CARD_ORDER_KEY='loan_calc_card_order';
+const CARD_COLLAPSE_KEY='loan_calc_card_collapse';
+const DEFAULT_ORDER=['params','pressure','capital','cost','rate','progress','advice'];
+let cardManageMode=false;
+
+function initCardManage(){
+  const tab=document.getElementById('tab-overview');
+  if(!tab)return;
+  // Restore saved order
+  restoreCardOrder();
+  // Restore collapse state
+  restoreCollapseState();
+  // Init section drag
+  initSectionDrag();
+}
+
+function toggleManageMode(){
+  cardManageMode=!cardManageMode;
+  const tab=document.getElementById('tab-overview');
+  const btn=document.getElementById('manageToggle');
+  if(cardManageMode){
+    tab.classList.add('manage-mode');
+    btn.classList.add('active');
+  }else{
+    tab.classList.remove('manage-mode');
+    btn.classList.remove('active');
+    saveCardOrder();
+    saveCollapseState();
+  }
+}
+
+function toggleCollapse(id){
+  if(!cardManageMode)return;
+  const section=document.querySelector(`.section[data-section-id="${id}"]`);
+  if(!section)return;
+  section.classList.toggle('collapsed');
+  saveCollapseState();
+}
+
+function restoreCollapseState(){
+  try{
+    const raw=localStorage.getItem(CARD_COLLAPSE_KEY);
+    if(raw){
+      const collapsed=JSON.parse(raw);
+      if(Array.isArray(collapsed)){
+        collapsed.forEach(id=>{
+          const section=document.querySelector(`.section[data-section-id="${id}"]`);
+          if(section)section.classList.add('collapsed');
+        });
+      }
+    }
+  }catch(e){}
+}
+
+function saveCollapseState(){
+  const collapsed=[];
+  document.querySelectorAll('.section.sortable-item.collapsed').forEach(s=>{
+    collapsed.push(s.dataset.sectionId);
+  });
+  localStorage.setItem(CARD_COLLAPSE_KEY,JSON.stringify(collapsed));
+}
+
+function restoreCardOrder(){
+  try{
+    const raw=localStorage.getItem(CARD_ORDER_KEY);
+    if(raw){
+      const order=JSON.parse(raw);
+      if(Array.isArray(order)&&order.length>0){
+        const container=document.getElementById('tab-overview');
+        const map={};
+        container.querySelectorAll('.section.sortable-item').forEach(s=>{
+          map[s.dataset.sectionId]=s;
+        });
+        let ref=null;
+        for(let i=order.length-1;i>=0;i--){
+          const el=map[order[i]];
+          if(el&&el!==ref){
+            container.insertBefore(el,ref||null);
+            ref=el;
+          }
+        }
+      }
+    }
+  }catch(e){}
+}
+
+function saveCardOrder(){
+  const order=[];
+  document.querySelectorAll('#tab-overview .section.sortable-item').forEach(s=>{
+    order.push(s.dataset.sectionId);
+  });
+  localStorage.setItem(CARD_ORDER_KEY,JSON.stringify(order));
+}
+
+function resetCardOrder(){
+  const container=document.getElementById('tab-overview');
+  // Remove all sections first, then reinsert in default order
+  const sections=container.querySelectorAll('.section.sortable-item');
+  const map={};
+  sections.forEach(s=>{map[s.dataset.sectionId]=s;container.removeChild(s);});
+  DEFAULT_ORDER.forEach(id=>{
+    if(map[id])container.appendChild(map[id]);
+  });
+  // Re-add any extra sections at end
+  Object.keys(map).forEach(id=>{
+    if(!DEFAULT_ORDER.includes(id)&&map[id])container.appendChild(map[id]);
+  });
+  saveCardOrder();
+  toast('已恢复默认排列');
+}
+
+function initSectionDrag(){
+  const container=document.getElementById('tab-overview');
+  if(!container)return;
+  let draggedSection=null;
+
+  container.addEventListener('dragstart',function(e){
+    const section=e.target.closest('.section.sortable-item');
+    if(!section||!cardManageMode)return;
+    draggedSection=section;
+    section.classList.add('dragging');
+    e.dataTransfer.effectAllowed='move';
+    e.dataTransfer.setData('text/plain',section.dataset.sectionId);
+    setTimeout(()=>section.classList.add('dragging'),0);
+  });
+
+  container.addEventListener('dragend',function(e){
+    if(!draggedSection)return;
+    draggedSection.classList.remove('dragging');
+    document.querySelectorAll('.section.sortable-item').forEach(s=>s.classList.remove('drag-over'));
+    draggedSection=null;
+    saveCardOrder();
+  });
+
+  container.addEventListener('dragover',function(e){
+    if(!draggedSection||!cardManageMode)return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect='move';
+    const target=e.target.closest('.section.sortable-item');
+    if(!target||target===draggedSection)return;
+    document.querySelectorAll('.section.sortable-item').forEach(s=>s.classList.remove('drag-over'));
+    target.classList.add('drag-over');
+  });
+
+  container.addEventListener('drop',function(e){
+    e.preventDefault();
+    document.querySelectorAll('.section.sortable-item').forEach(s=>s.classList.remove('drag-over'));
+    if(!draggedSection||!cardManageMode)return;
+    const target=e.target.closest('.section.sortable-item');
+    if(!target||target===draggedSection)return;
+    const rect=target.getBoundingClientRect();
+    const midY=rect.top+rect.height/2;
+    if(e.clientY<midY){
+      container.insertBefore(draggedSection,target);
+    }else{
+      container.insertBefore(draggedSection,target.nextElementSibling);
+    }
+    saveCardOrder();
+  });
+}
+
+/* ========== Start ========== */
+init();
+initDragSort();
+initCardManage();
+</script>
+</body>
+</html>
