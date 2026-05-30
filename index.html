@@ -416,101 +416,222 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 /* Plan Badge */
 .plan-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:var(--accent-bg-hover);border-radius:12px;font-size:13px;font-weight:600;color:var(--accent)}
 
-/* Small screen adaptation (iPhone SE/mini) */
+/* ========== Responsive Breakpoints ========== */
+/*
+  iPhone SE/mini:     375px  (max-width:374px for smaller)
+  iPhone 15/16:      393px  (375-413px)
+  iPhone 15-17 Pro Max: 430px  (414-479px) ← PRIMARY TARGET
+  iPad mini:          768px
+  iPad/iPad Air:      820-1024px
+  iPad Pro/Desktop:   1024px+
+*/
+
+/* Extra small (iPhone SE 1st gen, iPod touch) */
 @media(max-width:374px){
   :root{--edge:12px;--gap:8px}
   .params-grid{grid-template-columns:1fr 1fr;gap:var(--gap)}
-  .param-module{padding:10px 6px;min-height:80px}
-  .module-label{font-size:12px}
-  .module-label-en{font-size:9px}
+  .param-module{padding:10px 6px;min-height:78px}
+  .module-label{font-size:11px}
+  .module-label-en{font-size:8px}
   .param-module.is-empty .module-label{font-size:11px}
-  .param-module.is-empty .module-label-en{font-size:9px}
+  .param-module.is-empty .module-label-en{font-size:8px}
   .module-value input[type="number"],.module-value input[type="text"]{font-size:16px}
   .module-value .unit{font-size:12px}
-  .module-value select{font-size:14px}
+  .module-value select{font-size:13px}
   .ind-value{font-size:18px}
   .ind-label{font-size:11px}
+  .ind-label-en{font-size:8px}
   .section-title{font-size:12px}
-  .large-title{font-size:28px}
+  .large-title{font-size:26px}
   .capital-pair{grid-template-columns:1fr;gap:var(--gap)}
   .capital-item-title{font-size:13px;padding:10px 10px 4px}
   .capital-item-body{padding:0 10px 8px}
   .capital-row{padding:6px 0}
   .capital-label{font-size:11px}
-  .capital-value{font-size:13px}
-  .capital-value.primary{font-size:14px}
+  .capital-value{font-size:12px}
+  .capital-value.primary{font-size:13px}
   .params-combined{margin:0 var(--edge) 8px;padding:10px 0}
   .combined-item .module-label{font-size:12px}
   .combined-item .module-label-en{font-size:8px}
   .combined-item .module-value select{font-size:13px}
   .combined-item .module-value input[type="date"]{font-size:12px}
-  .score-circle{width:80px;height:80px}
-  .score-value{font-size:26px}
-  .slider-wrap{padding:12px var(--edge) 6px}
+  .score-circle{width:76px;height:76px}
+  .score-value{font-size:24px}
+  .score-label{font-size:12px}
+  .slider-wrap{padding:10px var(--edge) 6px}
   .progress-stats{grid-template-columns:repeat(2,1fr);gap:var(--gap);padding:8px var(--edge)}
-  .progress-stat-value{font-size:13px}
+  .progress-stat-value{font-size:12px}
+  .progress-stat-label{font-size:10px}
   .advice-item{padding:10px var(--edge)}
-  .advice-title{font-size:13px}
-  .advice-text{font-size:12px}
+  .advice-title{font-size:12px}
+  .advice-text{font-size:11px}
   .form-card{margin:0 var(--edge)}
-  .form-row{padding:12px var(--edge);min-height:42px}
-  .form-label{font-size:13px;min-width:75px}
+  .form-row{padding:11px var(--edge);min-height:42px}
+  .form-label{font-size:13px;min-width:72px}
   .form-control input[type="number"]{font-size:15px}
   .form-control select{font-size:13px}
+  .pressure-bar-wrap{margin:6px var(--edge) 10px}
 }
 
-/* Medium screen (iPhone 6/7/8/Plus, Android) */
-@media(min-width:375px) and (max-width:413px){
+/* Small phone (iPhone SE 2/3, iPhone mini: 375px) */
+@media(min-width:375px) and (max-width:392px){
+  :root{--edge:14px;--gap:9px}
   .params-grid{grid-template-columns:1fr 1fr;gap:var(--gap)}
-  .param-module{padding:12px 8px;min-height:85px}
-  .module-label{font-size:13px}
+  .param-module{padding:11px 7px;min-height:82px}
+  .module-label{font-size:12px}
   .module-label-en{font-size:9px}
   .param-module.is-empty .module-label{font-size:12px}
   .param-module.is-empty .module-label-en{font-size:9px}
-  .module-value input[type="number"],.module-value input[type="text"]{font-size:18px}
-  .module-value .unit{font-size:13px}
+  .module-value input[type="number"],.module-value input[type="text"]{font-size:17px}
+  .module-value .unit{font-size:12px}
+  .module-value select{font-size:14px}
+  .ind-value{font-size:20px}
+  .ind-label{font-size:11px}
+  .large-title{font-size:30px}
   .capital-pair{grid-template-columns:1fr 1fr;gap:var(--gap);padding:0 var(--edge)}
-  .capital-item-title{font-size:14px;padding:12px 12px 6px}
+  .capital-item-title{font-size:13px;padding:11px 12px 5px}
   .capital-item-body{padding:0 12px 10px}
-  .capital-row{padding:8px 0}
-  .capital-label{font-size:12px}
-  .capital-value{font-size:14px}
-  .capital-value.primary{font-size:15px}
-  .params-combined{margin:0 var(--edge) 10px}
+  .capital-row{padding:7px 0}
+  .capital-label{font-size:11px}
+  .capital-value{font-size:13px}
+  .capital-value.primary{font-size:14px}
+  .params-combined{margin:0 var(--edge) 9px;padding:11px 0}
   .combined-item .module-label{font-size:13px}
   .combined-item .module-label-en{font-size:9px}
   .combined-item .module-value select{font-size:14px}
-  .score-circle{width:90px;height:90px}
-  .score-value{font-size:28px}
+  .score-circle{width:86px;height:86px}
+  .score-value{font-size:27px}
+  .score-label{font-size:13px}
   .progress-stats{grid-template-columns:repeat(4,1fr);gap:var(--gap);padding:10px var(--edge)}
+  .progress-stat-value{font-size:13px}
+  .progress-stat-label{font-size:10px}
+  .advice-item{padding:11px var(--edge)}
+  .advice-title{font-size:13px}
+  .advice-text{font-size:12px}
+  .form-row{padding:13px var(--edge);min-height:46px}
+  .form-label{font-size:14px;min-width:78px}
+}
+
+/* Standard phone (iPhone 15/16, iPhone 15/16 Pro: 393px) */
+@media(min-width:393px) and (max-width:413px){
+  :root{--edge:15px;--gap:10px}
+  .params-grid{grid-template-columns:1fr 1fr;gap:var(--gap)}
+  .param-module{padding:12px 8px;min-height:86px}
+  .module-label{font-size:13px}
+  .module-label-en{font-size:9px}
+  .param-module.is-empty .module-label{font-size:13px}
+  .param-module.is-empty .module-label-en{font-size:9px}
+  .module-value input[type="number"],.module-value input[type="text"]{font-size:18px}
+  .module-value .unit{font-size:13px}
+  .module-value select{font-size:14px}
+  .ind-value{font-size:21px}
+  .ind-label{font-size:12px}
+  .large-title{font-size:32px}
+  .capital-pair{grid-template-columns:1fr 1fr;gap:var(--gap);padding:0 var(--edge)}
+  .capital-item-title{font-size:14px;padding:12px 13px 5px}
+  .capital-item-body{padding:0 13px 10px}
+  .capital-row{padding:7px 0}
+  .capital-label{font-size:12px}
+  .capital-value{font-size:14px}
+  .capital-value.primary{font-size:15px}
+  .params-combined{margin:0 var(--edge) 10px;padding:12px 0}
+  .combined-item .module-label{font-size:13px}
+  .combined-item .module-label-en{font-size:9px}
+  .combined-item .module-value select{font-size:14px}
+  .score-circle{width:92px;height:92px}
+  .score-value{font-size:29px}
+  .score-label{font-size:13px}
+  .progress-stats{grid-template-columns:repeat(4,1fr);gap:var(--gap);padding:11px var(--edge)}
   .progress-stat-value{font-size:14px}
+  .progress-stat-label{font-size:10px}
   .advice-item{padding:12px var(--edge)}
   .advice-title{font-size:14px}
   .advice-text{font-size:13px}
-  .form-card{margin:0 var(--edge)}
   .form-row{padding:14px var(--edge);min-height:48px}
-  .form-label{font-size:14px;min-width:80px}
+  .form-label{font-size:15px;min-width:82px}
 }
 
-/* Large phone (iPhone Pro Max, large Android) */
-@media(min-width:414px) and (max-width:767px){
+/* ★ PRIMARY TARGET: iPhone 15-17 Pro Max (430px) */
+@media(min-width:414px) and (max-width:479px){
+  :root{--edge:16px;--gap:10px}
   .params-grid{grid-template-columns:1fr 1fr;gap:var(--gap)}
-  .param-module{padding:14px 10px;min-height:90px}
+  .param-module{padding:14px 10px;min-height:92px}
   .module-label{font-size:14px}
   .module-label-en{font-size:10px}
+  .param-module.is-empty .module-label{font-size:14px}
+  .param-module.is-empty .module-label-en{font-size:10px}
   .module-value input[type="number"],.module-value input[type="text"]{font-size:20px}
+  .module-value .unit{font-size:14px}
+  .module-value select{font-size:15px}
+  .ind-value{font-size:24px}
+  .ind-label{font-size:12px}
+  .ind-label-en{font-size:10px}
+  .large-title{font-size:34px}
   .capital-pair{grid-template-columns:1fr 1fr;gap:var(--gap);padding:0 var(--edge)}
-  .capital-item-title{font-size:14px;padding:14px 14px 6px}
-  .capital-item-body{padding:0 14px 12px}
+  .capital-item-title{font-size:15px;padding:14px 16px 6px}
+  .capital-item-body{padding:0 16px 12px}
+  .capital-row{padding:8px 0}
   .capital-label{font-size:13px}
   .capital-value{font-size:15px}
   .capital-value.primary{font-size:16px}
-  .params-combined{margin:0 var(--edge) 10px}
+  .params-combined{margin:0 var(--edge) 10px;padding:13px 0}
+  .combined-item .module-label{font-size:14px}
+  .combined-item .module-label-en{font-size:10px}
+  .combined-item .module-value select{font-size:15px}
+  .combined-item .module-value input[type="date"]{font-size:14px}
+  .score-circle{width:100px;height:100px}
+  .score-value{font-size:32px}
+  .score-label{font-size:14px}
+  .score-desc{font-size:14px}
+  .slider-wrap{padding:14px var(--edge) 8px}
+  .slider-value{font-size:17px}
+  .progress-stats{grid-template-columns:repeat(4,1fr);gap:var(--gap);padding:12px var(--edge)}
+  .progress-stat-value{font-size:15px}
+  .progress-stat-label{font-size:11px}
+  .pressure-bar-wrap{margin:8px var(--edge) 12px}
+  .advice-item{padding:13px var(--edge)}
+  .advice-title{font-size:15px}
+  .advice-text{font-size:13px}
+  .form-row{padding:15px var(--edge);min-height:50px}
+  .form-label{font-size:15px;min-width:88px}
+  .form-control input[type="number"]{font-size:17px}
+  .form-control select{font-size:15px}
+  .schedule-row{font-size:14px}
+  .tool-card .tool-row label{font-size:15px}
+  .tool-card .tool-row input{font-size:15px}
+  .tab-bar .tab-item{padding:7px 16px;min-width:56px}
+  .tab-bar .tab-item svg{width:23px;height:23px}
+  .tab-bar .tab-item span{font-size:11px}
+}
+
+/* Large phone / small tablet (Samsung Fold, etc: 480-767px) */
+@media(min-width:480px) and (max-width:767px){
+  :root{--edge:18px;--gap:11px}
+  .params-grid{grid-template-columns:repeat(4,1fr);gap:var(--gap)}
+  .param-module{padding:14px 10px;min-height:94px}
+  .module-label{font-size:14px}
+  .module-label-en{font-size:10px}
+  .module-value input[type="number"],.module-value input[type="text"]{font-size:20px}
+  .module-value .unit{font-size:14px}
+  .ind-value{font-size:24px}
+  .ind-label{font-size:12px}
+  .large-title{font-size:36px}
+  .capital-pair{grid-template-columns:1fr 1fr;gap:var(--gap);padding:0 var(--edge)}
+  .capital-item-title{font-size:15px;padding:14px 16px 6px}
+  .capital-item-body{padding:0 16px 12px}
+  .capital-label{font-size:13px}
+  .capital-value{font-size:15px}
+  .capital-value.primary{font-size:16px}
+  .params-combined{margin:0 var(--edge) 12px;padding:14px 0}
   .combined-item .module-label{font-size:14px}
   .combined-item .module-value select{font-size:15px}
-  .score-circle{width:100px;height:100px}
-  .progress-stats{grid-template-columns:repeat(4,1fr);gap:var(--gap)}
+  .score-circle{width:104px;height:104px}
+  .score-value{font-size:33px}
+  .progress-stats{grid-template-columns:repeat(4,1fr);gap:var(--gap);padding:12px var(--edge)}
   .progress-stat-value{font-size:15px}
+  .form-row{padding:15px var(--edge);min-height:50px}
+  .form-label{font-size:15px;min-width:90px}
+  .form-control input[type="number"]{font-size:17px}
 }
 
 /* Tablet (iPad mini, iPad) */
