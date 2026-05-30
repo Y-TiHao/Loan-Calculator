@@ -1503,6 +1503,13 @@ function getVal(id){
   const elem=el(id+suffix);
   return elem?stripNumberFormatting(elem.value):'';
 }
+// HTML转义，防止XSS
+function escapeHTML(str){
+  if(str==null)return'';
+  const div=document.createElement('div');
+  div.textContent=String(str);
+  return div.innerHTML;
+}
 function getNum(id){
   return parseFloat(getVal(id))||0;
 }
@@ -1573,7 +1580,7 @@ function loadPlans(){
   }
 }
 function savePlans(){
-  localStorage.setItem('loanPlans',JSON.stringify(plans));
+  try{localStorage.setItem('loanPlans',JSON.stringify(plans));}catch(e){console.warn('savePlans failed:',e);}
 }
 function clearAllData(){
   if(!confirm('确定清空所有方案数据？'))return;
@@ -1735,7 +1742,7 @@ function showPlanSheet(){
   saveCurrentPlan();
   let html='<div class="as-title">方案管理</div>';
   plans.forEach((p,i)=>{
-    const planName=p.name||('方案 '+(i+1));
+    const planName=escapeHTML(p.name||('方案 '+(i+1)));
     const currentMark=i===currentPlanIdx?'(当前)':'';
     html+=`<div class="as-item as-item-row" onclick="applyPlan(${i});hideOverlay()"><span class="as-label">${planName} ${currentMark}</span><span class="as-delete" role="button" aria-label="删除方案" title="删除方案" onclick="event.stopPropagation();deletePlanAt(${i})"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3.75A1.75 1.75 0 0 1 10.75 2h2.5A1.75 1.75 0 0 1 15 3.75V4h3a.75.75 0 0 1 0 1.5h-.75l-.7 11.2A2.25 2.25 0 0 1 14.3 19H9.7a2.25 2.25 0 0 1-2.25-2.3L6.75 5.5H6A.75.75 0 0 1 6 4h3v-.25ZM10.75 3.5a.25.25 0 0 0-.25.25V4h3v-.25a.25.25 0 0 0-.25-.25h-2.5ZM8.25 5.5l.68 11a.75.75 0 0 0 .75.7h4.59a.75.75 0 0 0 .75-.72l.69-10.98h-7.46ZM10 8.25a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75Zm4 0a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75Z"/></svg></span></div>`;
   });
@@ -1789,15 +1796,20 @@ function onTypeChange(){
   let html='';
   fields.forEach(f=>{
     const val=(p.special&&p.special[f.id])||'';
+    const safeVal=escapeHTML(val);
+    const safeLabel=escapeHTML(f.label);
+    const safeUnit=escapeHTML(f.unit||'');
     if(f.type==='select'){
-      html+=`<div class="list-row"><div class="row-label">${f.label}</div><div class="row-value"><select id="${f.id}">`;
+      html+=`<div class="list-row"><div class="row-label">${safeLabel}</div><div class="row-value"><select id="${f.id}">`;
       (f.options||[]).forEach(o=>{html+=`<option value="${o}" ${val===o?'selected':''}>${o}</option>`;});
       html+=`</select><svg class="chevron" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#C7C7CC" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>`;
     }else{
-      html+=`<div class="list-row"><div class="row-label">${f.label}</div><div class="row-value"><input type="number" id="${f.id}" value="${val}"><span class="unit">${f.unit||''}</span></div></div>`;
+      html+=`<div class="list-row"><div class="row-label">${safeLabel}</div><div class="row-value"><input type="number" id="${f.id}" value="${safeVal}"><span class="unit">${safeUnit}</span></div></div>`;
     }
   });
   card.innerHTML=html;
+  // 重新绑定事件监听器
+  initModuleLabels();
 }
 
 /* ========== Tab ========== */
@@ -1817,9 +1829,15 @@ function switchTab(name,tabEl){
 }
 
 /* ========== Nav Scroll ========== */
-el('scrollArea').addEventListener('scroll',function(){
-  el('navBar').classList.toggle('nav-compact',this.scrollTop>40);
-});
+(function(){
+  const scrollArea=el('scrollArea');
+  const navBar=el('navBar');
+  if(scrollArea&&navBar){
+    scrollArea.addEventListener('scroll',function(){
+      navBar.classList.toggle('nav-compact',this.scrollTop>40);
+    });
+  }
+})();
 
 /* ========== Format ========== */
 function fmt(n,d=2){const sign=n<0?'-':'';const s=Math.abs(n).toFixed(d);const p=s.split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');return sign+p[0]+(d>0?'.'+p[1]:'');}
@@ -1869,7 +1887,7 @@ function syncEmptyStateStyles(){
     }
   });
 }
-function toast(msg){const t=el('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1500);}
+function toast(msg){const t=el('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t&&t.classList.remove('show'),1500);}
 
 /* ========== Calc Engine ========== */
 function calc(){
@@ -1878,6 +1896,13 @@ function calc(){
   const P=getNum('loanAmount');
   const n=parseInt(getVal('loanTerm'))||0;
   const ar=getNum('annualRate');
+  
+  // 校验负数输入
+  if(P<0||ar<0||n<0){
+    toast('输入值不能为负数');
+    return;
+  }
+  
   const r=ar/100/12;
   const method=getVal('repaymentMethod');
 
@@ -1980,7 +2005,8 @@ function calcMethod(P,n,r,method){
     case 'bullet':{
       const ti=P*r*n;
       const payment=P+ti;
-      schedule.push({i:1,date:'',payment,principal:P,interest:ti,remain:0});
+      // 使用n作为期数，确保日期计算正确
+      schedule.push({i:n,date:'',payment,principal:P,interest:ti,remain:0});
       monthly=payment;
       break;
     }
@@ -2000,7 +2026,8 @@ function calcMethod(P,n,r,method){
       const days=n*30;
       totalInterest=P*dr*days;
       monthly=0;
-      schedule.push({i:1,date:'',payment:P+totalInterest,principal:P,interest:totalInterest,remain:0});
+      // 使用n作为期数，确保日期计算正确
+      schedule.push({i:n,date:'',payment:P+totalInterest,principal:P,interest:totalInterest,remain:0});
       break;
     }
   }
@@ -2113,9 +2140,11 @@ function calcEarly(){
   if(erAPR)erAPR.textContent=newAPR.toFixed(2)+'%';
 }
 function calcEarlyAPR(P,totalPaid,months){
+  // 构造现金流：期初放款P，每月还款（平均分配），最后一期提前还款
+  const avgMonthly=totalPaid/months;
   let cf=[-P];
-  for(let i=0;i<months-1;i++)cf.push(0);
-  cf.push(totalPaid);
+  for(let i=0;i<months-1;i++)cf.push(avgMonthly);
+  cf.push(avgMonthly);
   return solveIRR(cf)*100;
 }
 
@@ -2269,7 +2298,7 @@ function calcInsights(){
     const totalInterest=result.totalInterest;
     const interestRatio=totalInterest/P; // 利息/本金比
     const feeRatio=fee/P; // 费用/本金比
-    const apr=calcAPR(P,n,r,monthly,fee,feeM);
+    const apr=calcAPR(P,n,monthly,fee,feeM);
     
     let score=100;
     // 利息占比扣分（超过50%开始扣分）
@@ -2550,10 +2579,27 @@ function importJSON(e){
   reader.onload=function(ev){
     try{
       const data=JSON.parse(ev.target.result);
-      if(Array.isArray(data)){plans=data;currentPlanIdx=0;savePlans();applyPlan(0);toast('导入成功');}
-      else toast('格式错误');
-    }catch(err){toast('解析失败');}
+      if(!Array.isArray(data)){toast('格式错误：数据必须是数组');return;}
+      // 校验每个方案的必要字段
+      const validPlans=data.filter(p=>{
+        if(!p||typeof p!=='object')return false;
+        // 清理非法字段，防止XSS
+        if(p.name&&typeof p.name==='string')p.name=p.name.slice(0,50);
+        // 确保数值字段为数字
+        p.loanAmount=parseFloat(p.loanAmount)||0;
+        p.loanTerm=parseInt(p.loanTerm)||0;
+        p.annualRate=parseFloat(p.annualRate)||0;
+        return p.loanAmount>0&&p.loanTerm>0;
+      });
+      if(validPlans.length===0){toast('没有有效的方案数据');return;}
+      plans=validPlans;
+      currentPlanIdx=0;
+      savePlans();
+      applyPlan(0);
+      toast(`成功导入 ${validPlans.length} 个方案`);
+    }catch(err){toast('解析失败：'+err.message);}
   };
+  reader.onerror=function(){toast('文件读取失败');};
   reader.readAsText(file);
   e.target.value='';
 }
@@ -2818,11 +2864,13 @@ function restoreCollapseState(){
 }
 
 function saveCollapseState(){
-  const collapsed=[];
-  document.querySelectorAll('.section.sortable-item.collapsed').forEach(s=>{
-    collapsed.push(s.dataset.sectionId);
-  });
-  localStorage.setItem(CARD_COLLAPSE_KEY,JSON.stringify(collapsed));
+  try{
+    const collapsed=[];
+    document.querySelectorAll('.section.sortable-item.collapsed').forEach(s=>{
+      collapsed.push(s.dataset.sectionId);
+    });
+    localStorage.setItem(CARD_COLLAPSE_KEY,JSON.stringify(collapsed));
+  }catch(e){console.warn('saveCollapseState failed:',e);}
 }
 
 function restoreCardOrder(){
@@ -2850,11 +2898,13 @@ function restoreCardOrder(){
 }
 
 function saveCardOrder(){
-  const order=[];
-  document.querySelectorAll('#tab-overview .section.sortable-item').forEach(s=>{
-    order.push(s.dataset.sectionId);
-  });
-  localStorage.setItem(CARD_ORDER_KEY,JSON.stringify(order));
+  try{
+    const order=[];
+    document.querySelectorAll('#tab-overview .section.sortable-item').forEach(s=>{
+      order.push(s.dataset.sectionId);
+    });
+    localStorage.setItem(CARD_ORDER_KEY,JSON.stringify(order));
+  }catch(e){console.warn('saveCardOrder failed:',e);}
 }
 
 function resetCardOrder(){
