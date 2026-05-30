@@ -73,7 +73,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 .combined-item .module-value{display:flex;align-items:center;justify-content:center;gap:1px;margin-top:4px}
 .combined-item .module-value select{font-size:15px;font-weight:600;color:#0A84FF;text-align:center;border:none;background:transparent;outline:none;-webkit-appearance:none;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .combined-item .module-value select option{color:#FFF;background:#2C2C2E}
-.combined-item .module-value input[type="date"]{font-size:14px;font-weight:500;color:#E0E0E0;text-align:center;border:none;background:transparent;outline:none;-webkit-user-select:auto;user-select:auto;pointer-events:auto}
+.combined-item .module-value input[type="date"]{font-size:14px;font-weight:500;color:#E0E0E0;text-align:center;border:none;background:transparent;outline:none;-webkit-user-select:auto;user-select:auto;pointer-events:auto;min-width:0;width:100%;flex:1}
 .combined-divider{width:.5px;background:rgba(255,255,255,0.1);flex-shrink:0;align-self:stretch;margin:4px 0}
 .param-module{background:#1C1C1E;border-radius:14px;padding:12px;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;min-width:0;position:relative;height:auto;min-height:90px;overflow:hidden}
 .param-module:active{cursor:grabbing}
@@ -90,6 +90,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 .module-value input[type="number"],.module-value input[type="text"],.module-value input[type="date"]{font-size:20px;font-weight:700;color:#E0E0E0;width:auto;min-width:10px;text-align:center;border:none;background:transparent;outline:none;font-variant-numeric:tabular-nums;padding:0;margin:0;flex-shrink:0;-moz-appearance:textfield;pointer-events:auto;-webkit-user-select:auto;user-select:auto;position:relative;z-index:10}
 .module-value input[type="number"]::-webkit-inner-spin-button,.module-value input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;display:none}
 .module-value input[readonly]{color:#AEAEB2;font-size:16px;pointer-events:none}
+.param-module.readonly .module-value input[type="text"]{min-width:68px;width:68px;text-align:center}
 .module-value .unit{font-size:14px;color:#AEAEB2;font-weight:500;display:inline;margin-left:1px;flex-shrink:0}
 .module-value select{font-size:16px;font-weight:600;color:#0A84FF;cursor:pointer;width:auto;text-align:center;border:none;background:transparent;outline:none;-webkit-appearance:none;padding:0;margin:0;display:inline;pointer-events:auto;-webkit-user-select:auto;user-select:auto;position:relative;z-index:10}
 .module-value select option{color:#FFF;background:#2C2C2E}
@@ -488,10 +489,10 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 .form-row{display:flex;align-items:center;justify-content:space-between;padding:14px var(--edge);min-height:48px;border-bottom:.5px solid rgba(255,255,255,0.06)}
 .form-row:last-child{border-bottom:none}
 .form-label{font-size:15px;color:#E0E0E0;font-weight:500;flex-shrink:0;min-width:90px}
-.form-control{display:flex;align-items:center;gap:4px;flex:1;justify-content:flex-end}
-.form-control input[type="number"]{font-size:17px;font-weight:600;color:#0A84FF;width:100%;max-width:160px;text-align:right;border:none;background:transparent;outline:none;font-variant-numeric:tabular-nums;padding:0;-moz-appearance:textfield;-webkit-user-select:auto;user-select:auto;pointer-events:auto}
+.form-control{display:flex;align-items:center;gap:4px;flex:1;justify-content:flex-end;min-width:0}
+.form-control input[type="number"],.form-control input[type="text"]{font-size:17px;font-weight:600;color:#0A84FF;width:100%;max-width:160px;text-align:right;border:none;background:transparent;outline:none;font-variant-numeric:tabular-nums;padding:0;-moz-appearance:textfield;-webkit-user-select:auto;user-select:auto;pointer-events:auto}
 .form-control input[type="number"]::-webkit-inner-spin-button,.form-control input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;display:none}
-.form-control input[type="date"]{font-size:15px;font-weight:500;color:#0A84FF;text-align:right;border:none;background:transparent;outline:none;-webkit-user-select:auto;user-select:auto;pointer-events:auto;width:100%;max-width:160px}
+.form-control input[type="date"]{font-size:15px;font-weight:500;color:#0A84FF;text-align:right;border:none;background:transparent;outline:none;-webkit-user-select:auto;user-select:auto;pointer-events:auto;width:100%;max-width:160px;min-width:0;flex:1}
 .form-control select{font-size:15px;font-weight:500;color:#0A84FF;text-align:right;cursor:pointer;border:none;background:transparent;outline:none;-webkit-appearance:none;padding:0;flex:1;direction:rtl;-webkit-user-select:auto;user-select:auto;pointer-events:auto}
 .form-control select option{direction:ltr;color:#FFF;background:#2C2C2E}
 .form-unit{font-size:14px;color:#8E8E93;font-weight:500;flex-shrink:0;min-width:20px;text-align:left}
@@ -499,14 +500,14 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
   .form-card{margin:0 12px}
   .form-row{padding:12px 14px;min-height:44px}
   .form-label{font-size:14px;min-width:80px}
-  .form-control input[type="number"]{font-size:16px}
+  .form-control input[type="number"],.form-control input[type="text"]{font-size:16px}
   .form-unit{font-size:13px}
 }
 @media(min-width:768px){
   .form-card{margin:0 24px}
   .form-row{padding:16px 20px;min-height:52px}
   .form-label{font-size:16px;min-width:100px}
-  .form-control input[type="number"]{font-size:18px;max-width:200px}
+  .form-control input[type="number"],.form-control input[type="text"]{font-size:18px;max-width:200px}
 }
 /* ========== Insight Cards ========== */
 .insight-card{background:#1C1C1E;border-radius:12px;padding:4px 0;margin:0 var(--edge);overflow:hidden}
@@ -750,7 +751,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
         <div class="module-label">起贷日期</div>
         <div class="module-label-en">START DATE</div>
         <div class="module-value">
-          <input type="date" id="startDate" value="2022-07-01" onchange="calc();onParamChange(this);">
+          <input type="date" id="startDate" value="2022-07-01" oninput="calc();onParamChange(this);" onchange="calc();onParamChange(this);">
         </div>
       </div>
     </div>
@@ -1113,7 +1114,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
     <div class="form-row">
       <div class="form-label">贷款金额</div>
       <div class="form-control">
-        <input type="number" id="loanAmount2" oninput="calc();onParamChange(this);">
+        <input type="text" inputmode="decimal" id="loanAmount2" onfocus="formatEditableNumberInput(this,false)" onblur="formatEditableNumberInput(this,true);calc();onParamChange(this);" oninput="calc();onParamChange(this);">
         <span class="form-unit">元</span>
       </div>
     </div>
@@ -1147,7 +1148,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
     <div class="form-row">
       <div class="form-label">起贷日期</div>
       <div class="form-control">
-        <input type="date" id="startDate2" onchange="calc();onParamChange(this);">
+        <input type="date" id="startDate2" oninput="calc();onParamChange(this);" onchange="calc();onParamChange(this);">
       </div>
     </div>
   </div>
@@ -1160,7 +1161,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
     <div class="form-row">
       <div class="form-label">服务费金额</div>
       <div class="form-control">
-        <input type="number" id="feeAmount2" oninput="calc();onParamChange(this);">
+        <input type="text" inputmode="decimal" id="feeAmount2" onfocus="formatEditableNumberInput(this,false)" onblur="formatEditableNumberInput(this,true);calc();onParamChange(this);" oninput="calc();onParamChange(this);">
         <span class="form-unit">元</span>
       </div>
     </div>
@@ -1195,7 +1196,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
     <div class="form-row">
       <div class="form-label">还款金额</div>
       <div class="form-control">
-        <input type="number" id="earlyAmount2" oninput="calcEarly();onParamChange(this);">
+        <input type="text" inputmode="decimal" id="earlyAmount2" onfocus="formatEditableNumberInput(this,false)" onblur="formatEditableNumberInput(this,true);calcEarly();onParamChange(this);" oninput="calcEarly();onParamChange(this);">
         <span class="form-unit">元</span>
       </div>
     </div>
@@ -1352,13 +1353,39 @@ const SPECIAL_FIELDS = {
 /* ========== Cross-page Value Helper ========== */
 // 可同步的参数列表（概览页 ↔ 明细页）
 const SYNC_PARAMS=['loanType','loanAmount','loanTerm','annualRate','repaymentMethod','startDate','feeAmount','feeMethod','earlyMonth','earlyAmount','prepaymentPenalty'];
+const THOUSAND_FORMAT_PARAMS=new Set(['loanAmount','feeAmount','earlyAmount']);
+
+function stripNumberFormatting(value){
+  return String(value??'').replace(/,/g,'').trim();
+}
+
+function formatNumericDisplay(value){
+  const raw=stripNumberFormatting(value);
+  if(raw==='')return '';
+  if(!/^-?\d*(?:\.\d+)?$/.test(raw))return raw;
+  const sign=raw.startsWith('-')?'-':'';
+  const unsigned=sign?raw.slice(1):raw;
+  const parts=unsigned.split('.');
+  const intPart=(parts[0]||'0').replace(/^0+(?=\d)/,'');
+  const grouped=intPart.replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  return sign+grouped+(parts.length>1?'.'+parts[1]:'');
+}
+
+function formatEditableNumberInput(input,format=true){
+  if(!input)return;
+  if(format){
+    input.value=formatNumericDisplay(input.value);
+  }else{
+    input.value=stripNumberFormatting(input.value);
+  }
+}
 
 function getVal(id){
   const scheduleTab=el('tab-schedule');
   const isSchedule=scheduleTab&&scheduleTab.classList.contains('active');
   const suffix=isSchedule?'2':'';
   const elem=el(id+suffix);
-  return elem?elem.value:'';
+  return elem?stripNumberFormatting(elem.value):'';
 }
 function getNum(id){
   return parseFloat(getVal(id))||0;
@@ -1378,7 +1405,10 @@ function syncToOtherPage(){
     const src=isSchedule?el(id+'2'):el(id);
     const dst=isSchedule?el(id):el(id+'2');
     if(src&&dst&&src.value!==dst.value){
-      dst.value=src.value;
+      const raw=stripNumberFormatting(src.value);
+      dst.value=THOUSAND_FORMAT_PARAMS.has(id)&&dst.type==='text'
+        ? formatNumericDisplay(raw)
+        : raw;
     }
   });
 }
@@ -1389,12 +1419,17 @@ function onParamChange(srcEl){
   const id=srcEl.id;
   const baseId=id.replace(/2$/,'');
   if(!SYNC_PARAMS.includes(baseId))return;
+  updateModuleLabels(srcEl);
   // 同步到另一个页面
   const isSchedule=id.endsWith('2');
   const otherId=isSchedule?baseId:baseId+'2';
   const otherEl=el(otherId);
   if(otherEl&&otherEl.value!==srcEl.value){
-    otherEl.value=srcEl.value;
+    const raw=stripNumberFormatting(srcEl.value);
+    otherEl.value=THOUSAND_FORMAT_PARAMS.has(baseId)&&otherEl.type==='text'
+      ? formatNumericDisplay(raw)
+      : raw;
+    updateModuleLabels(otherEl);
   }
 }
 
@@ -1422,12 +1457,16 @@ function clearAllData(){
   if(!confirm('确定清除所有方案数据？'))return;
   try{
     localStorage.removeItem('loanPlans');
+    localStorage.removeItem(CARD_ORDER_KEY);
+    localStorage.removeItem(CARD_COLLAPSE_KEY);
     plans=[];
-    currentPlanIdx=-1;
+    currentPlanIdx=0;
     scheduleData=[];
+    activeCompareMethod='equal_installment';
     // Clear all module inputs
     document.querySelectorAll('.module-value input[type="number"], .module-value input[type="text"], .module-value input[type="date"]').forEach(inp=>{inp.value='';});
     document.querySelectorAll('.module-value select').forEach(sel=>{sel.selectedIndex=0;});
+    document.querySelectorAll('input[type="hidden"]').forEach(inp=>{inp.value='';});
     // Clear list-row inputs (fee, early repayment, income, tools)
     ['feeAmount','feeMethod','earlyMonth','earlyAmount','prepaymentPenalty','monthlyIncome'].forEach(id=>{
       const el=document.getElementById(id);
@@ -1441,6 +1480,7 @@ function clearAllData(){
     });
     // Hide special fields section
     const sf=document.getElementById('specialFields');if(sf)sf.style.display='none';
+    const sfCard=document.getElementById('specialFieldsCard');if(sfCard)sfCard.innerHTML='';
     // Reset all module labels to empty state
     updateAllModuleLabels();
     // Reset indicator cards
@@ -1448,13 +1488,35 @@ function clearAllData(){
       const elv=document.getElementById(id);
       if(elv){elv.textContent='--';elv.classList.add('empty');}
     });
+    ['feeResult','feeResult2','earlyResult','earlyResult2','irrResult','penaltyResult'].forEach(id=>{
+      const node=document.getElementById(id);
+      if(node)node.style.display='none';
+    });
     // Clear schedule display
     const sb=document.getElementById('scheduleBody');if(sb)sb.innerHTML='';
     // Clear comparison display
     const cr=document.getElementById('compareResult');if(cr)cr.innerHTML='';
-    const ct=document.getElementById('compareTabs');if(ct)ct.innerHTML='';
+    buildCompareTabs();
+    renderCompare();
+    // Reset simulation and pressure UI
+    const ps=['psPaid','psPrincipal','psInterest','psRemain'];
+    ps.forEach(id=>{const node=document.getElementById(id);if(node)node.textContent='--';});
+    const pbar=document.getElementById('progressBarFill');if(pbar)pbar.style.width='0%';
+    const ptext=document.getElementById('progressBarText');if(ptext)ptext.textContent='还款进度 0%';
+    const pslider=document.getElementById('progressSlider');if(pslider)pslider.value='0';
+    const pval=document.getElementById('sliderValue');if(pval)pval.textContent='0 期';
+    const pressureBar=document.getElementById('pressureBar');if(pressureBar){pressureBar.style.width='0%';pressureBar.className='pressure-bar-fill';}
+    const pressurePct=document.getElementById('pressurePct');if(pressurePct)pressurePct.textContent='0%';
+    const pressureLevel=document.getElementById('pressureLevel');if(pressureLevel)pressureLevel.textContent='--';
     // Reset plan badge
     const pb=document.getElementById('planBadge');if(pb)pb.textContent='方案 1';
+    // Restore default values for future inputs without saving stale state
+    el('loanType').value='normal';
+    el('repaymentMethod').value='equal_installment';
+    el('feeMethod').value='upfront';
+    el('loanType2').value='normal';
+    el('repaymentMethod2').value='equal_installment';
+    el('feeMethod2').value='upfront';
     toast('数据已清除');
   }catch(e){
     toast('清除失败：'+e.message);
@@ -1485,8 +1547,23 @@ function applyPlan(idx){
   calc();
 }
 function saveCurrentPlan(){
+  if(!plans[currentPlanIdx]){
+    plans[currentPlanIdx]={
+      name:'方案 1',
+      loanType:'normal',
+      loanAmount:'',
+      loanTerm:'',
+      annualRate:'',
+      repaymentMethod:'equal_installment',
+      startDate:'',
+      feeAmount:'',
+      feeMethod:'upfront',
+      monthlyIncome:'',
+      special:{},
+    };
+  }
   const p=plans[currentPlanIdx];
-  const v=id=>el(id).value;
+  const v=id=>stripNumberFormatting(el(id).value);
   p.loanType=v('loanType');
   p.loanAmount=v('loanAmount')!==''?parseFloat(v('loanAmount'))||0:'';
   p.loanTerm=v('loanTerm')!==''?parseInt(v('loanTerm'))||0:'';
@@ -1579,6 +1656,7 @@ function toast(msg){const t=el('toast');t.textContent=msg;t.classList.add('show'
 
 /* ========== Calc Engine ========== */
 function calc(){
+  syncToOtherPage();
   saveCurrentPlan();
   const P=getNum('loanAmount');
   const n=parseInt(getVal('loanTerm'))||0;
@@ -1701,7 +1779,7 @@ function calcMethod(P,n,r,method){
       break;
     }
     case 'flexible':{
-      const dr=parseFloat(el('annualRate').value)/100/365;
+      const dr=ar/100/365;
       const days=n*30;
       totalInterest=P*dr*days;
       monthly=0;
@@ -1712,7 +1790,7 @@ function calcMethod(P,n,r,method){
   totalInterest=schedule.reduce((s,r)=>s+r.interest,0);
   const totalPayment=schedule.reduce((s,r)=>s+r.payment,0);
   // Add dates using ACT/365 day count convention
-  const sd=el('startDate').value;
+  const sd=getVal('startDate');
   if(sd){
     const startDate=new Date(sd);
     schedule.forEach(row=>{
@@ -1816,7 +1894,7 @@ function calcEarlyAPR(P,totalPaid,months){
 
 /* ========== Pressure ========== */
 function calcPressure(){
-  const income=parseFloat(el('monthlyIncome').value)||0;
+  const income=parseFloat(stripNumberFormatting(el('monthlyIncome').value))||0;
   const monthly=parseFloat(el('indMonthly').textContent.replace(/,/g,''))||0;
   if(income<=0||monthly<=0){el('pressureBar').style.width='0%';el('pressurePct').textContent='0%';el('pressureLevel').textContent='--';return;}
   const pct=Math.min(monthly/income*100,100);
@@ -1838,7 +1916,8 @@ function calcInsights(){
   const method=getVal('repaymentMethod');
   const fee=getNum('feeAmount');
   const feeM=getVal('feeMethod');
-  const monthly=getNum('dispMonthly')||0;
+  const result=(P>0&&n>0&&ar>0)?calcMethod(P,n,r,method):null;
+  const monthly=result?result.monthly:0;
 
   // 1. 实际到手金额
   const insLoanEl=el('insLoanAmount');
@@ -1876,7 +1955,6 @@ function calcInsights(){
   const per10kTotalEl=el('insPer10kTotal');
   if(P>0&&monthly>0&&n>0){
     const per10k=monthly/P*10000;
-    const result=calcMethod(P,n,r,method);
     const per10kInt=result.totalInterest/P*10000;
     const per10kTotal=result.totalPayment/P*10000;
     if(per10kEl)per10kEl.textContent=fmt(per10k)+' 元';
@@ -2188,9 +2266,9 @@ function selectCompareTab(key,tabEl){
   renderCompare();
 }
 function renderCompare(){
-  const P=parseFloat(el('loanAmount').value)||0;
-  const n=parseInt(el('loanTerm').value)||0;
-  const ar=parseFloat(el('annualRate').value)||0;
+  const P=getNum('loanAmount');
+  const n=parseInt(getVal('loanTerm'))||0;
+  const ar=getNum('annualRate');
   const r=ar/100/12;
   if(P<=0||n<=0||ar<=0){el('compareResult').innerHTML='<div style="padding:12px;color:#8E8E93">请先设置参数</div>';return;}
   let html='';
@@ -2224,9 +2302,9 @@ function calcIRR(){
 
 /* ========== Penalty Tool ========== */
 function calcPenalty(){
-  const p=parseFloat(el('penaltyPrincipal').value)||0;
-  const d=parseInt(el('penaltyDays').value)||0;
-  const r=parseFloat(el('penaltyRate').value)||0;
+  const p=parseFloat(stripNumberFormatting(el('penaltyPrincipal').value))||0;
+  const d=parseInt(stripNumberFormatting(el('penaltyDays').value))||0;
+  const r=parseFloat(stripNumberFormatting(el('penaltyRate').value))||0;
   if(p<=0||d<=0||r<=0){toast('请填写完整参数');return;}
   const penalty=p*r/100*d;
   el('penaltyResult').style.display='block';
