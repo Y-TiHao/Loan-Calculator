@@ -39,6 +39,9 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 
 /* Section */
 .section{padding:0;margin-bottom:20px}
+.section.settings-section{margin-bottom:14px}
+.settings-section .section-title{padding-top:14px;padding-bottom:8px}
+.settings-section .section-card{border-radius:12px}
 .section-title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:#8E8E93;text-transform:uppercase;padding:16px var(--edge) 6px;letter-spacing:.5px;min-width:0}
 .section-title > span:nth-child(2){min-width:0;flex:1}
 .section-card{background:#1C1C1E;border-radius:10px;overflow:hidden;margin:0 var(--edge)}
@@ -244,9 +247,34 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 .settings-row .sr-label{font-size:17px;color:#E0E0E0}
 .settings-row .sr-value{font-size:17px;color:#0A84FF;cursor:pointer}
 .settings-row .sr-desc{font-size:13px;color:#636366;margin-top:2px}
-.settings-btn{margin:var(--edge);padding:12px;background:#FF3B30;color:#fff;border-radius:10px;text-align:center;font-size:17px;font-weight:600;cursor:pointer}
-.settings-btn:active{opacity:.7}
+.settings-action-row{display:flex;align-items:center;gap:12px;padding:12px var(--edge);min-height:52px;cursor:pointer}
+.settings-action-row:not(:last-child){border-bottom:.5px solid rgba(255,255,255,0.08)}
+.settings-action-row:active{background:rgba(118,118,128,0.08)}
+.settings-action-row .sar-icon{flex:0 0 auto;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.settings-action-row .sar-icon svg{width:16px;height:16px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.settings-action-row.export .sar-icon{background:rgba(10,132,255,0.14);color:#0A84FF}
+.settings-action-row.import .sar-icon{background:rgba(94,92,230,0.14);color:#5E5CE6}
+.settings-action-row.csv .sar-icon{background:rgba(52,199,89,0.14);color:#34C759}
+.settings-action-row .sar-copy{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+.settings-action-row .sar-title{font-size:17px;color:#E0E0E0;line-height:1.2}
+.settings-action-row .sar-desc{font-size:12px;line-height:1.35;color:#8E8E93}
+.settings-action-row .sar-action{flex:0 0 auto;font-size:13px;font-weight:500;color:#8E8E93;opacity:.9}
+.settings-danger-card{padding:var(--edge)}
+.about-card{display:flex;align-items:flex-start;gap:12px;padding:14px var(--edge)}
+.about-badge{flex:0 0 auto;width:40px;height:40px;border-radius:12px;background:linear-gradient(180deg,rgba(10,132,255,0.26),rgba(10,132,255,0.12));display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#0A84FF;box-shadow:inset 0 0 0 1px rgba(10,132,255,0.16)}
+.about-copy{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}
+.about-name{font-size:16px;font-weight:700;color:#E0E0E0;line-height:1.2}
+.about-meta{font-size:11px;line-height:1.35;color:#8E8E93}
+.about-desc{font-size:11px;line-height:1.4;color:#C7C7CC}
+.settings-btn{width:100%;padding:12px;background:#FF3B30;color:#fff;border-radius:10px;text-align:center;font-size:17px;font-weight:600;cursor:pointer;box-shadow:0 8px 20px rgba(255,59,48,0.18)}
+.settings-btn:active{opacity:.85;transform:translateY(1px)}
 .settings-btn.blue{background:#0A84FF}
+.settings-btn-danger{display:flex;align-items:flex-start;gap:12px;padding:14px 14px 13px;text-align:left;background:linear-gradient(180deg,rgba(255,59,48,0.98),rgba(255,59,48,0.92));box-shadow:0 10px 24px rgba(255,59,48,0.2)}
+.settings-btn-danger .sbd-icon{flex:0 0 auto;width:30px;height:30px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.16);font-size:16px;line-height:1}
+.settings-btn-danger .sbd-copy{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+.settings-btn-danger .sbd-title{font-size:17px;font-weight:700;line-height:1.2}
+.settings-btn-danger .sbd-sub{font-size:12px;line-height:1.35;color:rgba(255,255,255,0.84)}
+.settings-btn-danger:active{opacity:.9}
 
 /* Action Sheet Overlay */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:300;display:none;align-items:flex-end;justify-content:center}
@@ -255,6 +283,11 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .action-sheet .as-title{text-align:center;font-size:13px;color:#8E8E93;padding:12px var(--edge) 4px}
 .action-sheet .as-item{text-align:center;padding:14px var(--edge);font-size:20px;color:#0A84FF;cursor:pointer;border-bottom:.5px solid rgba(255,255,255,0.08)}
+.action-sheet .as-item-row{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left}
+.action-sheet .as-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.action-sheet .as-delete{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;color:#FF453A;border-radius:999px;background:rgba(255,69,58,0.12);box-shadow:inset 0 0 0 1px rgba(255,69,58,0.18)}
+.action-sheet .as-delete:active{background:rgba(255,69,58,0.2);transform:scale(.96)}
+.action-sheet .as-delete svg{width:14px;height:14px;display:block;pointer-events:none;fill:currentColor}
 .action-sheet .as-item:active{background:rgba(118,118,128,0.12)}
 .action-sheet .as-cancel{margin:8px var(--edge) 0;padding:14px;text-align:center;font-size:20px;font-weight:600;color:#0A84FF;background:#2C2C2E;border-radius:10px;cursor:pointer}
 .action-sheet .as-cancel:active{opacity:.7}
@@ -556,6 +589,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 .score-circle.grade-d{border-color:#FF453A}
 .score-value{font-size:32px;font-weight:700;color:#E0E0E0;line-height:1}
 .score-label{font-size:14px;font-weight:600;color:#AEAEB2;margin-top:2px}
+.empty-state{color:#8E8E93 !important;font-weight:600 !important;opacity:.95;letter-spacing:-.2px}
 .score-desc{font-size:13px;color:#8E8E93;text-align:center;padding:0 var(--edge) 16px;line-height:1.5}
 
 /* Slider */
@@ -676,22 +710,22 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 <div class="section">
   <div id="indicatorGrid">
     <div class="indicator-card highlight">
-      <div class="ind-value empty" id="indMonthly">--</div>
+      <div class="ind-value empty" id="indMonthly">∞</div>
       <div class="ind-label">月供</div>
       <div class="ind-label-en">MONTHLY</div>
     </div>
     <div class="indicator-card">
-      <div class="ind-value empty" id="indInterest">--</div>
+      <div class="ind-value empty" id="indInterest">∞</div>
       <div class="ind-label">总利息</div>
       <div class="ind-label-en">INTEREST</div>
     </div>
     <div class="indicator-card">
-      <div class="ind-value empty" id="indTotal">--</div>
+      <div class="ind-value empty" id="indTotal">∞</div>
       <div class="ind-label">总还款</div>
       <div class="ind-label-en">TOTAL</div>
     </div>
     <div class="indicator-card">
-      <div class="ind-value empty" id="indAPR">--</div>
+      <div class="ind-value empty" id="indAPR">∞</div>
       <div class="ind-label">实际年化</div>
       <div class="ind-label-en">APR</div>
     </div>
@@ -815,9 +849,9 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 <!-- Hidden inputs for fee & early repayment (used by savePlan/applyPlan) -->
 <input type="hidden" id="feeAmount" value="0">
 <input type="hidden" id="feeMethod" value="upfront">
-<input type="hidden" id="earlyMonth" value="12">
-<input type="hidden" id="earlyAmount" value="65000">
-<input type="hidden" id="prepaymentPenalty" value="0">
+<input type="hidden" id="earlyMonth" value="">
+<input type="hidden" id="earlyAmount" value="">
+<input type="hidden" id="prepaymentPenalty" value="">
 <input type="hidden" id="feeResult" value="">
 <input type="hidden" id="feeAPR" value="">
 <input type="hidden" id="earlyResult" value="">
@@ -840,19 +874,19 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
       <div class="capital-item-body">
         <div class="capital-row">
           <span class="capital-label">贷款金额</span>
-          <span class="capital-value" id="insLoanAmount">--</span>
+          <span class="capital-value" id="insLoanAmount">∞</span>
         </div>
         <div class="capital-row">
           <span class="capital-label">- 服务费</span>
-          <span class="capital-value warn" id="insFee">--</span>
+          <span class="capital-value warn" id="insFee">∞</span>
         </div>
         <div class="capital-row">
           <span class="capital-label">实际到手</span>
-          <span class="capital-value primary" id="insNetAmount">--</span>
+          <span class="capital-value primary" id="insNetAmount">∞</span>
         </div>
         <div class="capital-row">
           <span class="capital-label">到账比例</span>
-          <span class="capital-value" id="insNetRatio">--</span>
+          <span class="capital-value" id="insNetRatio">∞</span>
         </div>
       </div>
     </div>
@@ -862,15 +896,15 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
       <div class="capital-item-body">
         <div class="capital-row">
           <span class="capital-label">每万月供</span>
-          <span class="capital-value primary" id="insPer10k">--</span>
+          <span class="capital-value primary" id="insPer10k">∞</span>
         </div>
         <div class="capital-row">
           <span class="capital-label">每万总利息</span>
-          <span class="capital-value" id="insPer10kInterest">--</span>
+          <span class="capital-value" id="insPer10kInterest">∞</span>
         </div>
         <div class="capital-row">
           <span class="capital-label">每万总还款</span>
-          <span class="capital-value" id="insPer10kTotal">--</span>
+          <span class="capital-value" id="insPer10kTotal">∞</span>
         </div>
       </div>
     </div>
@@ -882,19 +916,19 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
       <div class="capital-item-body">
         <div class="capital-row">
           <span class="capital-label">LPR(1年期)</span>
-          <div class="row-right"><input type="text" inputmode="decimal" class="capital-input" id="lpr1" value="3.10" onfocus="formatEditableNumberInput(this,false)" onblur="formatEditableNumberInput(this,true);calc();onParamChange(this);" oninput="calc();onParamChange(this);"><span class="unit" id="lpr1Unit">%</span></div>
+          <div class="row-right"><input type="text" inputmode="decimal" class="capital-input" id="lpr1" value="" onfocus="formatEditableNumberInput(this,false)" onblur="formatEditableNumberInput(this,true);calc();onParamChange(this);" oninput="calc();onParamChange(this);"><span class="unit" id="lpr1Unit">∞</span></div>
         </div>
         <div class="capital-row">
           <span class="capital-label">LPR(5年期)</span>
-          <div class="row-right"><input type="text" inputmode="decimal" class="capital-input" id="lpr5" value="3.60" onfocus="formatEditableNumberInput(this,false)" onblur="formatEditableNumberInput(this,true);calc();onParamChange(this);" oninput="calc();onParamChange(this);"><span class="unit" id="lpr5Unit">%</span></div>
+          <div class="row-right"><input type="text" inputmode="decimal" class="capital-input" id="lpr5" value="" onfocus="formatEditableNumberInput(this,false)" onblur="formatEditableNumberInput(this,true);calc();onParamChange(this);" oninput="calc();onParamChange(this);"><span class="unit" id="lpr5Unit">∞</span></div>
         </div>
         <div class="capital-row">
           <span class="capital-label">你的利率</span>
-          <span class="capital-value primary" id="insMyRate">--</span>
+          <span class="capital-value primary" id="insMyRate">∞</span>
         </div>
         <div class="capital-row">
           <span class="capital-label">vs LPR(5年)</span>
-          <span class="capital-value" id="insLPRDiff">--</span>
+          <span class="capital-value" id="insLPRDiff">∞</span>
         </div>
       </div>
     </div>
@@ -904,23 +938,23 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
       <div class="capital-item-body">
         <div class="capital-row">
           <span class="capital-label">利率 -0.5%</span>
-          <span class="capital-value good" id="insSensDown50">--</span>
+          <span class="capital-value good" id="insSensDown50">∞</span>
         </div>
         <div class="capital-row">
           <span class="capital-label">利率 -0.1%</span>
-          <span class="capital-value good" id="insSensDown10">--</span>
+          <span class="capital-value good" id="insSensDown10">∞</span>
         </div>
         <div class="capital-row">
           <span class="capital-label">当前月供</span>
-          <span class="capital-value primary" id="insSensCurrent">--</span>
+          <span class="capital-value primary" id="insSensCurrent">∞</span>
         </div>
         <div class="capital-row">
           <span class="capital-label">利率 +0.1%</span>
-          <span class="capital-value warn" id="insSensUp10">--</span>
+          <span class="capital-value warn" id="insSensUp10">∞</span>
         </div>
         <div class="capital-row">
           <span class="capital-label">利率 +0.5%</span>
-          <span class="capital-value warn" id="insSensUp50">--</span>
+          <span class="capital-value warn" id="insSensUp50">∞</span>
         </div>
       </div>
     </div>
@@ -946,8 +980,8 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
       </div>
     </div>
     <div class="ratio-legend">
-      <div class="ratio-legend-item"><span class="ratio-dot principal"></span><span>本金 <b id="legendPrincipal">--</b></span></div>
-      <div class="ratio-legend-item"><span class="ratio-dot interest"></span><span>利息 <b id="legendInterest">--</b></span></div>
+      <div class="ratio-legend-item"><span class="ratio-dot principal"></span><span>本金 <b id="legendPrincipal">∞</b></span></div>
+      <div class="ratio-legend-item"><span class="ratio-dot interest"></span><span>利息 <b id="legendInterest">∞</b></span></div>
     </div>
   </div>
 </div>
@@ -962,8 +996,8 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
   <div class="insight-card">
     <div class="score-wrap">
       <div class="score-circle" id="scoreCircle">
-        <span class="score-value" id="scoreValue">--</span>
-        <span class="score-label" id="scoreGrade">--</span>
+        <span class="score-value" id="scoreValue">∞</span>
+        <span class="score-label" id="scoreGrade">∞</span>
       </div>
     </div>
     <div class="score-desc" id="scoreDesc">输入贷款参数后自动评估</div>
@@ -992,19 +1026,19 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
     </div>
     <div class="progress-stats">
       <div class="progress-stat">
-        <div class="progress-stat-value" id="psPaid">--</div>
+        <div class="progress-stat-value" id="psPaid">∞</div>
         <div class="progress-stat-label">累计还款</div>
       </div>
       <div class="progress-stat">
-        <div class="progress-stat-value" id="psPrincipal">--</div>
+        <div class="progress-stat-value" id="psPrincipal">∞</div>
         <div class="progress-stat-label">已还本金</div>
       </div>
       <div class="progress-stat">
-        <div class="progress-stat-value" id="psInterest">--</div>
+        <div class="progress-stat-value" id="psInterest">∞</div>
         <div class="progress-stat-label">已还利息</div>
       </div>
       <div class="progress-stat">
-        <div class="progress-stat-value" id="psRemain">--</div>
+        <div class="progress-stat-value" id="psRemain">∞</div>
         <div class="progress-stat-label">剩余本金</div>
       </div>
     </div>
@@ -1040,7 +1074,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
   </div>
   <div class="pressure-bar-wrap" id="pressureWrap">
     <div class="pressure-bar-bg"><div class="pressure-bar-fill" id="pressureBar" style="width:0%"></div></div>
-    <div class="pressure-info"><span id="pressurePct">0%</span><span id="pressureLevel">--</span></div>
+    <div class="pressure-info"><span id="pressurePct">0%</span><span id="pressureLevel">∞</span></div>
   </div>
 </div>
 
@@ -1180,7 +1214,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
   </div>
   <div class="fee-result" id="feeResult2" style="display:none">
     <div class="fee-label">含服务费实际年化利率</div>
-    <div class="fee-value" id="feeAPR2">--</div>
+    <div class="fee-value" id="feeAPR2">∞</div>
   </div>
 </div>
 
@@ -1211,10 +1245,10 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
     </div>
   </div>
   <div class="early-result" id="earlyResult2" style="display:none">
-    <div class="early-row"><span class="er-label">已还利息</span><span class="er-value" id="erPaidInterest2">--</span></div>
-    <div class="early-row"><span class="er-label">剩余本金</span><span class="er-value" id="erRemain2">--</span></div>
-    <div class="early-row"><span class="er-label">节省利息</span><span class="er-value" id="erSaved2">--</span></div>
-    <div class="early-row highlight"><span class="er-label">实际年化</span><span class="er-value" id="erAPR2">--</span></div>
+    <div class="early-row"><span class="er-label">已还利息</span><span class="er-value" id="erPaidInterest2">∞</span></div>
+    <div class="early-row"><span class="er-label">剩余本金</span><span class="er-value" id="erRemain2">∞</span></div>
+    <div class="early-row"><span class="er-label">节省利息</span><span class="er-value" id="erSaved2">∞</span></div>
+    <div class="early-row highlight"><span class="er-label">实际年化</span><span class="er-value" id="erAPR2">∞</span></div>
   </div>
 </div>
 
@@ -1267,23 +1301,68 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 
 <!-- Tab: Settings -->
 <div class="tab-content" id="tab-settings">
-<div class="section">
-  <div class="section-title">数据管理</div>
+<div class="section settings-section">
+  <div class="section-title">数据导入导出</div>
   <div class="section-card">
-    <div class="settings-row" onclick="exportJSON()"><span class="sr-label">导出方案 (JSON)</span><span class="sr-value">导出</span></div>
-    <div class="settings-row" onclick="document.getElementById('importFile').click()"><span class="sr-label">导入方案 (JSON)</span><span class="sr-value">导入</span></div>
-    <div class="settings-row" onclick="exportCSV()"><span class="sr-label">导出还款明细 (CSV)</span><span class="sr-value">导出</span></div>
+    <div class="settings-action-row export" onclick="exportJSON()">
+      <div class="sar-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 3v9m0 0 3-3m-3 3-3-3M5 14.5v2.75A2.75 2.75 0 0 0 7.75 20h8.5A2.75 2.75 0 0 0 19 17.25V14.5"/></svg>
+      </div>
+      <div class="sar-copy">
+        <div class="sar-title">导出方案 (JSON)</div>
+        <div class="sar-desc">保存当前方案列表</div>
+      </div>
+      <div class="sar-action">导出</div>
+    </div>
+    <div class="settings-action-row import" onclick="document.getElementById('importFile').click()">
+      <div class="sar-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 21V12m0 0 3 3m-3-3-3 3M5 9.5V6.75A2.75 2.75 0 0 1 7.75 4h8.5A2.75 2.75 0 0 1 19 6.75V9.5"/></svg>
+      </div>
+      <div class="sar-copy">
+        <div class="sar-title">导入方案 (JSON)</div>
+        <div class="sar-desc">从 JSON 文件恢复方案</div>
+      </div>
+      <div class="sar-action">导入</div>
+    </div>
+    <div class="settings-action-row csv" onclick="exportCSV()">
+      <div class="sar-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M7.5 4.5h9A2.5 2.5 0 0 1 19 7v10a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 5 17V7a2.5 2.5 0 0 1 2.5-2.5Zm0 0V9h9V4.5M8 12h8M8 15h5"/></svg>
+      </div>
+      <div class="sar-copy">
+        <div class="sar-title">导出还款明细 (CSV)</div>
+        <div class="sar-desc">保存当前还款明细</div>
+      </div>
+      <div class="sar-action">导出</div>
+    </div>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
   </div>
 </div>
-<div class="section">
+<div class="section settings-section">
   <div class="section-title">关于</div>
   <div class="section-card">
-    <div class="settings-row"><div><div class="sr-label">贷款核算工具</div><div class="sr-desc">版本 1.0.0 | 纯前端计算，数据仅存储在本地</div></div></div>
+    <div class="about-card">
+      <div class="about-badge">LC</div>
+      <div class="about-copy">
+        <div class="about-name">贷款核算工具</div>
+        <div class="about-meta">版本 1.0.0 · 纯前端 · 本地存储</div>
+        <div class="about-desc">支持方案管理、还款明细和 LPR 对比。</div>
+      </div>
+    </div>
   </div>
 </div>
-<div class="section">
-  <div class="settings-btn" onclick="clearAllData()">清除所有数据</div>
+<div class="section settings-section">
+  <div class="section-title">数据管理</div>
+  <div class="section-card">
+    <div class="settings-danger-card">
+      <div class="settings-btn settings-btn-danger" onclick="clearAllData()">
+        <div class="sbd-icon">!</div>
+        <div class="sbd-copy">
+          <div class="sbd-title">清空方案数据</div>
+          <div class="sbd-sub">只清空数值和结果，不删除方案条目</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 </div>
 
@@ -1411,8 +1490,10 @@ function updateLprUnitDisplay(){
   const lpr5=el('lpr5');
   const lpr1Unit=el('lpr1Unit');
   const lpr5Unit=el('lpr5Unit');
-  if(lpr1Unit)lpr1Unit.textContent=stripNumberFormatting(lpr1&&lpr1.value)?'%':'∞';
-  if(lpr5Unit)lpr5Unit.textContent=stripNumberFormatting(lpr5&&lpr5.value)?'%':'∞';
+  const hasLpr1=stripNumberFormatting(lpr1&&lpr1.value)!=='';
+  const hasLpr5=stripNumberFormatting(lpr5&&lpr5.value)!=='';
+  if(lpr1Unit)lpr1Unit.textContent=hasLpr1?'%':'∞';
+  if(lpr5Unit)lpr5Unit.textContent=hasLpr5?'%':'∞';
 }
 
 function getVal(id){
@@ -1495,12 +1576,15 @@ function savePlans(){
   localStorage.setItem('loanPlans',JSON.stringify(plans));
 }
 function clearAllData(){
-  if(!confirm('确定清除所有方案数据？'))return;
+  if(!confirm('确定清空所有方案数据？'))return;
   try{
-    localStorage.removeItem('loanPlans');
     localStorage.removeItem(CARD_ORDER_KEY);
     localStorage.removeItem(CARD_COLLAPSE_KEY);
-    plans=[];
+    const existingPlans=Array.isArray(plans)&&plans.length?plans:[{name:'演示方案'}];
+    plans=existingPlans.map((p,i)=>({
+      name:p&&p.name?p.name:('方案 '+(i+1)),
+      ...NEW_PLAN_TEMPLATE,
+    }));
     currentPlanIdx=0;
     scheduleData=[];
     activeCompareMethod='equal_installment';
@@ -1514,10 +1598,11 @@ function clearAllData(){
       if(!el)return;
       if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';
     });
-    // Clear visible early-repayment controls on the schedule page
-    ['earlyMonth2','earlyAmount2','prepaymentPenalty2'].forEach(id=>{
+    // Clear visible duplicated controls on the schedule page
+    ['loanAmount2','loanTerm2','annualRate2','repaymentMethod2','startDate2','feeAmount2','feeMethod2','earlyMonth2','earlyAmount2','prepaymentPenalty2'].forEach(id=>{
       const el=document.getElementById(id);
-      if(el)el.value='';
+      if(!el)return;
+      if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';
     });
     // Clear tool inputs
     ['irrCashflows','penaltyPrincipal','penaltyDays','penaltyRate'].forEach(id=>{
@@ -1555,6 +1640,7 @@ function clearAllData(){
     el('lpr1').value='';
     el('lpr5').value='';
     updateLprUnitDisplay();
+    syncEmptyStateStyles();
     // Clear schedule display
     const sb=document.getElementById('scheduleBody');if(sb)sb.innerHTML='';
     // Clear comparison display
@@ -1573,8 +1659,9 @@ function clearAllData(){
     const pressureLevel=document.getElementById('pressureLevel');if(pressureLevel)pressureLevel.textContent='∞';
     const sliderMax=document.getElementById('sliderMax');if(sliderMax)sliderMax.textContent='0期';
     const sliderMid=document.getElementById('sliderMid');if(sliderMid)sliderMid.textContent='0期';
+    const feeAPR=document.getElementById('feeAPR');if(feeAPR)feeAPR.textContent='∞';
     // Reset plan badge
-    const pb=document.getElementById('planBadge');if(pb)pb.textContent='演示方案';
+    const pb=document.getElementById('planBadge');if(pb)pb.textContent=plans[0]?plans[0].name:'演示方案';
     // Restore default values for future inputs without saving stale state
     el('loanType').value='normal';
     el('repaymentMethod').value='equal_installment';
@@ -1582,7 +1669,11 @@ function clearAllData(){
     el('loanType2').value='normal';
     el('repaymentMethod2').value='equal_installment';
     el('feeMethod2').value='upfront';
-    toast('数据已清除');
+    savePlans();
+    applyPlan(0);
+    buildCompareTabs();
+    renderCompare();
+    toast('方案数据已清空');
   }catch(e){
     toast('清除失败：'+e.message);
   }
@@ -1610,6 +1701,7 @@ function applyPlan(idx){
   // 刷新所有模块卡片的空态/非空态
   updateAllModuleLabels();
   updateLprUnitDisplay();
+  syncEmptyStateStyles();
   calc();
 }
 function saveCurrentPlan(){
@@ -1643,7 +1735,9 @@ function showPlanSheet(){
   saveCurrentPlan();
   let html='<div class="as-title">方案管理</div>';
   plans.forEach((p,i)=>{
-    html+=`<div class="as-item" onclick="applyPlan(${i});hideOverlay()">${p.name||('方案 '+(i+1))} ${i===currentPlanIdx?'(当前)':''}</div>`;
+    const planName=p.name||('方案 '+(i+1));
+    const currentMark=i===currentPlanIdx?'(当前)':'';
+    html+=`<div class="as-item as-item-row" onclick="applyPlan(${i});hideOverlay()"><span class="as-label">${planName} ${currentMark}</span><span class="as-delete" role="button" aria-label="删除方案" title="删除方案" onclick="event.stopPropagation();deletePlanAt(${i})"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3.75A1.75 1.75 0 0 1 10.75 2h2.5A1.75 1.75 0 0 1 15 3.75V4h3a.75.75 0 0 1 0 1.5h-.75l-.7 11.2A2.25 2.25 0 0 1 14.3 19H9.7a2.25 2.25 0 0 1-2.25-2.3L6.75 5.5H6A.75.75 0 0 1 6 4h3v-.25ZM10.75 3.5a.25.25 0 0 0-.25.25V4h3v-.25a.25.25 0 0 0-.25-.25h-2.5ZM8.25 5.5l.68 11a.75.75 0 0 0 .75.7h4.59a.75.75 0 0 0 .75-.72l.69-10.98h-7.46ZM10 8.25a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75Zm4 0a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75Z"/></svg></span></div>`;
   });
   html+=`<div class="as-item" onclick="addPlan();hideOverlay()">新增方案</div>`;
   html+='<div class="as-cancel" onclick="hideOverlay()">取消</div>';
@@ -1656,6 +1750,27 @@ function addPlan(){
   plans.push({name:'方案 '+n,...NEW_PLAN_TEMPLATE});
   savePlans();
   applyPlan(plans.length-1);
+}
+function deletePlanAt(idx){
+  if(plans.length<=1){
+    toast('至少保留一个方案');
+    return;
+  }
+  if(idx<0||idx>=plans.length)return;
+  const p=plans[idx];
+  const name=p&&p.name?p.name:('方案 '+(idx+1));
+  if(!confirm(`确定删除方案“${name}”吗？`))return;
+  plans.splice(idx,1);
+  if(currentPlanIdx===idx){
+    currentPlanIdx=Math.min(idx,plans.length-1);
+  }else if(currentPlanIdx>idx){
+    currentPlanIdx-=1;
+  }
+  savePlans();
+  hideOverlay();
+  applyPlan(currentPlanIdx);
+  buildCompareTabs();
+  toast('方案已删除');
 }
 function hideOverlay(e){
   if(e&&e.target!==el('overlay'))return;
@@ -1709,6 +1824,51 @@ el('scrollArea').addEventListener('scroll',function(){
 /* ========== Format ========== */
 function fmt(n,d=2){const sign=n<0?'-':'';const s=Math.abs(n).toFixed(d);const p=s.split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');return sign+p[0]+(d>0?'.'+p[1]:'');}
 function el(id){return document.getElementById(id);}
+function setEmptyState(node,className=''){if(!node)return;node.textContent='∞';node.className=(className?className+' ':'')+'empty-state';}
+function setStateText(node,text,className){if(!node)return;node.textContent=text;if(className!==undefined)node.className=className;}
+const EMPTY_STATE_CLASS_MAP={
+  indMonthly:'ind-value empty',
+  indInterest:'ind-value empty',
+  indTotal:'ind-value empty',
+  indAPR:'ind-value empty',
+  insLoanAmount:'capital-value',
+  insFee:'capital-value warn',
+  insNetAmount:'capital-value primary',
+  insNetRatio:'capital-value',
+  insPer10k:'capital-value primary',
+  insPer10kInterest:'capital-value',
+  insPer10kTotal:'capital-value',
+  insMyRate:'capital-value primary',
+  insLPRDiff:'capital-value',
+  insSensDown50:'capital-value good',
+  insSensDown10:'capital-value good',
+  insSensCurrent:'capital-value primary',
+  insSensUp10:'capital-value warn',
+  insSensUp50:'capital-value warn',
+  legendPrincipal:'',
+  legendInterest:'',
+  scoreValue:'score-value',
+  scoreGrade:'score-label',
+  psPaid:'progress-stat-value',
+  psPrincipal:'progress-stat-value',
+  psInterest:'progress-stat-value',
+  psRemain:'progress-stat-value',
+  pressureLevel:'',
+  feeAPR:'fee-value',
+  feeAPR2:'fee-value',
+  erPaidInterest2:'er-value',
+  erRemain2:'er-value',
+  erSaved2:'er-value',
+  erAPR2:'er-value',
+};
+function syncEmptyStateStyles(){
+  Object.entries(EMPTY_STATE_CLASS_MAP).forEach(([id,base])=>{
+    const node=el(id);
+    if(node&&node.textContent==='∞'){
+      node.className=(base?base+' ':'')+'empty-state';
+    }
+  });
+}
 function toast(msg){const t=el('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1500);}
 
 /* ========== Calc Engine ========== */
@@ -1735,11 +1895,11 @@ function calc(){
     scheduleData=result.schedule;
   }
 
-  el('indMonthly').textContent=monthly>0?fmt(monthly):'--';
+  el('indMonthly').textContent=monthly>0?fmt(monthly):'∞';
   el('indMonthly').classList.toggle('empty',monthly<=0);
-  el('indInterest').textContent=totalInterest>0?fmt(totalInterest):'--';
+  el('indInterest').textContent=totalInterest>0?fmt(totalInterest):'∞';
   el('indInterest').classList.toggle('empty',totalInterest<=0);
-  el('indTotal').textContent=totalPayment>0?fmt(totalPayment):'--';
+  el('indTotal').textContent=totalPayment>0?fmt(totalPayment):'∞';
   el('indTotal').classList.toggle('empty',totalPayment<=0);
 
   // APR with fee
@@ -1749,7 +1909,7 @@ function calc(){
   if(fee>0){
     apr=calcAPR(P,n,monthly,fee,feeM);
   }
-  el('indAPR').textContent=apr>0?apr.toFixed(2)+'%':'--';
+  el('indAPR').textContent=apr>0?apr.toFixed(2)+'%':'∞';
   el('indAPR').classList.toggle('empty',apr<=0);
 
   // Fee result
@@ -1917,7 +2077,17 @@ function calcEarly(){
   const ea=getNum('earlyAmount');
   const penaltyRate=(getNum('prepaymentPenalty'))/100;
   const earlyResultEl=getEl('earlyResult');
-  if(P<=0||n<=0||ar<=0||em<=0||ea<=0){if(earlyResultEl)earlyResultEl.style.display='none';return;}
+  if(P<=0||n<=0||ar<=0||em<=0||ea<=0){
+    ['earlyResult','earlyResult2'].forEach(id=>{
+      const node=document.getElementById(id);
+      if(node)node.style.display='none';
+    });
+    ['erPaidInterest','erRemain','erSaved','erAPR','erPaidInterest2','erRemain2','erSaved2','erAPR2'].forEach(id=>{
+      const node=document.getElementById(id);
+      if(node)setEmptyState(node, node.className.split(' ').filter(Boolean).find(c=>c!=='empty-state')||'er-value');
+    });
+    return;
+  }
   const result=calcMethod(P,n,r,method);
   const sched=result.schedule;
   if(em>sched.length){if(earlyResultEl)earlyResultEl.style.display='none';return;}
@@ -1953,15 +2123,15 @@ function calcEarlyAPR(P,totalPaid,months){
 function calcPressure(){
   const income=parseFloat(stripNumberFormatting(el('monthlyIncome').value))||0;
   const monthly=parseFloat(el('indMonthly').textContent.replace(/,/g,''))||0;
-  if(income<=0||monthly<=0){el('pressureBar').style.width='0%';el('pressurePct').textContent='0%';el('pressureLevel').textContent='∞';return;}
+  if(income<=0||monthly<=0){el('pressureBar').style.width='0%';el('pressurePct').textContent='0%';setEmptyState(el('pressureLevel'));return;}
   const pct=Math.min(monthly/income*100,100);
   el('pressureBar').style.width=pct+'%';
   el('pressurePct').textContent=pct.toFixed(1)+'%';
   const bar=el('pressureBar');
   bar.className='pressure-bar-fill';
-  if(pct<=30){el('pressureLevel').textContent='轻松';bar.classList.add('');}
-  else if(pct<=50){el('pressureLevel').textContent='适中';bar.classList.add('warn');}
-  else{el('pressureLevel').textContent='压力较大';bar.classList.add('danger');}
+  if(pct<=30){setStateText(el('pressureLevel'),'轻松','');bar.classList.add('');}
+  else if(pct<=50){setStateText(el('pressureLevel'),'适中','');bar.classList.add('warn');}
+  else{setStateText(el('pressureLevel'),'压力较大','');bar.classList.add('danger');}
 }
 
 /* ========== Insights ========== */
@@ -1985,7 +2155,7 @@ function calcInsights(){
   const insRatioEl=el('insNetRatio');
   const noDataText='∞';
   if(P>0){
-    if(insLoanEl)insLoanEl.textContent=fmt(P,0)+' 元';
+    setStateText(insLoanEl, fmt(P,0)+' 元', 'capital-value');
     let netAmount=P;
     if(feeM==='deduct'){
       netAmount=P-fee;
@@ -1993,23 +2163,20 @@ function calcInsights(){
     const netRatio=netAmount/P*100;
     if(insFeeEl){
       if(feeM==='deduct'&&fee>0){
-        insFeeEl.textContent='-'+fmt(fee,0)+' 元';
-        insFeeEl.className='insight-value warn';
+        setStateText(insFeeEl, '-'+fmt(fee,0)+' 元', 'capital-value warn');
       }else{
-        insFeeEl.textContent=feeM==='deduct'?'0 元':fmt(fee,0)+' 元';
-        insFeeEl.className='insight-value';
+        setStateText(insFeeEl, feeM==='deduct'?'0 元':fmt(fee,0)+' 元', 'capital-value');
       }
     }
-    if(insNetEl)insNetEl.textContent=fmt(netAmount,0)+' 元';
+    setStateText(insNetEl, fmt(netAmount,0)+' 元', 'capital-value primary');
     if(insRatioEl){
-      insRatioEl.textContent=netRatio.toFixed(1)+'%';
-      insRatioEl.className='insight-value '+(netRatio<95?'warn':'');
+      setStateText(insRatioEl, netRatio.toFixed(1)+'%', 'capital-value '+(netRatio<95?'warn':''));
     }
   }else{
-    if(insLoanEl)insLoanEl.textContent=noDataText;
-    if(insFeeEl)insFeeEl.textContent=noDataText;
-    if(insNetEl)insNetEl.textContent=noDataText;
-    if(insRatioEl)insRatioEl.textContent=noDataText;
+    setEmptyState(insLoanEl, 'capital-value');
+    setEmptyState(insFeeEl, 'capital-value warn');
+    setEmptyState(insNetEl, 'capital-value primary');
+    setEmptyState(insRatioEl, 'capital-value');
   }
 
   // 2. 每万月供
@@ -2020,13 +2187,13 @@ function calcInsights(){
     const per10k=monthly/P*10000;
     const per10kInt=result.totalInterest/P*10000;
     const per10kTotal=result.totalPayment/P*10000;
-    if(per10kEl)per10kEl.textContent=fmt(per10k)+' 元';
-    if(per10kIntEl)per10kIntEl.textContent=fmt(per10kInt)+' 元';
-    if(per10kTotalEl)per10kTotalEl.textContent=fmt(per10kTotal)+' 元';
+    setStateText(per10kEl, fmt(per10k)+' 元', 'capital-value primary');
+    setStateText(per10kIntEl, fmt(per10kInt)+' 元', 'capital-value');
+    setStateText(per10kTotalEl, fmt(per10kTotal)+' 元', 'capital-value');
   }else{
-    if(per10kEl)per10kEl.textContent=noDataText;
-    if(per10kIntEl)per10kIntEl.textContent=noDataText;
-    if(per10kTotalEl)per10kTotalEl.textContent=noDataText;
+    setEmptyState(per10kEl, 'capital-value primary');
+    setEmptyState(per10kIntEl, 'capital-value');
+    setEmptyState(per10kTotalEl, 'capital-value');
   }
 
   // 3. 利息占比可视化
@@ -2059,21 +2226,18 @@ function calcInsights(){
   const myRateEl=el('insMyRate');
   const lprDiffEl=el('insLPRDiff');
   if(ar>0){
-    if(myRateEl)myRateEl.textContent=ar.toFixed(2)+'%';
+    setStateText(myRateEl, ar.toFixed(2)+'%', 'capital-value primary');
     const diff=ar-LPR5;
     if(lprDiffEl){
-      lprDiffEl.textContent=(diff>=0?'+':'')+diff.toFixed(2)+'%';
-      lprDiffEl.className='insight-value '+(diff>0?'bad':diff<-0.5?'good':'');
+      if(LPR5>0){
+        setStateText(lprDiffEl, (diff>=0?'+':'')+diff.toFixed(2)+'%', 'capital-value '+(diff>0?'bad':diff<-0.5?'good':''));
+      }else{
+        setEmptyState(lprDiffEl, 'capital-value');
+      }
     }
   }else{
-    if(myRateEl){
-      myRateEl.textContent=noDataText;
-      myRateEl.className='insight-value';
-    }
-    if(lprDiffEl){
-      lprDiffEl.textContent=noDataText;
-      lprDiffEl.className='insight-value';
-    }
+    setEmptyState(myRateEl, 'capital-value primary');
+    setEmptyState(lprDiffEl, 'capital-value');
   }
 
   // 5. 利率敏感度
@@ -2085,15 +2249,12 @@ function calcInsights(){
       const res=calcMethod(P,n,newR,method);
       const el_=el(ids[i]);
       if(el_){
-        el_.textContent=fmt(res.monthly)+' 元';
-        if(d===0)el_.className='insight-value primary';
-        else if(d<0)el_.className='insight-value good';
-        else el_.className='insight-value bad';
+        setStateText(el_, fmt(res.monthly)+' 元', 'capital-value '+(d===0?'primary':d<0?'good':'warn'));
       }
     });
   }else{
     ['insSensDown50','insSensDown10','insSensCurrent','insSensUp10','insSensUp50'].forEach(id=>{
-      const el_=el(id);if(el_){el_.textContent=noDataText;el_.className='insight-value';}
+      const el_=el(id);if(el_){setEmptyState(el_, 'capital-value');}
     });
   }
 
@@ -2129,16 +2290,17 @@ function calcInsights(){
     else if(score>=40){grade='C';desc='贷款成本偏高，建议比较';color='grade-c';}
     else{grade='D';desc='贷款成本很高，谨慎选择';color='grade-d';}
     
-    if(scoreValEl)scoreValEl.textContent=score;
-    if(scoreGradeEl)scoreGradeEl.textContent=grade;
+    setStateText(scoreValEl, score, 'score-value');
+    setStateText(scoreGradeEl, grade, 'score-label');
     if(scoreCircleEl){scoreCircleEl.className='score-circle '+color;}
     if(scoreDescEl)scoreDescEl.textContent=desc;
   }else{
-    if(scoreValEl)scoreValEl.textContent='∞';
-    if(scoreGradeEl)scoreGradeEl.textContent='∞';
+    setEmptyState(scoreValEl, 'score-value');
+    setEmptyState(scoreGradeEl, 'score-label');
     if(scoreCircleEl)scoreCircleEl.className='score-circle';
     if(scoreDescEl)scoreDescEl.textContent='输入贷款参数后自动评估';
   }
+  syncEmptyStateStyles();
 }
 
 /* ========== Progress Simulation ========== */
@@ -2157,7 +2319,7 @@ function updateProgressSim(){
   
   if(P<=0||n<=0||ar<=0){
     ['psPaid','psPrincipal','psInterest','psRemain'].forEach(id=>{
-      const el_=el(id);if(el_)el_.textContent='∞';
+      const el_=el(id);if(el_)setEmptyState(el_, 'progress-stat-value');
     });
     el('progressBarFill').style.width='0%';
     el('progressBarText').textContent='还款进度 0%';
@@ -2179,10 +2341,10 @@ function updateProgressSim(){
   const remain=paidPeriods>0?sched[paidPeriods-1].remain:P;
   
   // 更新显示
-  el('psPaid').textContent=fmt(paidTotal,0)+'元';
-  el('psPrincipal').textContent=fmt(paidPrincipal,0)+'元';
-  el('psInterest').textContent=fmt(paidInterest)+'元';
-  el('psRemain').textContent=fmt(remain,0)+'元';
+  setStateText(el('psPaid'), fmt(paidTotal,0)+'元', 'progress-stat-value');
+  setStateText(el('psPrincipal'), fmt(paidPrincipal,0)+'元', 'progress-stat-value');
+  setStateText(el('psInterest'), fmt(paidInterest)+'元', 'progress-stat-value');
+  setStateText(el('psRemain'), fmt(remain,0)+'元', 'progress-stat-value');
   
   // 进度条
   const progress=paidPeriods/n*100;
@@ -2307,7 +2469,7 @@ function renderSchedule(){
   let sumP=0,sumI=0;
   scheduleData.forEach(row=>{
     sumP+=row.principal;sumI+=row.interest;
-    html+=`<div class="schedule-row"><span class="sr-num">${row.i}</span><span>${row.date||'--'}</span><span>${fmt(row.payment)}</span><span>${fmt(row.principal)}</span><span>${fmt(row.interest)}</span><span>${fmt(row.remain)}</span></div>`;
+    html+=`<div class="schedule-row"><span class="sr-num">${row.i}</span><span>${row.date||'∞'}</span><span>${fmt(row.payment)}</span><span>${fmt(row.principal)}</span><span>${fmt(row.interest)}</span><span>${fmt(row.remain)}</span></div>`;
   });
   html+=`<div class="schedule-row"><span class="sr-num">合计</span><span></span><span>${fmt(sumP+sumI)}</span><span>${fmt(sumP)}</span><span>${fmt(sumI)}</span><span></span></div>`;
   el('scheduleBody').innerHTML=html;
