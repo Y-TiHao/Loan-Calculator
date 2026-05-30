@@ -147,6 +147,8 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 .capital-label{font-size:12px;color:#8E8E93;font-weight:400}
 .capital-value{font-size:14px;color:#E0E0E0;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
 .capital-value.primary{color:#0A84FF;font-size:15px;font-weight:700}
+.capital-input{width:72px;max-width:72px;text-align:right;border:none;background:transparent;outline:none;color:#E0E0E0;font:inherit;font-weight:600;font-variant-numeric:tabular-nums;padding:0}
+.capital-input.primary{color:#0A84FF;font-weight:700}
 .capital-row:last-child{border-bottom:none}
 .capital-value.warn{color:#FF9500}
 .capital-value.good{color:#30D158}
@@ -651,7 +653,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
       <div class="nav-manage-btn" id="manageToggle" onclick="toggleManageMode()" title="卡片管理">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
       </div>
-      <div class="plan-badge" id="planBadge" onclick="showPlanSheet()">方案 1</div>
+      <div class="plan-badge" id="planBadge" onclick="showPlanSheet()">演示方案</div>
       <div class="nav-btn" onclick="showPlanSheet()" title="方案管理">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
       </div>
@@ -880,11 +882,11 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
       <div class="capital-item-body">
         <div class="capital-row">
           <span class="capital-label">LPR(1年期)</span>
-          <span class="capital-value" id="insLPR1">3.10%</span>
+          <div class="row-right"><input type="text" inputmode="decimal" class="capital-input" id="lpr1" value="3.10" onfocus="formatEditableNumberInput(this,false)" onblur="formatEditableNumberInput(this,true);calc();onParamChange(this);" oninput="calc();onParamChange(this);"><span class="unit" id="lpr1Unit">%</span></div>
         </div>
         <div class="capital-row">
           <span class="capital-label">LPR(5年期)</span>
-          <span class="capital-value" id="insLPR5">3.60%</span>
+          <div class="row-right"><input type="text" inputmode="decimal" class="capital-input" id="lpr5" value="3.60" onfocus="formatEditableNumberInput(this,false)" onblur="formatEditableNumberInput(this,true);calc();onParamChange(this);" oninput="calc();onParamChange(this);"><span class="unit" id="lpr5Unit">%</span></div>
         </div>
         <div class="capital-row">
           <span class="capital-label">你的利率</span>
@@ -1349,6 +1351,30 @@ const SPECIAL_FIELDS = {
   social:[{id:'socMonths',label:'社保缴纳月数',unit:'月'},{id:'socCity',label:'缴纳城市'}],
   fundcredit:[{id:'fcMonths',label:'公积金月数',unit:'月'},{id:'fcMonthly',label:'月缴金额',unit:'元'}]
 };
+const DEMO_PLAN_TEMPLATE={
+  loanType:'normal',
+  loanAmount:130000,
+  loanTerm:24,
+  annualRate:4.65,
+  repaymentMethod:'equal_installment',
+  startDate:'2022-07-01',
+  feeAmount:0,
+  feeMethod:'upfront',
+  monthlyIncome:10000,
+  special:{}
+};
+const NEW_PLAN_TEMPLATE={
+  loanType:'normal',
+  loanAmount:'',
+  loanTerm:'',
+  annualRate:'',
+  repaymentMethod:'equal_installment',
+  startDate:'',
+  feeAmount:'',
+  feeMethod:'upfront',
+  monthlyIncome:'',
+  special:{}
+};
 
 /* ========== Cross-page Value Helper ========== */
 // 可同步的参数列表（概览页 ↔ 明细页）
@@ -1378,6 +1404,15 @@ function formatEditableNumberInput(input,format=true){
   }else{
     input.value=stripNumberFormatting(input.value);
   }
+}
+
+function updateLprUnitDisplay(){
+  const lpr1=el('lpr1');
+  const lpr5=el('lpr5');
+  const lpr1Unit=el('lpr1Unit');
+  const lpr5Unit=el('lpr5Unit');
+  if(lpr1Unit)lpr1Unit.textContent=stripNumberFormatting(lpr1&&lpr1.value)?'%':'∞';
+  if(lpr5Unit)lpr5Unit.textContent=stripNumberFormatting(lpr5&&lpr5.value)?'%':'∞';
 }
 
 function getVal(id){
@@ -1419,6 +1454,7 @@ function onParamChange(srcEl){
   const id=srcEl.id;
   const baseId=id.replace(/2$/,'');
   if(!SYNC_PARAMS.includes(baseId))return;
+  if(baseId==='lpr1'||baseId==='lpr5')updateLprUnitDisplay();
   updateModuleLabels(srcEl);
   // 同步到另一个页面
   const isSchedule=id.endsWith('2');
@@ -1437,18 +1473,23 @@ function onParamChange(srcEl){
 function init(){
   loadPlans();
   if(plans.length===0){
-    plans.push({name:'方案 1',loanType:'normal',loanAmount:130000,loanTerm:24,annualRate:4.65,repaymentMethod:'equal_installment',startDate:'2022-07-01',feeAmount:0,feeMethod:'upfront',monthlyIncome:10000,special:{}});
+    plans.push({name:'演示方案',...DEMO_PLAN_TEMPLATE});
     savePlans();
   }
   applyPlan(0);
   buildCompareTabs();
   calc();
+  updateLprUnitDisplay();
   initModuleLabels();
 }
 
 /* ========== Plans ========== */
 function loadPlans(){
   try{plans=JSON.parse(localStorage.getItem('loanPlans'))||[];}catch(e){plans=[];}
+  if(Array.isArray(plans)&&plans[0]&&plans[0].name==='方案 1'&&plans[0].loanAmount===130000&&plans[0].loanTerm===24&&plans[0].annualRate===4.65){
+    plans[0].name='演示方案';
+    savePlans();
+  }
 }
 function savePlans(){
   localStorage.setItem('loanPlans',JSON.stringify(plans));
@@ -1473,6 +1514,11 @@ function clearAllData(){
       if(!el)return;
       if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';
     });
+    // Clear visible early-repayment controls on the schedule page
+    ['earlyMonth2','earlyAmount2','prepaymentPenalty2'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.value='';
+    });
     // Clear tool inputs
     ['irrCashflows','penaltyPrincipal','penaltyDays','penaltyRate'].forEach(id=>{
       const el=document.getElementById(id);
@@ -1486,12 +1532,29 @@ function clearAllData(){
     // Reset indicator cards
     ['indMonthly','indInterest','indTotal','indAPR'].forEach(id=>{
       const elv=document.getElementById(id);
-      if(elv){elv.textContent='--';elv.classList.add('empty');}
+      if(elv){elv.textContent='∞';elv.classList.add('empty');}
     });
+    const ratioP=document.getElementById('ratioPrincipal');if(ratioP)ratioP.style.width='0%';
+    const ratioI=document.getElementById('ratioInterest');if(ratioI)ratioI.style.width='0%';
+    const ratioPText=document.getElementById('ratioPrincipalText');if(ratioPText)ratioPText.textContent='本金';
+    const ratioIText=document.getElementById('ratioInterestText');if(ratioIText)ratioIText.textContent='利息';
+    const legendP=document.getElementById('legendPrincipal');if(legendP)legendP.textContent='∞';
+    const legendI=document.getElementById('legendInterest');if(legendI)legendI.textContent='∞';
+    const scoreVal=document.getElementById('scoreValue');if(scoreVal)scoreVal.textContent='∞';
+    const scoreGrade=document.getElementById('scoreGrade');if(scoreGrade)scoreGrade.textContent='∞';
+    const scoreCircle=document.getElementById('scoreCircle');if(scoreCircle)scoreCircle.className='score-circle';
     ['feeResult','feeResult2','earlyResult','earlyResult2','irrResult','penaltyResult'].forEach(id=>{
       const node=document.getElementById(id);
       if(node)node.style.display='none';
     });
+    const feeAPR2=document.getElementById('feeAPR2');if(feeAPR2)feeAPR2.textContent='∞';
+    const erPaid2=document.getElementById('erPaidInterest2');if(erPaid2)erPaid2.textContent='∞';
+    const erRemain2=document.getElementById('erRemain2');if(erRemain2)erRemain2.textContent='∞';
+    const erSaved2=document.getElementById('erSaved2');if(erSaved2)erSaved2.textContent='∞';
+    const erAPR2=document.getElementById('erAPR2');if(erAPR2)erAPR2.textContent='∞';
+    el('lpr1').value='';
+    el('lpr5').value='';
+    updateLprUnitDisplay();
     // Clear schedule display
     const sb=document.getElementById('scheduleBody');if(sb)sb.innerHTML='';
     // Clear comparison display
@@ -1500,16 +1563,18 @@ function clearAllData(){
     renderCompare();
     // Reset simulation and pressure UI
     const ps=['psPaid','psPrincipal','psInterest','psRemain'];
-    ps.forEach(id=>{const node=document.getElementById(id);if(node)node.textContent='--';});
+    ps.forEach(id=>{const node=document.getElementById(id);if(node)node.textContent='∞';});
     const pbar=document.getElementById('progressBarFill');if(pbar)pbar.style.width='0%';
     const ptext=document.getElementById('progressBarText');if(ptext)ptext.textContent='还款进度 0%';
     const pslider=document.getElementById('progressSlider');if(pslider)pslider.value='0';
     const pval=document.getElementById('sliderValue');if(pval)pval.textContent='0 期';
     const pressureBar=document.getElementById('pressureBar');if(pressureBar){pressureBar.style.width='0%';pressureBar.className='pressure-bar-fill';}
     const pressurePct=document.getElementById('pressurePct');if(pressurePct)pressurePct.textContent='0%';
-    const pressureLevel=document.getElementById('pressureLevel');if(pressureLevel)pressureLevel.textContent='--';
+    const pressureLevel=document.getElementById('pressureLevel');if(pressureLevel)pressureLevel.textContent='∞';
+    const sliderMax=document.getElementById('sliderMax');if(sliderMax)sliderMax.textContent='0期';
+    const sliderMid=document.getElementById('sliderMid');if(sliderMid)sliderMid.textContent='0期';
     // Reset plan badge
-    const pb=document.getElementById('planBadge');if(pb)pb.textContent='方案 1';
+    const pb=document.getElementById('planBadge');if(pb)pb.textContent='演示方案';
     // Restore default values for future inputs without saving stale state
     el('loanType').value='normal';
     el('repaymentMethod').value='equal_installment';
@@ -1544,22 +1609,14 @@ function applyPlan(idx){
   onTypeChange();
   // 刷新所有模块卡片的空态/非空态
   updateAllModuleLabels();
+  updateLprUnitDisplay();
   calc();
 }
 function saveCurrentPlan(){
   if(!plans[currentPlanIdx]){
     plans[currentPlanIdx]={
-      name:'方案 1',
-      loanType:'normal',
-      loanAmount:'',
-      loanTerm:'',
-      annualRate:'',
-      repaymentMethod:'equal_installment',
-      startDate:'',
-      feeAmount:'',
-      feeMethod:'upfront',
-      monthlyIncome:'',
-      special:{},
+      name:'演示方案',
+      ...DEMO_PLAN_TEMPLATE,
     };
   }
   const p=plans[currentPlanIdx];
@@ -1595,8 +1652,8 @@ function showPlanSheet(){
 }
 function addPlan(){
   const n=plans.length+1;
-  // 新方案创建时所有数值字段为空，等待用户填写
-  plans.push({name:'方案 '+n,loanType:'normal',loanAmount:'',loanTerm:'',annualRate:'',repaymentMethod:'equal_installment',startDate:'',feeAmount:'',feeMethod:'upfront',monthlyIncome:'',special:{}});
+  // 新方案创建时清空数值，避免继承旧方案数据
+  plans.push({name:'方案 '+n,...NEW_PLAN_TEMPLATE});
   savePlans();
   applyPlan(plans.length-1);
 }
@@ -1896,7 +1953,7 @@ function calcEarlyAPR(P,totalPaid,months){
 function calcPressure(){
   const income=parseFloat(stripNumberFormatting(el('monthlyIncome').value))||0;
   const monthly=parseFloat(el('indMonthly').textContent.replace(/,/g,''))||0;
-  if(income<=0||monthly<=0){el('pressureBar').style.width='0%';el('pressurePct').textContent='0%';el('pressureLevel').textContent='--';return;}
+  if(income<=0||monthly<=0){el('pressureBar').style.width='0%';el('pressurePct').textContent='0%';el('pressureLevel').textContent='∞';return;}
   const pct=Math.min(monthly/income*100,100);
   el('pressureBar').style.width=pct+'%';
   el('pressurePct').textContent=pct.toFixed(1)+'%';
@@ -1918,12 +1975,15 @@ function calcInsights(){
   const feeM=getVal('feeMethod');
   const result=(P>0&&n>0&&ar>0)?calcMethod(P,n,r,method):null;
   const monthly=result?result.monthly:0;
+  const LPR1=parseFloat(stripNumberFormatting(el('lpr1').value))||0;
+  const LPR5=parseFloat(stripNumberFormatting(el('lpr5').value))||0;
 
   // 1. 实际到手金额
   const insLoanEl=el('insLoanAmount');
   const insFeeEl=el('insFee');
   const insNetEl=el('insNetAmount');
   const insRatioEl=el('insNetRatio');
+  const noDataText='∞';
   if(P>0){
     if(insLoanEl)insLoanEl.textContent=fmt(P,0)+' 元';
     let netAmount=P;
@@ -1946,7 +2006,10 @@ function calcInsights(){
       insRatioEl.className='insight-value '+(netRatio<95?'warn':'');
     }
   }else{
-    [insLoanEl,insFeeEl,insNetEl,insRatioEl].forEach(e=>{if(e)e.textContent='--'});
+    if(insLoanEl)insLoanEl.textContent=noDataText;
+    if(insFeeEl)insFeeEl.textContent=noDataText;
+    if(insNetEl)insNetEl.textContent=noDataText;
+    if(insRatioEl)insRatioEl.textContent=noDataText;
   }
 
   // 2. 每万月供
@@ -1961,9 +2024,9 @@ function calcInsights(){
     if(per10kIntEl)per10kIntEl.textContent=fmt(per10kInt)+' 元';
     if(per10kTotalEl)per10kTotalEl.textContent=fmt(per10kTotal)+' 元';
   }else{
-    if(per10kEl)per10kEl.textContent='--';
-    if(per10kIntEl)per10kIntEl.textContent='--';
-    if(per10kTotalEl)per10kTotalEl.textContent='--';
+    if(per10kEl)per10kEl.textContent=noDataText;
+    if(per10kIntEl)per10kIntEl.textContent=noDataText;
+    if(per10kTotalEl)per10kTotalEl.textContent=noDataText;
   }
 
   // 3. 利息占比可视化
@@ -1993,14 +2056,8 @@ function calcInsights(){
   }
 
   // 4. LPR对比
-  const LPR1=3.10; // 1年期LPR（2024年参考值）
-  const LPR5=3.60; // 5年期LPR
-  const lpr1El=el('insLPR1');
-  const lpr5El=el('insLPR5');
   const myRateEl=el('insMyRate');
   const lprDiffEl=el('insLPRDiff');
-  if(lpr1El)lpr1El.textContent=LPR1.toFixed(2)+'%';
-  if(lpr5El)lpr5El.textContent=LPR5.toFixed(2)+'%';
   if(ar>0){
     if(myRateEl)myRateEl.textContent=ar.toFixed(2)+'%';
     const diff=ar-LPR5;
@@ -2009,8 +2066,14 @@ function calcInsights(){
       lprDiffEl.className='insight-value '+(diff>0?'bad':diff<-0.5?'good':'');
     }
   }else{
-    if(myRateEl)myRateEl.textContent='--';
-    if(lprDiffEl)lprDiffEl.textContent='--';
+    if(myRateEl){
+      myRateEl.textContent=noDataText;
+      myRateEl.className='insight-value';
+    }
+    if(lprDiffEl){
+      lprDiffEl.textContent=noDataText;
+      lprDiffEl.className='insight-value';
+    }
   }
 
   // 5. 利率敏感度
@@ -2030,7 +2093,7 @@ function calcInsights(){
     });
   }else{
     ['insSensDown50','insSensDown10','insSensCurrent','insSensUp10','insSensUp50'].forEach(id=>{
-      const el_=el(id);if(el_){el_.textContent='--';el_.className='insight-value';}
+      const el_=el(id);if(el_){el_.textContent=noDataText;el_.className='insight-value';}
     });
   }
 
@@ -2071,8 +2134,8 @@ function calcInsights(){
     if(scoreCircleEl){scoreCircleEl.className='score-circle '+color;}
     if(scoreDescEl)scoreDescEl.textContent=desc;
   }else{
-    if(scoreValEl)scoreValEl.textContent='--';
-    if(scoreGradeEl)scoreGradeEl.textContent='--';
+    if(scoreValEl)scoreValEl.textContent='∞';
+    if(scoreGradeEl)scoreGradeEl.textContent='∞';
     if(scoreCircleEl)scoreCircleEl.className='score-circle';
     if(scoreDescEl)scoreDescEl.textContent='输入贷款参数后自动评估';
   }
@@ -2094,7 +2157,7 @@ function updateProgressSim(){
   
   if(P<=0||n<=0||ar<=0){
     ['psPaid','psPrincipal','psInterest','psRemain'].forEach(id=>{
-      const el_=el(id);if(el_)el_.textContent='--';
+      const el_=el(id);if(el_)el_.textContent='∞';
     });
     el('progressBarFill').style.width='0%';
     el('progressBarText').textContent='还款进度 0%';
