@@ -168,7 +168,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 .combined-item .module-label{font-size:14px;color:var(--text-secondary);font-weight:500;line-height:1.3;white-space:nowrap}
 .combined-item .module-label-en{font-size:10px;color:var(--text-tertiary);font-weight:500;text-transform:uppercase;letter-spacing:.03em;line-height:1.2;white-space:nowrap}
 .combined-item .module-value{display:flex;align-items:center;justify-content:center;gap:1px;margin-top:4px}
-.combined-item .module-value select{font-size:15px;font-weight:600;color:var(--accent);text-align:center;border:none;background:transparent;outline:none;-webkit-appearance:none;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:0;direction:ltr}
+.combined-item .module-value select{font-size:15px;font-weight:600;color:var(--accent);text-align:center;text-align-last:center;-webkit-text-align-last:center;border:none;background:transparent;outline:none;-webkit-appearance:none;cursor:pointer;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0;direction:ltr}
 .combined-item .module-value select option{color:var(--select-option-color);background:var(--select-option-bg);text-align:center}
 .combined-item .module-value input[type="date"]{font-size:14px;font-weight:500;color:var(--text-primary);text-align:center;border:none;background:transparent;outline:none;-webkit-user-select:auto;user-select:auto;pointer-events:auto;min-width:0;width:100%;flex:1}
 .combined-divider{width:.5px;background:rgba(255,255,255,0.1);flex-shrink:0;align-self:stretch;margin:4px 0}
@@ -181,8 +181,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 .combined-item:not(.is-empty) .module-label{font-size:11px;color:var(--text-tertiary);font-weight:500}
 .combined-item:not(.is-empty) .module-label-en{font-size:8px;color:#48484A}
 .param-module{background:var(--bg-secondary);border-radius:14px;padding:12px;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;min-width:0;position:relative;height:auto;min-height:90px;overflow:hidden}
-.param-module:active{cursor:grabbing}
-.param-module.dragging{opacity:.8;transform:scale(1.02);box-shadow:0 8px 24px rgba(0,0,0,0.3);z-index:100}
+.param-module:active{opacity:.9}
 .param-module.readonly{background:var(--bg-tertiary)}
 .module-content{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0;gap:2px;width:100%;position:relative;min-width:0}
 .module-label{font-size:10px;color:var(--text-secondary);font-weight:500;margin-bottom:1px;transition:font-size .25s,color .25s;line-height:1.3;text-align:center;white-space:nowrap}
@@ -3343,7 +3342,7 @@ function initSectionDrag(){
 
 /* ========== Start ========== */
 init();
-initDragSort();
+// initDragSort(); // 已禁用：参数卡片不允许随意拖拽移动
 initCardManage();
 </script>
 </body>
