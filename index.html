@@ -118,7 +118,8 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 .scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overflow-x:hidden;padding-bottom:calc(72px + env(safe-area-inset-bottom,0px));background:var(--bg-primary)}
 
 /* Nav Bar */
-.nav-bar{position:sticky;top:0;z-index:100;background:var(--bg-nav);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:0 var(--edge);transition:all .25s ease;border-bottom:.5px solid var(--border-color)}
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--bg-nav);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:0 var(--edge);transition:all .25s ease;border-bottom:.5px solid var(--border-color);transform:translateZ(0)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.nav-bar{background:var(--bg-primary)}}
 .nav-bar .nav-row{display:flex;align-items:center;justify-content:space-between;height:44px}
 .nav-bar .nav-title-small{font-size:17px;font-weight:600;color:var(--text-primary);opacity:0;transition:opacity .25s}
 .nav-bar.nav-compact .nav-title-small{opacity:1}
@@ -162,7 +163,14 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 /* highlight 仅对非空值生效 */
 .indicator-card.highlight .ind-value:not(.empty){color:var(--accent)}
 /* High cost warning */
-.high-cost-warning{margin:10px var(--edge) 0;padding:12px var(--edge);background:var(--color-warn-bg);border-radius:10px;border-left:3px solid var(--color-warn)}
+.high-cost-warning{margin:10px var(--edge) 0;padding:12px var(--edge);background:var(--color-warn-bg);border-radius:10px;border-left:3px solid var(--color-warn);font-size:13px;color:var(--text-secondary);line-height:1.6;display:flex;align-items:flex-start;gap:8px}
+.high-cost-warning::before{content:'⚠️';flex-shrink:0;font-size:14px;margin-top:1px}
+.input-validation-msg{font-size:11px;padding:2px 4px;border-radius:4px;margin-top:2px;display:none}
+.input-validation-msg.show{display:block}
+.input-validation-msg.error{color:var(--color-bad)}
+.input-validation-msg.warn{color:var(--color-warn)}
+.param-module.input-error{box-shadow:0 0 0 1px var(--color-bad);animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 
 /* Modular Param Cards */
 .params-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--gap);padding:0 var(--edge)}
@@ -337,15 +345,18 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 .schedule-header span{text-align:right}
 .schedule-header span:first-child{text-align:center}
 .schedule-header span:nth-child(2){text-align:left}
-.schedule-body{max-height:400px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.schedule-body{max-height:400px;overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateZ(0)}
 @media(min-width:768px){.schedule-body{max-height:600px}}
-.schedule-row{display:grid;grid-template-columns:32px 1fr 1fr 1fr 1fr 1fr;padding:9px 10px;font-size:13px;color:var(--text-primary);border-bottom:.5px solid var(--border-color-light);line-height:1.5}
+.schedule-row{display:grid;grid-template-columns:32px 1fr 1fr 1fr 1fr 1fr;padding:9px 10px;font-size:13px;color:var(--text-primary);border-bottom:.5px solid var(--border-color-light);line-height:1.5;transition:background .15s}
 .schedule-row span{text-align:right;font-variant-numeric:tabular-nums}
 .schedule-row .sr-num{text-align:center;color:var(--text-secondary);font-size:12px}
 .schedule-row span:nth-child(2){text-align:left;font-size:12px;color:var(--text-secondary)}
-.schedule-row:last-child{font-weight:600;background:var(--manage-bar-bg);color:var(--accent)}
+.schedule-row:hover{background:var(--accent-bg-active)}
+.schedule-row:last-child{font-weight:700;background:var(--accent-bg);color:var(--accent);border-top:1px solid var(--border-color-medium);border-bottom:none}
 .schedule-row:last-child .sr-num{color:var(--accent)}
-.schedule-row:last-child span:nth-child(2){color:var(--accent)}
+.schedule-row:last-child span:nth-child(2){color:var(--accent);font-weight:700}
+.schedule-row.sr-subtotal{background:var(--bg-tertiary);font-weight:500;color:var(--text-secondary);font-size:12px}
+.schedule-row.sr-subtotal .sr-num{color:var(--text-tertiary)}
 
 /* Tool Cards */
 .tool-grid{display:grid;grid-template-columns:1fr;gap:var(--gap);padding:0 var(--edge)}
@@ -363,6 +374,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 
 /* Tab Bar - 浮动胶囊式设计 */
 .tab-bar{position:fixed;bottom:calc(8px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:2px;padding:6px 8px;background:var(--bg-tab-bar);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);border-radius:22px;border:.5px solid var(--border-color);box-shadow:0 4px 24px rgba(0,0,0,0.15),0 0 0 .5px var(--border-color-light) inset;z-index:200;max-width:calc(100vw - 32px);width:auto}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.tab-bar{background:var(--bg-secondary);box-shadow:0 4px 24px rgba(0,0,0,0.2)}}
 .tab-bar .tab-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:6px 14px;border-radius:16px;-webkit-tap-highlight-color:transparent;transition:background .3s ease,transform .15s ease;position:relative;min-width:52px}
 .tab-bar .tab-item svg{width:22px;height:22px;color:var(--text-tertiary);transition:color .3s ease}
 .tab-bar .tab-item span{font-size:10px;color:var(--text-tertiary);font-weight:500;transition:color .3s ease,opacity .3s ease;letter-spacing:.02em}
@@ -427,6 +439,48 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 .action-sheet .as-cancel{margin:8px var(--edge) 8px;padding:12px;text-align:center;font-size:17px;font-weight:600;color:var(--accent);background:var(--bg-tertiary);border-radius:10px;cursor:pointer;min-height:44px;display:flex;align-items:center;justify-content:center}
 .action-sheet .as-cancel:active{opacity:.7}
 
+/* Quick Input Sheet */
+.qi-sheet{background:var(--bg-secondary);border-radius:16px 16px 0 0;width:100%;max-width:560px;margin:0 auto;max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom,20px);animation:slideUp .25s ease}
+.qi-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:.5px solid var(--border-color)}
+.qi-header-title{font-size:17px;font-weight:600;color:var(--text-primary)}
+.qi-header-close{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--seg-bg);color:var(--text-secondary);cursor:pointer;font-size:14px}
+.qi-header-close:active{opacity:.6}
+.qi-steps{display:flex;align-items:center;gap:6px;padding:12px 20px 0}
+.qi-step-dot{width:8px;height:8px;border-radius:50%;background:var(--seg-bg);transition:all .25s}
+.qi-step-dot.active{background:var(--accent);width:20px;border-radius:4px}
+.qi-step-dot.done{background:var(--color-good)}
+.qi-step-label{font-size:12px;color:var(--text-tertiary);margin-left:8px;font-weight:500}
+.qi-body{padding:16px 20px}
+.qi-field{margin-bottom:14px}
+.qi-field-label{font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.qi-field-label .qi-required{color:var(--color-bad);font-size:11px}
+.qi-field-label .qi-optional{color:var(--text-tertiary);font-size:11px;font-weight:400}
+.qi-input-wrap{display:flex;align-items:center;background:var(--bg-tertiary);border-radius:10px;padding:0 12px;border:1.5px solid transparent;transition:border-color .2s}
+.qi-input-wrap:focus-within{border-color:var(--accent)}
+.qi-input-wrap input,.qi-input-wrap select{flex:1;background:none;border:none;outline:none;font-size:16px;font-weight:500;color:var(--text-primary);padding:12px 0;-webkit-appearance:none;appearance:none;min-width:0}
+.qi-input-wrap select{cursor:pointer}
+.qi-input-wrap select option{background:var(--select-option-bg);color:var(--select-option-color)}
+.qi-input-wrap .qi-unit{font-size:13px;color:var(--text-tertiary);font-weight:500;flex-shrink:0;margin-left:4px}
+.qi-fee-toggle{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--bg-tertiary);border-radius:10px;margin-bottom:14px;cursor:pointer}
+.qi-fee-toggle:active{opacity:.7}
+.qi-fee-toggle-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--text-quaternary);display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.qi-fee-toggle-check.checked{background:var(--accent);border-color:var(--accent)}
+.qi-fee-toggle-check.checked::after{content:'✓';color:#fff;font-size:13px;font-weight:700}
+.qi-fee-toggle-text{font-size:14px;color:var(--text-primary);font-weight:500}
+.qi-fee-toggle-hint{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+.qi-fee-fields{display:none;padding:0 0 14px}
+.qi-fee-fields.show{display:block}
+.qi-footer{padding:12px 20px 8px;display:flex;gap:10px}
+.qi-btn{flex:1;padding:14px;border-radius:12px;font-size:16px;font-weight:600;text-align:center;cursor:pointer;transition:all .2s}
+.qi-btn:active{opacity:.7;transform:scale(.98)}
+.qi-btn-primary{background:var(--accent);color:#fff}
+.qi-btn-secondary{background:var(--seg-bg);color:var(--text-primary)}
+.qi-btn-skip{background:none;color:var(--text-tertiary);font-size:14px;font-weight:500;padding:10px}
+.qi-summary{background:var(--bg-tertiary);border-radius:10px;padding:12px 16px;margin-bottom:14px}
+.qi-summary-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:13px}
+.qi-summary-row .label{color:var(--text-secondary)}
+.qi-summary-row .value{color:var(--text-primary);font-weight:600;font-variant-numeric:tabular-nums}
+
 /* Toast */
 .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--toast-bg);color:#fff;padding:12px 24px;border-radius:10px;font-size:15px;z-index:400;pointer-events:none;opacity:0;transition:opacity .3s}
 .toast.show{opacity:1}
@@ -474,6 +528,42 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 .insight-value.good{color:var(--color-good)}
 .insight-value.bad{color:var(--color-bad)}
 .insight-divider{height:1px;background:var(--border-color-medium);margin:0 var(--edge)}
+.insight-subtitle{font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;letter-spacing:0.5px}
+
+/* My Finance Panel */
+.my-finance-toggle{display:flex;align-items:center;gap:6px;padding:10px 12px;margin:8px 0 0;border-radius:8px;background:var(--bg-tertiary);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);transition:background .2s}
+.my-finance-toggle:hover{background:var(--bg-quaternary)}
+.my-finance-toggle-icon{font-size:10px;transition:transform .2s;width:12px;text-align:center}
+.my-finance-toggle.open .my-finance-toggle-icon{transform:rotate(90deg)}
+.my-finance-hint{margin-left:auto;font-size:11px;color:var(--text-tertiary);font-weight:400}
+.my-finance-panel{padding:6px 0 2px}
+.my-finance-panel .capital-item{margin:0 var(--edge)}
+.capital-input::placeholder{color:var(--text-tertiary);font-weight:400;font-size:13px}
+.capital-label.primary{color:var(--accent);font-weight:600}
+.my-finance-add-btn{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;cursor:pointer;transition:transform .15s,opacity .15s;line-height:1}
+.my-finance-add-btn:hover{transform:scale(1.1);opacity:.85}
+.my-finance-add-btn:active{transform:scale(.95)}
+.expense-item-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:.5px solid var(--border-color-light)}
+.expense-item-row .capital-label{flex:1;display:flex;align-items:center;gap:4px}
+.expense-item-row .capital-input{width:72px;max-width:72px}
+.expense-item-del{width:18px;height:18px;border-radius:50%;background:var(--bg-quaternary);color:var(--text-tertiary);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;flex-shrink:0;margin-left:6px;transition:background .15s,color .15s}
+.expense-item-del:hover{background:var(--color-bad);color:#fff}
+.my-finance-result{margin-top:8px;padding:12px;background:var(--bg-tertiary);border-radius:10px}
+.my-finance-pressure{display:flex;flex-direction:column;gap:6px}
+.my-finance-pressure-label{font-size:12px;color:var(--text-secondary)}
+.my-finance-pressure-bar-wrap{flex:1}
+.my-finance-pressure-bar-bg{height:8px;background:var(--bg-quaternary);border-radius:4px;overflow:hidden}
+.my-finance-pressure-bar-fill{height:100%;border-radius:4px;transition:width .3s,background .3s;background:var(--color-good)}
+.my-finance-pressure-bar-fill.warn{background:var(--color-warn)}
+.my-finance-pressure-bar-fill.danger{background:var(--color-bad)}
+.my-finance-pressure-info{display:flex;align-items:center;gap:8px;margin-top:4px}
+.my-finance-pressure-pct{font-size:18px;font-weight:700;color:var(--text-primary)}
+.my-finance-pressure-level{font-size:13px;font-weight:500;padding:2px 8px;border-radius:4px}
+.my-finance-pressure-level.easy{background:#e8f5e9;color:#2e7d32}
+.my-finance-pressure-level.moderate{background:#fff3e0;color:#e65100}
+.my-finance-pressure-level.tight{background:#fce4ec;color:#c62828}
+.my-finance-pressure-level.overwhelmed{background:#ffcdd2;color:#b71c1c}
+.my-finance-detail{margin-top:8px;font-size:12px;color:var(--text-tertiary);line-height:1.6}
 
 /* Insight Grid (2-col for stat cards) */
 .insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);margin:0 var(--edge)}
@@ -539,13 +629,44 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
 .hd-bar-fill.grade-c{background:#FFD60A}
 .hd-bar-fill.grade-d{background:#FF9500}
 .hd-bar-fill.grade-e{background:#FF3B30}
-.hd-score{font-size:12px;font-weight:600;color:var(--text-primary);width:32px;flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums}
+.hd-score{font-size:12px;font-weight:600;color:var(--text-primary);width:32px;flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums;cursor:pointer;position:relative;transition:color .2s}
+.hd-score:hover{color:var(--accent)}
+.hd-score:active{opacity:.7}
+.health-info-btn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--seg-bg);color:var(--text-tertiary);font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;transition:all .2s;margin-left:6px}
+.health-info-btn:hover{background:var(--accent);color:#fff}
+.health-info-btn:active{transform:scale(.92)}
+.score-popover{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:10px;padding:12px 14px;min-width:200px;max-width:280px;box-shadow:0 4px 20px rgba(0,0,0,.15);z-index:200;font-size:12px;line-height:1.6;color:var(--text-secondary);pointer-events:auto;animation:popIn .2s ease}
+.score-popover::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--bg-secondary)}
+.score-popover-title{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
+.score-popover-row{display:flex;justify-content:space-between;align-items:center;padding:2px 0}
+.score-popover-row .spr-label{color:var(--text-tertiary)}
+.score-popover-row .spr-value{font-weight:600;color:var(--text-primary);font-variant-numeric:tabular-nums}
+.score-popover-divider{height:1px;background:var(--border-color);margin:6px 0}
+.score-popover-hint{font-size:11px;color:var(--text-tertiary);line-height:1.5}
+.score-popover-close{position:absolute;top:6px;right:8px;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:10px;color:var(--text-tertiary);cursor:pointer}
+.score-popover-close:hover{background:var(--seg-bg);color:var(--text-primary)}
+@keyframes popIn{from{opacity:0;transform:translateX(-50%) translateY(4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 .health-warnings{padding:8px var(--edge) 4px}
-.hw-item{font-size:13px;color:var(--text-secondary);line-height:1.5;padding:3px 0;padding-left:18px;position:relative}
-.hw-item::before{content:'';position:absolute;left:0;top:8px;width:8px;height:8px;border-radius:50%;background:var(--color-warn)}
-.hw-item.danger::before{background:var(--color-bad)}
+.hw-item{font-size:13px;color:var(--text-secondary);line-height:1.6;padding:4px 0;position:relative}
+.hw-item.danger{color:var(--color-bad);font-weight:500}
 .health-optimize{padding:6px var(--edge) 4px}
-.ho-text{font-size:13px;color:var(--accent);line-height:1.5;font-weight:500}
+.ho-section{margin-bottom:12px}
+.ho-section-title{font-size:13px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.ho-section-title.red{color:#ef4444}
+.ho-section-title.yellow{color:#f59e0b}
+.ho-section-title.green{color:#22c55e}
+.ho-section-title.blue{color:#3b82f6}
+.ho-card{background:var(--bg-tertiary);border-radius:10px;padding:10px 12px;margin-bottom:6px}
+.ho-card-title{font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.ho-card-title .ho-icon{font-size:11px}
+.ho-card-body{font-size:12px;color:var(--text-secondary);line-height:1.7}
+.ho-card-row{margin-bottom:3px}
+.ho-card-label{color:var(--text-tertiary);font-weight:500}
+.ho-tip{font-size:12px;color:var(--text-secondary);line-height:1.6;padding:3px 0 3px 18px;position:relative}
+.ho-tip::before{content:'•';position:absolute;left:6px;color:var(--text-tertiary)}
+.ho-tip-highlight{color:var(--accent);font-weight:600}
+.ho-tip-warn{color:var(--color-warn);font-weight:500}
+.ho-tip-bad{color:var(--color-bad);font-weight:500}
 .health-income-hint{padding:4px var(--edge);font-size:11px;color:var(--text-tertiary);line-height:1.4}
 .health-disclaimer{padding:8px var(--edge) 12px;font-size:10px;color:var(--text-quaternary);text-align:center;line-height:1.4}
 
@@ -627,6 +748,9 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
   <div class="nav-row">
     <div class="nav-title-small">贷款核算</div>
     <div class="nav-right">
+      <div class="nav-btn" onclick="window.showQuickInput()" title="快速录入" style="background:var(--accent);color:#fff">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </div>
       <div class="nav-manage-btn" id="manageToggle" onclick="window.toggleManageMode()" title="卡片管理">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
       </div>
@@ -944,6 +1068,41 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
     </div>
   </div>
   <div class="insight-divider"></div>
+  <div class="insight-card">
+    <div class="my-finance-toggle" id="myFinanceToggle" onclick="window.toggleMyFinance()">
+      <span class="my-finance-toggle-icon" id="myFinanceToggleIcon">▶</span>
+      <span>我的财务</span>
+      <span class="my-finance-hint" id="myFinanceHint">填写后评分更准确</span>
+    </div>
+    <div class="my-finance-panel" id="myFinancePanel" style="display:none;">
+      <div class="capital-item" id="myFinanceCard">
+        <div class="capital-item-title" style="display:flex;align-items:center;justify-content:space-between;">
+          <span>我的财务</span>
+          <span class="my-finance-add-btn" onclick="window.addExpenseItem()" title="添加支出项">+</span>
+        </div>
+        <div class="capital-item-body">
+          <div class="capital-row">
+            <span class="capital-label">月收入</span>
+            <input type="number" class="capital-input primary" id="monthlyIncome" placeholder="10000" oninput="window.onFinanceChange()">
+          </div>
+          <div class="capital-row">
+            <span class="capital-label">月支出<span style="font-size:10px;color:var(--text-tertiary)">（生活必需）</span></span>
+            <input type="number" class="capital-input" id="monthlyExpense" placeholder="3000" oninput="window.onFinanceChange()">
+          </div>
+          <div id="expenseItems"></div>
+          <div class="capital-row">
+            <span class="capital-label">现有月负债</span>
+            <input type="number" class="capital-input" id="monthlyDebt" placeholder="2000" oninput="window.onFinanceChange()">
+          </div>
+          <div class="capital-row">
+            <span class="capital-label primary">可用收入</span>
+            <span class="capital-value primary" id="myFinanceAvailable">--</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="insight-divider"></div>
   <div class="insight-card" id="healthCard">
     <div class="health-header">
       <span class="health-grade" id="healthGrade">-</span>
@@ -951,6 +1110,7 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
         <span class="health-level" id="healthLevel">输入参数后评估</span>
         <span class="health-score-text" id="healthScoreText"></span>
       </div>
+      <div class="health-info-btn" onclick="window.showScoreInfo(event)" title="评分说明">ⓘ</div>
     </div>
     <div class="health-bar-wrap">
       <div class="health-bar-bg">
@@ -958,10 +1118,25 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
       </div>
     </div>
     <div class="health-details" id="healthDetails">
-      <div class="hd-row"><span class="hd-label">利率水平</span><div class="hd-bar-bg"><div class="hd-bar-fill" id="hdRateBar"></div></div><span class="hd-score" id="hdRateScore">-</span></div>
-      <div class="hd-row"><span class="hd-label">月供压力</span><div class="hd-bar-bg"><div class="hd-bar-fill" id="hdPressureBar"></div></div><span class="hd-score" id="hdPressureScore">-</span></div>
-      <div class="hd-row"><span class="hd-label">利息侵蚀</span><div class="hd-bar-bg"><div class="hd-bar-fill" id="hdErosionBar"></div></div><span class="hd-score" id="hdErosionScore">-</span></div>
-      <div class="hd-row"><span class="hd-label">还款灵活性</span><div class="hd-bar-bg"><div class="hd-bar-fill" id="hdFlexBar"></div></div><span class="hd-score" id="hdFlexScore">-</span></div>
+      <div class="hd-row"><span class="hd-label">利率水平</span><div class="hd-bar-bg"><div class="hd-bar-fill" id="hdRateBar"></div></div><span class="hd-score" id="hdRateScore" onclick="window.showDimensionInfo(event,\'rate\')">-</span></div>
+      <div class="hd-row"><span class="hd-label">月供压力</span><div class="hd-bar-bg"><div class="hd-bar-fill" id="hdPressureBar"></div></div><span class="hd-score" id="hdPressureScore" onclick="window.showDimensionInfo(event,\'pressure\')">-</span></div>
+      <div class="hd-row"><span class="hd-label">利息侵蚀</span><div class="hd-bar-bg"><div class="hd-bar-fill" id="hdErosionBar"></div></div><span class="hd-score" id="hdErosionScore" onclick="window.showDimensionInfo(event,\'erosion\')">-</span></div>
+      <div class="hd-row"><span class="hd-label">还款灵活性</span><div class="hd-bar-bg"><div class="hd-bar-fill" id="hdFlexBar"></div></div><span class="hd-score" id="hdFlexScore" onclick="window.showDimensionInfo(event,\'flex\')">-</span></div>
+    </div>
+    <div class="my-finance-result" id="myFinanceResult">
+      <div class="my-finance-pressure">
+        <div class="my-finance-pressure-label">月供占可用收入</div>
+        <div class="my-finance-pressure-bar-wrap">
+          <div class="my-finance-pressure-bar-bg">
+            <div class="my-finance-pressure-bar-fill" id="myFinancePressureBar" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="my-finance-pressure-info">
+          <span class="my-finance-pressure-pct" id="myFinancePressurePct">--</span>
+          <span class="my-finance-pressure-level" id="myFinancePressureLevel">--</span>
+        </div>
+      </div>
+      <div class="my-finance-detail" id="myFinanceDetail"></div>
     </div>
     <div class="health-warnings" id="healthWarnings"></div>
     <div class="health-optimize" id="healthOptimize"></div>
@@ -1014,45 +1189,6 @@ input,select,textarea{font-family:inherit;-webkit-appearance:none;appearance:non
       </div>
       <div class="progress-bar-text" id="progressBarText">还款进度 0%</div>
     </div>
-  </div>
-</div>
-
-<!-- Pressure -->
-<div class="section sortable-item" data-section-id="pressure">
-  <div class="section-title">
-    <span class="drag-handle"><svg viewBox="0 0 16 16"><line x1="3" y1="5" x2="13" y2="5"/><line x1="3" y1="8" x2="13" y2="8"/><line x1="3" y1="11" x2="13" y2="11"/></svg></span>
-    <span>收入与负债（提高评级准确性）</span>
-    <span class="collapse-toggle" onclick="event.stopPropagation();window.toggleCollapse('pressure')"><svg viewBox="0 0 12 12"><polyline points="3,2 9,6 3,10"/></svg></span>
-  </div>
-  <div class="section-card" style="display:flex;align-items:stretch;padding:0;">
-    <!-- 左侧：月收入 -->
-    <div class="param-module param-module-pressure" id="monthlyIncomeModule" style="margin:0;padding:10px 16px;flex:1;min-width:0;border-radius:10px 0 0 10px;">
-      <div class="module-content">
-        <div class="module-label" onclick="var m=document.getElementById('monthlyIncomeModule');if(m)m.classList.remove('is-empty');setTimeout(function(){document.getElementById('monthlyIncome').focus();},50);">月收入</div>
-        <div class="module-label-en" onclick="var m=document.getElementById('monthlyIncomeModule');if(m)m.classList.remove('is-empty');setTimeout(function(){document.getElementById('monthlyIncome').focus();},50);">MONTHLY INCOME</div>
-        <div class="module-value">
-          <input type="number" id="monthlyIncome" value="" oninput="window.updateMonthlyIncomeState();window.calcPressure();" onfocus="window.updateMonthlyIncomeState();" onblur="window.updateMonthlyIncomeState();window.calcPressure();">
-          <span class="unit">元</span>
-        </div>
-      </div>
-    </div>
-    <!-- 分隔线 -->
-    <div style="width:.5px;background:var(--border-color-medium);flex-shrink:0;align-self:stretch;margin:6px 0;"></div>
-    <!-- 右侧：现有月负债 -->
-    <div class="param-module param-module-pressure" id="monthlyDebtModule" style="margin:0;padding:10px 16px;flex:1;min-width:0;border-radius:0 10px 10px 0;">
-      <div class="module-content">
-        <div class="module-label" onclick="var m=document.getElementById('monthlyDebtModule');if(m)m.classList.remove('is-empty');setTimeout(function(){document.getElementById('monthlyDebt').focus();},50);">现有月负债</div>
-        <div class="module-label-en" onclick="var m=document.getElementById('monthlyDebtModule');if(m)m.classList.remove('is-empty');setTimeout(function(){document.getElementById('monthlyDebt').focus();},50);">MONTHLY DEBT</div>
-        <div class="module-value">
-          <input type="number" id="monthlyDebt" value="" oninput="window.updateMonthlyDebtState();window.calcPressure();" onfocus="window.updateMonthlyDebtState();" onblur="window.updateMonthlyDebtState();window.calcPressure();">
-          <span class="unit">元</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="pressure-bar-wrap" id="pressureWrap">
-    <div class="pressure-bar-bg"><div class="pressure-bar-fill" id="pressureBar" style="width:0%"></div></div>
-    <div class="pressure-info"><span id="pressurePct">0%</span><span id="pressureLevel">∞</span></div>
   </div>
 </div>
 
@@ -1401,7 +1537,7 @@ const DEFAULT_MONTHLY_INCOME = 4500;
 const DATA_VERSION = 3;
 const CARD_ORDER_KEY = 'loan_calc_card_order';
 const CARD_COLLAPSE_KEY = 'loan_calc_card_collapse';
-const DEFAULT_ORDER = ['params','pressure','capital','cost','progress','advice'];
+const DEFAULT_ORDER = ['params','capital','cost','progress','advice'];
 
 // 预设利率（每次切换类型都会覆盖）
 const PRESET_RATES = {
@@ -1518,7 +1654,7 @@ let cardManageMode = false;
 
 // ========== 辅助函数 ==========
 function el(id) { return document.getElementById(id); }
-function fmt(n, d=2) { const sign=n<0?'-':''; const s=Math.abs(n).toFixed(d); const p=s.split('.'); p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,','); return sign+p[0]+(d>0?'.'+p[1]:''); }
+function fmt(n, d=2) { if(Math.abs(n)<Math.pow(10,-d))n=0; const sign=n<0?'-':''; const s=Math.abs(n).toFixed(d); const p=s.split('.'); p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,','); return sign+p[0]+(d>0?'.'+p[1]:''); }
 function stripNumberFormatting(value) { return String(value??'').replace(/,/g,'').trim(); }
 function formatNumericDisplay(value) {
   let raw = stripNumberFormatting(value);
@@ -1543,12 +1679,14 @@ function formatEditableNumberInput(input, format=true){
   if(format) input.value = formatNumericDisplay(input.value);
   else input.value = stripNumberFormatting(input.value);
 }
+let _toastTimer = null;
 function toast(msg){
   const t = el('toast');
   if(!t) return;
+  if(_toastTimer) clearTimeout(_toastTimer);
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(()=>t&&t.classList.remove('show'),1500);
+  _toastTimer = setTimeout(()=>{ t.classList.remove('show'); _toastTimer=null; }, 1500);
 }
 function setStateText(node, text, className){
   if(!node) return;
@@ -1619,12 +1757,12 @@ function onParamChange(srcEl){
 // 模块空状态样式
 function updateModuleLabels(input){
   const module = input.closest('.param-module, .combined-item');
-  if(!module) return;
+  if(!module || module.classList.contains('readonly')) return;
   const valueContainer = input.closest('.module-value');
   if(valueContainer){
     const raw = (input.value||'').toString().trim();
     const rawNum = stripNumberFormatting(raw);
-    const isEmpty = input.tagName==='SELECT' ? !raw : (!raw || (input.type!=='date' && parseFloat(rawNum)<=0));
+    const isEmpty = input.tagName==='SELECT' ? !raw : (!raw || (input.type!=='date' && !input.readOnly && parseFloat(rawNum)<=0));
     module.classList.toggle('is-empty', isEmpty);
     valueContainer.classList.toggle('empty', isEmpty);
   }
@@ -1682,7 +1820,7 @@ function applyPlan(idx){
   const p = plans[idx];
   const setField = (id, val) => {
     const e = el(id);
-    if(e) e.value = (id==='loanAmount' && e.type==='text') ? formatNumericDisplay(String(val)) : (val===undefined ? '' : val);
+    if(e) e.value = (THOUSAND_FORMAT_PARAMS.has(id) && e.type==='text') ? formatNumericDisplay(String(val)) : (val===undefined ? '' : val);
   };
   setField('loanType', p.loanType);
   setField('loanAmount', p.loanAmount);
@@ -1713,6 +1851,7 @@ function applyPlan(idx){
   updateMonthlyDebtState();
   calc();
 }
+let _savePlanTimer = null;
 function saveCurrentPlan(){
   if(!plans[currentPlanIdx]) plans[currentPlanIdx] = { name:'演示方案', ...DEMO_PLAN_TEMPLATE };
   const p = plans[currentPlanIdx];
@@ -1732,7 +1871,9 @@ function saveCurrentPlan(){
   p.earlyAmount = v('earlyAmount') ? parseFloat(v('earlyAmount')) : '';
   p.prepaymentPenalty = v('prepaymentPenalty') ? parseFloat(v('prepaymentPenalty')) : '';
   p.special = getSpecialValues();
-  savePlans();
+  // 防抖写入localStorage，避免频繁IO
+  if(_savePlanTimer) clearTimeout(_savePlanTimer);
+  _savePlanTimer = setTimeout(()=>{ savePlans(); _savePlanTimer=null; }, 300);
 }
 function getSpecialValues(){
   const v = {};
@@ -1856,19 +1997,18 @@ function onTypeChange(){
       }
     });
     card.innerHTML = html;
-    // 同步到明细页
+    // 同步到明细页：克隆DOM后修正id
     const container2 = el('specialFields2');
     const card2 = el('specialFieldsCard2');
     if(container2 && card2){
       container2.style.display = 'block';
-      card2.innerHTML = html.replace(/id="/g, 'id="$2_').replace(/window\.syncSpecialField\('/g, "window.syncSpecialField('").replace(/window\.formatEditableNumberInput/g, 'window.formatEditableNumberInput').replace(/window\.calc/g, 'window.calc').replace(/window\.onParamChange/g, 'window.onParamChange');
-      // 修正明细页的id后缀
-      card2.querySelectorAll('[id]').forEach(inp => {
+      const clone = card.cloneNode(true);
+      clone.querySelectorAll('[id]').forEach(inp => {
         const origId = inp.id;
-        if(!origId.endsWith('2')){
-          inp.id = origId + '2';
-        }
+        if(!origId.endsWith('2')) inp.id = origId + '2';
       });
+      card2.innerHTML = '';
+      card2.appendChild(clone);
     }
   }
   // 同步概览页和明细页的类型选择
@@ -1899,8 +2039,8 @@ function onMethodChange(){
   // 同步明细页
   const method2 = el('repaymentMethod2');
   if(method2) method2.value = method;
-  const flexDays = el('flexDays');
-  if(flexDays) flexDays.style.display = method === 'flexible' ? '' : 'none';
+  const flexModule2 = el('flexDaysModule2') || el('flexDays')?.closest('.param-module');
+  if(flexModule2) flexModule2.style.display = method === 'flexible' ? '' : 'none';
 }
 
 // ========== 期限单位切换（PRD 2.1） ==========
@@ -1984,6 +2124,19 @@ function _doCalc(){
     resetIndicators();
     return;
   }
+  // 利率超限视觉反馈
+  const rateModule = document.querySelector('#annualRate')?.closest('.param-module') || document.querySelector('#annualRate')?.closest('.combined-item');
+  if(rateModule){
+    if(annualRate > 36){
+      rateModule.classList.add('input-error');
+      toast('⚠️ 年化利率超过36%，已超出法律保护上限');
+    } else if(annualRate > 24){
+      rateModule.classList.remove('input-error');
+      // 仅视觉提示，不阻断计算
+    } else {
+      rateModule.classList.remove('input-error');
+    }
+  }
   // 零息贷款(annualRate=0)为合法场景，允许通过
   if(term < 1){
     toast('期限必须至少1个月');
@@ -2017,12 +2170,31 @@ function _doCalc(){
   }
 
   const monthlyRate = annualRate / 100 / 12;
-  el('dispMonthly') && (el('dispMonthly').value = (monthlyRate * 100).toFixed(4));
+  const dispMonthlyEl = el('dispMonthly');
+  if(dispMonthlyEl){
+    dispMonthlyEl.value = (monthlyRate * 100).toFixed(4);
+    updateModuleLabels(dispMonthlyEl);
+  }
 
   // ===== 组合贷款：双账户独立计算，按月叠加 =====
   if(type === 'combo'){
     const comboResult = calcComboLoan(amount, term, method, startDate, feeAmt, feeMtd);
     if(!comboResult){ resetIndicators(); return; }
+    // 组合贷款：更新月利率为加权平均
+    const fundAmt = comboResult.fundAmt || 0;
+    const commAmt = comboResult.commAmt || 0;
+    const fundRate = comboResult.fundRate || 0;
+    const commRate = comboResult.commRate || 0;
+    const totalAmt = fundAmt + commAmt;
+    if(totalAmt > 0){
+      const weightedRate = (fundAmt * fundRate + commAmt * commRate) / totalAmt;
+      const weightedMonthly = weightedRate / 100 / 12;
+      const dmEl = el('dispMonthly');
+      if(dmEl){
+        dmEl.value = (weightedMonthly * 100).toFixed(4);
+        updateModuleLabels(dmEl);
+      }
+    }
     lastMonthly = comboResult.monthlyPayment;
     scheduleData = comboResult.schedule;
     setIndValue('indMonthly', comboResult.monthlyPayment, '¥');
@@ -2031,11 +2203,13 @@ function _doCalc(){
     const comboRatio = comboResult.totalAmount > 0 ? (comboResult.totalInterest / comboResult.totalAmount * 100) : 0;
     setIndValue('indRatio', comboRatio, '%');
     updateCapitalAnalysis(comboResult.totalAmount, feeAmt, feeMtd, comboResult.monthlyPayment, comboResult.totalInterest, comboResult.totalPayment, annualRate, monthlyRate, term, method);
+    calcPressure();
     updateCostAnalysis(comboResult.totalAmount, comboResult.totalInterest, comboResult.totalPayment, annualRate, term, method, feeAmt, feeMtd);
     updateProgressSlider(term);
     renderComboSchedule(comboResult);
     buildCompareTabs();
     calcFeeAPR(comboResult.totalAmount, term, annualRate, method, feeAmt, feeMtd, comboResult.schedule);
+    updateAdvice();
     saveCurrentPlan();
     return;
   }
@@ -2070,7 +2244,10 @@ function _doCalc(){
   // 更新资金分析
   updateCapitalAnalysis(amount, feeAmt, feeMtd, monthlyPayment, totalInterest, totalPayment, annualRate, monthlyRate, term, method);
 
-  // 更新成本透视
+  // 先更新压力数据（供健康评分使用）
+  calcPressure();
+
+  // 更新成本透视（含健康评分，依赖calcPressure的数据）
   updateCostAnalysis(amount, totalInterest, totalPayment, annualRate, term, method, feeAmt, feeMtd);
 
   // 更新还款进度
@@ -2084,6 +2261,9 @@ function _doCalc(){
 
   // 计算服务费APR
   calcFeeAPR(amount, term, annualRate, method, feeAmt, feeMtd, schedule);
+
+  // 智能建议
+  updateAdvice();
 
   // 保存方案
   saveCurrentPlan();
@@ -2163,15 +2343,7 @@ function calcSingleLoan(amount, term, annualRate, method, startDate, flexDays){
     totalInterest = amount * (annualRate / 100) * years;
     totalPayment = amount + totalInterest;
     monthlyPayment = 0;
-    let remain = amount;
-    for(let i=1; i<=term; i++){
-      const date = addMonth(startDate, i);
-      if(i === term){
-        schedule.push({ num:i, date, payment:totalPayment, principal:amount, interest:totalInterest, remain:0 });
-      } else {
-        schedule.push({ num:i, date, payment:0, principal:0, interest:0, remain });
-      }
-    }
+    schedule = [{ num:1, date: addMonth(startDate, term), payment:totalPayment, principal:amount, interest:totalInterest, remain:0 }];
   } else if(method === 'equal_principal_interest'){
     // 等本等息：月还本=P/n，月利息=P×月费率
     const principalPerMonth = amount / term;
@@ -2189,7 +2361,7 @@ function calcSingleLoan(amount, term, annualRate, method, startDate, flexDays){
     totalInterest = interestPerMonth * term;
   } else if(method === 'flexible'){
     // 随借随还：利息 = P × 日利率 × 使用天数
-    const days = flexDays || 30;
+    const days = Math.max(1, Math.min(365, flexDays || 30));
     const dailyRate = annualRate / 100 / 365;
     const interest = amount * dailyRate * days;
     totalInterest = interest;
@@ -2296,9 +2468,13 @@ function renderComboSchedule(comboResult){
 
 function addMonth(dateStr, months){
   if(!dateStr) return '';
-  const d = new Date(dateStr);
+  const parts = dateStr.split('-');
+  const d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]||1));
   if(isNaN(d.getTime())) return '';
+  const origDay = d.getDate();
   d.setMonth(d.getMonth() + months);
+  // 修正溢出：如1月31日+1个月应为2月28日而非3月2日
+  if(d.getDate() !== origDay && origDay > 28) d.setDate(0);
   const y = d.getFullYear();
   const m = String(d.getMonth()+1).padStart(2,'0');
   const day = String(d.getDate()).padStart(2,'0');
@@ -2317,15 +2493,117 @@ function setIndValue(id, value, unit){
   node.classList.remove('empty');
   node.classList.remove('empty-state');
   if(unit === '¥') node.textContent = '¥' + fmt(value);
-  else if(unit === '%') node.textContent = fmt(value, 1) + '%';
+  else if(unit === '%') node.textContent = (id === 'indAPR' ? fmt(value, 2) : fmt(value, 1)) + '%';
   else node.textContent = fmt(value);
 }
 
 function resetIndicators(){
-  ['indMonthly','indInterest','indTotal','indRatio'].forEach(id => {
+  // 核心指标
+  ['indMonthly','indInterest','indTotal','indRatio','indAPR'].forEach(id => {
     const node = el(id);
     if(node){ node.textContent='∞'; node.classList.add('empty','empty-state'); }
   });
+  const dispMonthlyEl = el('dispMonthly');
+  if(dispMonthlyEl) dispMonthlyEl.value = '';
+
+  // 资金分析：实际到手
+  setStateText(el('insLoanAmount'), '∞');
+  setStateText(el('insFee'), '∞');
+  setStateText(el('insNetAmount'), '∞');
+  setStateText(el('insNetRatio'), '∞');
+
+  // 资金分析：每万参考
+  setStateText(el('insPer10k'), '∞');
+  setStateText(el('insPer10kInterest'), '∞');
+  setStateText(el('insPer10kTotal'), '∞');
+
+  // 利率评估：LPR对比
+  setStateText(el('insMyRate'), '∞');
+  setStateText(el('insLPRDiff'), '∞');
+
+  // 利率评估：敏感度
+  ['insSensDown50','insSensDown10','insSensCurrent','insSensUp10','insSensUp50'].forEach(id => {
+    setStateText(el(id), '∞');
+  });
+
+  // 成本透视：比例条
+  const ratioPrincipal = el('ratioPrincipal');
+  const ratioInterest = el('ratioInterest');
+  if(ratioPrincipal) ratioPrincipal.style.width = '0%';
+  if(ratioInterest) ratioInterest.style.width = '0%';
+  const pt = el('ratioPrincipalText');
+  const it = el('ratioInterestText');
+  if(pt) pt.textContent = '';
+  if(it) it.textContent = '';
+  const lp = el('legendPrincipal');
+  const li = el('legendInterest');
+  if(lp) lp.textContent = '∞';
+  if(li) li.textContent = '∞';
+
+  // 成本透视：健康评分
+  const healthGrade = el('healthGrade');
+  const healthLevel = el('healthLevel');
+  const healthScoreText = el('healthScoreText');
+  const healthBarFill = el('healthBarFill');
+  if(healthGrade) healthGrade.textContent = '-';
+  if(healthLevel) healthLevel.textContent = '输入参数后评估';
+  if(healthScoreText) healthScoreText.textContent = '';
+  if(healthBarFill) healthBarFill.style.width = '0%';
+  ['hdRateBar','hdPressureBar','hdErosionBar','hdFlexBar'].forEach(id => {
+    const bar = el(id);
+    if(bar){ bar.style.width = '0%'; bar.className = 'hd-bar-fill'; }
+  });
+  ['hdRateScore','hdPressureScore','hdErosionScore','hdFlexScore'].forEach(id => {
+    const s = el(id);
+    if(s) s.textContent = '-';
+  });
+
+  // 成本透视：我的财务结果
+  const myFinancePressureBar = el('myFinancePressureBar');
+  const myFinancePressurePct = el('myFinancePressurePct');
+  const myFinancePressureLevel = el('myFinancePressureLevel');
+  const myFinanceDetail = el('myFinanceDetail');
+  const myFinanceAvailable = el('myFinanceAvailable');
+  const myFinanceHint = el('myFinanceHint');
+  if(myFinancePressureBar) myFinancePressureBar.style.width = '0%';
+  if(myFinancePressurePct) myFinancePressurePct.textContent = '--';
+  if(myFinancePressureLevel) myFinancePressureLevel.textContent = '--';
+  if(myFinanceDetail) myFinanceDetail.innerHTML = '';
+  if(myFinanceAvailable) myFinanceAvailable.textContent = '--';
+  if(myFinanceHint) myFinanceHint.textContent = '填写后评分更准确';
+
+  // 成本透视：警告和建议
+  const healthWarnings = el('healthWarnings');
+  const healthOptimize = el('healthOptimize');
+  const healthIncomeHint = el('healthIncomeHint');
+  if(healthWarnings) healthWarnings.innerHTML = '';
+  if(healthOptimize) healthOptimize.innerHTML = '';
+  if(healthIncomeHint) healthIncomeHint.textContent = '';
+
+  // 高成本警告
+  const highCostWarning = document.querySelector('.high-cost-warning');
+  if(highCostWarning) highCostWarning.style.display = 'none';
+
+  // 还款进度
+  const progressSlider = el('progressSlider');
+  if(progressSlider){ progressSlider.value = 0; }
+  const sliderValue = el('sliderValue');
+  if(sliderValue) sliderValue.textContent = '0 期';
+  const sliderMid = el('sliderMid');
+  const sliderMax = el('sliderMax');
+  if(sliderMid) sliderMid.textContent = '50期';
+  if(sliderMax) sliderMax.textContent = '100期';
+  ['psPaid','psPrincipal','psInterest','psRemain'].forEach(id => {
+    const n = el(id);
+    if(n) n.textContent = '∞';
+  });
+  const progressBarFill = el('progressBarFill');
+  const progressBarText = el('progressBarText');
+  if(progressBarFill) progressBarFill.style.width = '0%';
+  if(progressBarText) progressBarText.textContent = '还款进度 0%';
+
+  // 重置全局变量
+  lastMonthly = 0;
   scheduleData = [];
   renderSchedule([]);
 }
@@ -2352,7 +2630,7 @@ function updateCapitalAnalysis(amount, feeAmt, feeMtd, monthly, totalInterest, t
   const lpr1Val = parseFloat(stripNumberFormatting(el('lpr1')?.value||''));
   const lpr5Val = parseFloat(stripNumberFormatting(el('lpr5')?.value||''));
   setStateText(el('insMyRate'), annualRate > 0 ? fmt(annualRate,2)+'%' : '∞');
-  if(lpr5Val && annualRate){
+  if(lpr5Val && annualRate >= 0){
     const diff = annualRate - lpr5Val;
     const diffText = diff > 0 ? '+'+fmt(diff,2)+'%' : fmt(diff,2)+'%';
     const diffNode = el('insLPRDiff');
@@ -2375,6 +2653,10 @@ function updateCapitalAnalysis(amount, feeAmt, feeMtd, monthly, totalInterest, t
         return amount / term + amount * newMR;
       } else if(method === 'interest_first' || method === 'equal_principal_interest'){
         return amount * newMR + (method === 'equal_principal_interest' ? amount/term : 0);
+      } else if(method === 'flexible'){
+        return amount * (newRate / 100 / 365) * 30;
+      } else if(method === 'bullet'){
+        return 0;
       }
       return monthly;
     };
@@ -2425,23 +2707,139 @@ function updateHealthScore(amount, totalInterest, totalPayment, annualRate, term
     rateScore = 60; // 无基准时中性分
   }
 
-  // ===== 还款压力评分（修正致命BUG：分段线性计分） =====
-  // ≤30%：85-100分（健康区间）；30%-60%：线性85→20；60%-70%：线性20→0；≥70%：0分
-  const monthlyIncome = getNum('monthlyIncome') || DEFAULT_MONTHLY_INCOME;
-  const monthlyDebt = getNum('monthlyDebt') || 0;
-  const monthly = lastMonthly;
-  const debtIncomeRatio = monthlyIncome > 0 ? (monthly + monthlyDebt) / monthlyIncome : 0;
+  // ===== 判断是否为真实财务数据 =====
+  const incomeInput = el('monthlyIncome');
+  const hasRealFinance = incomeInput && incomeInput.value.trim() !== '' && parseFloat(incomeInput.value) > 0;
 
-  if(monthlyIncome <= 0){
-    pressureScore = 60; // 除零异常：中性分60（替代原50，更合理）
-  } else if(debtIncomeRatio >= 0.7){
-    pressureScore = 0; // 资不抵债临界线
-  } else if(debtIncomeRatio >= 0.6){
-    pressureScore = 20 - (debtIncomeRatio - 0.6) / 0.1 * 20; // 60%-70%：20→0
-  } else if(debtIncomeRatio > 0.3){
-    pressureScore = 85 - (debtIncomeRatio - 0.3) / 0.3 * 65; // 30%-60%：85→20
+  // ===== 还款压力评分（双模式） =====
+  const monthly = lastMonthly;
+  const monthlyDebt = window._pressureDebt || 0;
+  let debtIncomeRatio = 0;
+  let pressureMode = 'estimate'; // 'estimate' | 'real'
+  let estimatedIncomeMid = 0; // 提升到外层，供_lastHealthData使用
+
+  if(hasRealFinance){
+    // ===== 精确模式：使用真实财务数据 =====
+    pressureMode = 'real';
+    const monthlyIncome = window._pressureIncome || DEFAULT_MONTHLY_INCOME;
+    const available = window._pressureAvailable || monthlyIncome;
+    debtIncomeRatio = window._pressureRatio || (monthlyIncome > 0 ? (monthly + monthlyDebt) / monthlyIncome : 0);
+
+    if(monthlyIncome <= 0){
+      pressureScore = 60;
+    } else if(debtIncomeRatio >= 0.7){
+      pressureScore = 0;
+    } else if(debtIncomeRatio >= 0.6){
+      pressureScore = 20 - (debtIncomeRatio - 0.6) / 0.1 * 20;
+    } else if(debtIncomeRatio > 0.3){
+      pressureScore = 85 - (debtIncomeRatio - 0.3) / 0.3 * 65;
+    } else {
+      pressureScore = 85 + (0.3 - debtIncomeRatio) / 0.3 * 15;
+    }
   } else {
-    pressureScore = 85 + (0.3 - debtIncomeRatio) / 0.3 * 15; // ≤30%：85→100
+    // ===== 估算模式：基于贷款参数多维度评估 =====
+    // 核心思路：没有收入数据时，从贷款本身的特征判断压力
+    // 1) 月供绝对值（反映现金流需求） 2) 月供/贷款金额比（反映偿还节奏）
+    // 3) 期限（长期锁定风险） 4) 利率水平（成本负担）
+    const HOUSING_TYPES = ['house','fund','combo'];
+    const CONSUMER_TYPES = ['consumer','renovation','education','insurance','social','fundcredit'];
+    const BUSINESS_TYPES = ['business','second'];
+
+    // --- 维度1：月供绝对值压力 ---
+    // 不同贷款类型，合理的月供量级不同
+    // 房贷月供通常较高(3000-15000)，消费贷较低(500-5000)
+    let monthlyAbsScore;
+    if(HOUSING_TYPES.indexOf(loanType) >= 0){
+      // 房贷：月供<3000轻松，3000-8000适中，8000-15000偏重，>15000极重
+      if(monthly <= 3000) monthlyAbsScore = 90;
+      else if(monthly <= 5000) monthlyAbsScore = 80;
+      else if(monthly <= 8000) monthlyAbsScore = 65;
+      else if(monthly <= 12000) monthlyAbsScore = 50;
+      else if(monthly <= 18000) monthlyAbsScore = 35;
+      else monthlyAbsScore = 20;
+    } else if(CONSUMER_TYPES.indexOf(loanType) >= 0){
+      // 消费贷：月供<1000轻松，1000-3000适中，3000-5000偏重，>5000极重
+      if(monthly <= 1000) monthlyAbsScore = 90;
+      else if(monthly <= 2000) monthlyAbsScore = 80;
+      else if(monthly <= 3000) monthlyAbsScore = 65;
+      else if(monthly <= 5000) monthlyAbsScore = 45;
+      else monthlyAbsScore = 25;
+    } else if(BUSINESS_TYPES.indexOf(loanType) >= 0){
+      // 经营贷：月供<5000轻松，5000-15000适中，15000-30000偏重，>30000极重
+      if(monthly <= 5000) monthlyAbsScore = 90;
+      else if(monthly <= 10000) monthlyAbsScore = 75;
+      else if(monthly <= 20000) monthlyAbsScore = 55;
+      else if(monthly <= 35000) monthlyAbsScore = 35;
+      else monthlyAbsScore = 20;
+    } else {
+      // 其他（车贷等）：月供<2000轻松，2000-5000适中，5000-10000偏重，>10000极重
+      if(monthly <= 2000) monthlyAbsScore = 90;
+      else if(monthly <= 4000) monthlyAbsScore = 75;
+      else if(monthly <= 7000) monthlyAbsScore = 55;
+      else if(monthly <= 12000) monthlyAbsScore = 35;
+      else monthlyAbsScore = 20;
+    }
+
+    // --- 维度2：月供/贷款金额比（偿还节奏压力） ---
+    // 月供占贷款金额的比例越高，说明偿还节奏越紧凑
+    // 等额本息30年：月供/金额≈0.45%/月；3年：≈2.9%/月
+    const monthlyRatio = amount > 0 ? monthly / amount : 0;
+    let monthlyRatioScore;
+    if(monthlyRatio <= 0.005) monthlyRatioScore = 90;   // <0.5%/月，极轻松
+    else if(monthlyRatio <= 0.01) monthlyRatioScore = 80; // 0.5%-1%
+    else if(monthlyRatio <= 0.02) monthlyRatioScore = 65; // 1%-2%
+    else if(monthlyRatio <= 0.03) monthlyRatioScore = 50; // 2%-3%
+    else if(monthlyRatio <= 0.05) monthlyRatioScore = 35; // 3%-5%
+    else monthlyRatioScore = 20;                          // >5%/月，极紧凑
+
+    // --- 维度3：期限锁定压力 ---
+    // 期限越长，未来不确定性越大，收入变化风险越高
+    let termScore;
+    if(term <= 12) termScore = 85;       // 1年内，短期压力
+    else if(term <= 36) termScore = 80;   // 1-3年
+    else if(term <= 60) termScore = 70;   // 3-5年
+    else if(term <= 120) termScore = 60;  // 5-10年
+    else if(term <= 240) termScore = 50;  // 10-20年
+    else if(term <= 360) termScore = 40;  // 20-30年
+    else termScore = 30;                  // 30年以上
+
+    // --- 维度4：利率负担（与基准偏离度） ---
+    // 利率越高，同等月供中利息占比越大，本金偿还越慢
+    let rateBurdenScore;
+    if(annualRate <= 0) rateBurdenScore = 95;
+    else if(annualRate <= benchmarkRate * 0.8) rateBurdenScore = 85;  // 低于基准20%
+    else if(annualRate <= benchmarkRate) rateBurdenScore = 75;        // 低于基准
+    else if(annualRate <= benchmarkRate * 1.2) rateBurdenScore = 60;  // 高于基准20%内
+    else if(annualRate <= benchmarkRate * 1.5) rateBurdenScore = 40;  // 高于基准20%-50%
+    else rateBurdenScore = 20;                                        // 高于基准50%以上
+
+    // --- 综合估算压力评分 ---
+    // 权重：月供绝对值35% + 偿还节奏25% + 期限锁定20% + 利率负担20%
+    pressureScore = Math.round(
+      monthlyAbsScore * 0.35 +
+      monthlyRatioScore * 0.25 +
+      termScore * 0.20 +
+      rateBurdenScore * 0.20
+    );
+    pressureScore = Math.max(0, Math.min(100, pressureScore));
+
+    // 估算收入区间（用于气泡弹窗展示和debtIncomeRatio）
+    let reasonableRatioLow, reasonableRatioHigh;
+    if(HOUSING_TYPES.indexOf(loanType) >= 0){
+      reasonableRatioLow = 0.3; reasonableRatioHigh = 0.5;
+    } else if(BUSINESS_TYPES.indexOf(loanType) >= 0){
+      reasonableRatioLow = 0.2; reasonableRatioHigh = 0.4;
+    } else if(CONSUMER_TYPES.indexOf(loanType) >= 0){
+      reasonableRatioLow = 0.15; reasonableRatioHigh = 0.35;
+    } else {
+      reasonableRatioLow = 0.2; reasonableRatioHigh = 0.4;
+    }
+    const estimatedIncomeLow = monthly > 0 ? monthly / reasonableRatioHigh : 0;
+    const estimatedIncomeHigh = monthly > 0 ? monthly / reasonableRatioLow : 0;
+    estimatedIncomeMid = (estimatedIncomeLow + estimatedIncomeHigh) / 2;
+
+    // 估算模式的debtIncomeRatio用于警告和建议
+    debtIncomeRatio = estimatedIncomeMid > 0 ? monthly / estimatedIncomeMid : 0;
   }
   pressureScore = Math.max(0, Math.min(100, Math.round(pressureScore)));
 
@@ -2479,21 +2877,29 @@ function updateHealthScore(amount, totalInterest, totalPayment, annualRate, term
   if(annualRate > 0 && benchmarkRate > 0 && annualRate >= benchmarkRate * 1.5){
     vetoGrade = 'E';
   }
-  // 债务收入比≥70%（资不抵债）→ 强制E级
+  // 债务收入比≥70% → 强制E级（≥100%时额外强提醒在warnings中处理）
   if(debtIncomeRatio >= 0.7){
     vetoGrade = 'E';
   }
-  // 债务收入比≥100% → 强制E级+强提醒
-  if(debtIncomeRatio >= 1.0){
-    vetoGrade = 'E';
+
+  // ===== 加权总分（双模式差异化权重） =====
+  let totalScore;
+  if(pressureMode === 'real'){
+    // 精确模式：压力评分可靠，权重正常
+    totalScore = Math.round(rateScore * 0.25 + pressureScore * 0.40 + erosionScore * 0.20 + flexScore * 0.15);
+  } else {
+    // 估算模式：压力评分不确定性高，降低权重，提升利率和侵蚀权重
+    totalScore = Math.round(rateScore * 0.35 + pressureScore * 0.25 + erosionScore * 0.25 + flexScore * 0.15);
   }
 
-  // ===== 加权总分 =====
-  let totalScore = Math.round(rateScore * 0.3 + pressureScore * 0.35 + erosionScore * 0.2 + flexScore * 0.15);
-
-  // 单项否决生效：覆盖总分
+  // 单项否决生效：覆盖总分（仅精确模式下压力否决生效）
   if(vetoGrade){
-    totalScore = Math.min(totalScore, 39); // 强制E级区间
+    if(annualRate > 0 && benchmarkRate > 0 && annualRate >= benchmarkRate * 1.5){
+      totalScore = Math.min(totalScore, 39); // 利率否决始终生效
+    }
+    if(pressureMode === 'real' && debtIncomeRatio >= 0.7){
+      totalScore = Math.min(totalScore, 39); // 估算模式下不触发压力否决
+    }
   }
 
   let grade, level;
@@ -2508,13 +2914,41 @@ function updateHealthScore(amount, totalInterest, totalPayment, annualRate, term
   const scoreTextEl = el('healthScoreText');
   const barFill = el('healthBarFill');
   if(gradeEl){ gradeEl.textContent = grade; gradeEl.className = 'health-grade grade-'+grade.toLowerCase(); }
-  if(levelEl) levelEl.textContent = level;
-  if(scoreTextEl) scoreTextEl.textContent = '综合评分 '+totalScore;
+  if(levelEl){
+    levelEl.textContent = level;
+    if(pressureMode === 'estimate'){
+      levelEl.textContent = level + '（估算）';
+    }
+  }
+  if(scoreTextEl){
+    if(pressureMode === 'real'){
+      scoreTextEl.textContent = '综合评分 '+totalScore;
+    } else {
+      scoreTextEl.textContent = '综合评分 '+totalScore+'（估算）';
+    }
+  }
   if(barFill){ barFill.style.width = totalScore+'%'; barFill.className = 'health-bar-fill grade-'+grade.toLowerCase(); }
+
+  // 保存评分数据供气泡弹窗使用
+  const methodLabels = {equal_installment:'等额本息',equal_principal:'等额本金',interest_first:'先息后本',bullet:'一次性还本付息',equal_principal_interest:'等本等息',flexible:'随借随还'};
+  window._lastHealthData = {
+    pressureMode, rateScore, pressureScore, erosionScore, flexScore,
+    annualRate, benchmarkRate, feeAmt, amount, monthly: lastMonthly,
+    totalInterest, interestRatio, term, method,
+    methodLabel: methodLabels[method] || method,
+    debtIncomeRatio,
+    income: window._pressureIncome,
+    debt: window._pressureDebt,
+    estimatedIncomeMid: estimatedIncomeMid
+  };
 
   // 分项
   setHdBar('hdRateBar', 'hdRateScore', rateScore, gradeFromScore(rateScore));
   setHdBar('hdPressureBar', 'hdPressureScore', pressureScore, gradeFromScore(pressureScore));
+  if(pressureMode === 'estimate'){
+    const psEl = el('hdPressureScore');
+    if(psEl) psEl.textContent = pressureScore + '(估)';
+  }
   setHdBar('hdErosionBar', 'hdErosionScore', erosionScore, gradeFromScore(erosionScore));
   setHdBar('hdFlexBar', 'hdFlexScore', flexScore, gradeFromScore(flexScore));
 
@@ -2532,15 +2966,27 @@ function updateHealthScore(amount, totalInterest, totalPayment, annualRate, term
     warnings.push({text:'利率略高于同类贷款平均水平',danger:false});
   }
 
-  // 还款压力维度
-  if(debtIncomeRatio >= 1.0){
-    warnings.push({text:'⚠️ 债务收入比≥100%，资不抵债，强烈建议暂缓贷款',danger:true});
-  } else if(debtIncomeRatio >= 0.7){
-    warnings.push({text:'⚠️ 债务收入比≥70%，已超安全线，还款风险极高',danger:true});
-  } else if(debtIncomeRatio > 0.5){
-    warnings.push({text:'月供占收入超过50%，还款压力较大',danger:true});
-  } else if(debtIncomeRatio > 0.3){
-    warnings.push({text:'月供占收入超过30%，还款压力偏大',danger:false});
+  // 还款压力维度（区分估算/精确模式）
+  if(pressureMode === 'real'){
+    // 精确模式：基于真实收入
+    if(debtIncomeRatio >= 1.0){
+      warnings.push({text:'【风险提示】月供占月收入比例超过100%，已资不抵债，强烈建议暂缓贷款',danger:true});
+    } else if(debtIncomeRatio >= 0.7){
+      warnings.push({text:'【风险提示】月供占月收入比例超过70%，已超出多数银行建议的安全线（通常≤40%），还款压力极高，长期将严重影响现金流稳定性，建议调整方案降低债务负担',danger:true});
+    } else if(debtIncomeRatio > 0.5){
+      warnings.push({text:'【风险提示】月供占月收入比例超过50%，已超出多数银行建议的安全线（通常≤40%），还款压力偏高，长期可能影响现金流稳定性，建议调整方案降低债务负担',danger:true});
+    } else if(debtIncomeRatio > 0.4){
+      warnings.push({text:'月供占月收入比例超过40%，接近银行建议安全线上限，需关注还款压力',danger:false});
+    } else if(debtIncomeRatio > 0.3){
+      warnings.push({text:'月供占月收入比例超过30%，还款压力偏大',danger:false});
+    }
+  } else {
+    // 估算模式：基于贷款参数推算
+    if(debtIncomeRatio > 0.5){
+      warnings.push({text:'📊 估算月供占合理收入比例超过50%，还款压力可能偏高（基于贷款参数估算，填写真实收入可精确评估）',danger:false});
+    } else if(debtIncomeRatio > 0.35){
+      warnings.push({text:'📊 估算月供占合理收入比例约' + fmt(debtIncomeRatio*100,0) + '%，处于中等水平（基于贷款参数估算，填写真实收入可精确评估）',danger:false});
+    }
   }
 
   // 利息侵蚀维度
@@ -2573,63 +3019,280 @@ function updateHealthScore(amount, totalInterest, totalPayment, annualRate, term
     }
   }
 
+  // ===== 风险提示 =====
   const warnEl = el('healthWarnings');
   if(warnEl){
-    warnEl.innerHTML = warnings.map(w => `<div class="hw-item${w.danger?' danger':''}">${w.text}</div>`).join('');
+    if(warnings.length > 0){
+      warnEl.innerHTML = warnings.map(w => `<div class="hw-item${w.danger?' danger':''}">${w.text}</div>`).join('');
+    } else {
+      warnEl.innerHTML = '';
+    }
   }
 
-  // ===== 智能优化建议（优先级：延长期限→降低金额→切换方式→微调利率） =====
+  // ===== 按贷款类型 + 风险等级的分层建议 =====
   const optEl = el('healthOptimize');
   if(optEl){
-    const tips = [];
+    const sections = [];
+    const mr = annualRate / 100 / 12;
 
-    // 优先级1：延长贷款期限降低月供压力
-    if(debtIncomeRatio > 0.3 && term < 360){
-      const newTerm = Math.min(360, term + 12);
-      const newMR = annualRate / 100 / 12;
-      let newMonthly = monthly;
-      if(method === 'equal_installment' && newMR > 0){
-        newMonthly = amount * newMR * Math.pow(1+newMR, newTerm) / (Math.pow(1+newMR, newTerm) - 1);
+    // 贷款类型分类：housing/consumer/business/special
+    const HOUSING_TYPES = ['house','fund','combo'];
+    const CONSUMER_TYPES = ['consumer','renovation','education','insurance','social','fundcredit'];
+    const BUSINESS_TYPES = ['business','second'];
+    const SPECIAL_TYPES = ['car','carfinance'];
+
+    let loanCategory = 'normal';
+    if(HOUSING_TYPES.indexOf(loanType) >= 0) loanCategory = 'housing';
+    else if(CONSUMER_TYPES.indexOf(loanType) >= 0) loanCategory = 'consumer';
+    else if(BUSINESS_TYPES.indexOf(loanType) >= 0) loanCategory = 'business';
+    else if(SPECIAL_TYPES.indexOf(loanType) >= 0) loanCategory = 'special';
+
+    // 辅助函数：计算延长期限的月供和利息变化
+    function calcExtendTerm(curTerm, extendBy){
+      const newTerm = Math.min(360, curTerm + extendBy);
+      let newMonthly = monthly, newTotalInt = totalInterest;
+      if(method === 'equal_installment' && mr > 0){
+        newMonthly = amount * mr * Math.pow(1+mr, newTerm) / (Math.pow(1+mr, newTerm) - 1);
+        newTotalInt = newMonthly * newTerm - amount;
+      } else if(method === 'equal_principal' && mr > 0){
+        newMonthly = amount / newTerm + amount * mr;
+        newTotalInt = (newTerm + 1) * amount * mr / 2;
       }
-      const saved = monthly - newMonthly;
-      if(saved > 0) tips.push('延长贷款期限至' + newTerm + '期，月供可降低约 ¥' + fmt(saved));
-      else tips.push('延长贷款期限至' + newTerm + '期可降低月供压力');
+      return {newTerm, newMonthly, saved: monthly - newMonthly, extraInterest: newTotalInt - totalInterest};
+    }
+    // 辅助函数：计算降低金额的月供和利息变化
+    function calcReduceAmount(reduceAmt){
+      const newAmount = amount - reduceAmt;
+      let newMonthly = monthly, newTotalInt = totalInterest;
+      if(method === 'equal_installment' && mr > 0){
+        newMonthly = newAmount * mr * Math.pow(1+mr, term) / (Math.pow(1+mr, term) - 1);
+        newTotalInt = newMonthly * term - newAmount;
+      } else if(method === 'equal_principal' && mr > 0){
+        newMonthly = newAmount / term + newAmount * mr;
+        newTotalInt = (term + 1) * newAmount * mr / 2;
+      }
+      return {newMonthly, savedMonthly: monthly - newMonthly, savedInterest: totalInterest - newTotalInt};
     }
 
-    // 优先级2：降低贷款金额
-    if(debtIncomeRatio > 0.5 && amount > 50000){
-      const reduceAmt = Math.round(amount * 0.1 / 10000) * 10000;
-      if(reduceAmt > 0) tips.push('降低贷款金额' + fmt(reduceAmt) + '元可显著减轻还款压力');
+    // ===== 🔴 优先缓解还款压力 =====
+    if(debtIncomeRatio > 0.3){
+      const redCards = [];
+
+      if(loanCategory === 'housing'){
+        // 住房类：延长期限 + 提前还款
+        if(term < 360){
+          const ext = calcExtendTerm(term, 12);
+          if(ext.saved > 0){
+            redCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 延长贷款期限（需符合银行政策）</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">调整效果：</span>如从' + Math.round(term/12) + '年延长至' + Math.round(ext.newTerm/12) + '年，月供可降低约<span class="ho-tip-highlight">¥' + fmt(ext.saved) + '</span>，每月现金流压力大幅下降</div><div class="ho-card-row"><span class="ho-card-label">注意事项：</span>总利息会增加约<span class="ho-tip-warn">¥' + fmt(Math.max(0,ext.extraInterest)) + '</span>，还款周期拉长；' + (loanType === 'fund' || loanType === 'combo' ? '<span class="ho-tip-bad">公积金贷款/组合贷的公积金部分，多数银行不支持延长期限，建议您提前联系贷款行确认</span>' : '延长期限需联系银行确认政策') + '</div></div></div>');
+          }
+        }
+        redCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 部分提前还款（缩短期限/减少月供）</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">适用场景：</span>如果您有闲置资金，可优先提前偿还商业贷款部分（利率更高），选择"缩短期限"可大幅节省后续利息</div><div class="ho-card-row"><span class="ho-card-label">注意事项：</span>提前还款可能有违约金（通常为剩余本金的1%-3%），建议先在工具内试算"节省利息 vs 违约金成本"，再做决定</div></div></div>');
+        if(loanType === 'combo'){
+          redCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 组合贷专属提醒</div><div class="ho-card-body"><div class="ho-card-row">组合贷款中，公积金贷款利率更低，<span class="ho-tip-bad">不建议提前结清</span>；优先调整商业贷款部分的还款计划，性价比更高</div></div></div>');
+        }
+
+      } else if(loanCategory === 'consumer'){
+        // 消费信用类：延长分期 + 结清高成本
+        if(term < 360){
+          const ext = calcExtendTerm(term, 12);
+          if(ext.saved > 0){
+            redCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 延长分期期数（需符合机构政策）</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">调整效果：</span>如从' + term + '期延长至' + ext.newTerm + '期，月供可降低约<span class="ho-tip-highlight">¥' + fmt(ext.saved) + '</span>，每月还款压力下降</div><div class="ho-card-row"><span class="ho-card-label">注意事项：</span>总利息会增加约<span class="ho-tip-warn">¥' + fmt(Math.max(0,ext.extraInterest)) + '</span>，且部分银行延长分期会重新计算手续费，实际成本更高，建议先在工具内试算完整成本</div></div></div>');
+          }
+        }
+        redCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 优先结清高成本贷款</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">适用场景：</span>如果您有闲置资金，可优先结清等本等息/信用卡分期类贷款（实际年化利率远高于名义费率），这类贷款提前还款节省的利息更多</div><div class="ho-card-row"><span class="ho-card-label">注意事项：</span>部分消费贷提前还款需支付违约金，建议您先核对合同条款，在工具内测算"提前还款总成本 vs 节省利息"，再做决定</div></div></div>');
+
+      } else if(loanCategory === 'business'){
+        // 经营类：调整还款方式 + 续贷提醒 + 合规
+        if(method !== 'interest_first'){
+          redCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 调整还款方式</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">适用场景：</span>如果当前是等额本息，可和银行协商切换为"先息后本"，每月仅还利息，到期再还本金，大幅降低月度现金流压力</div><div class="ho-card-row"><span class="ho-card-label">注意事项：</span>到期需一次性归还全额本金，<span class="ho-tip-bad">需提前规划续贷或还款资金，避免逾期影响企业征信</span></div></div></div>');
+        }
+        redCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 续贷提醒：提前沟通续贷/展期方案</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">适用场景：</span>如果贷款即将到期，建议提前3-6个月和银行沟通续贷政策，避免到期集中还款的压力</div><div class="ho-card-row"><span class="ho-card-label">注意事项：</span>续贷需符合银行的经营状况审核要求，建议提前准备好营业执照、流水等材料</div></div></div>');
+        redCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 合规提醒</div><div class="ho-card-body"><div class="ho-card-row">经营性贷款需确保资金用途合规，<span class="ho-tip-bad">不得流入房地产、股市等禁入领域</span>，否则银行有权提前收回贷款，建议您保留完整的经营用途凭证</div></div></div>');
+
+      } else if(loanCategory === 'special'){
+        // 车贷/汽车金融
+        if(loanType === 'car' || loanType === 'carfinance'){
+          if(term < 60){
+            const ext = calcExtendTerm(term, 12);
+            if(ext.saved > 0){
+              redCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 车贷专属：调整还款期限</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">调整效果：</span>如从' + Math.round(term/12) + '年延长至' + Math.round(ext.newTerm/12) + '年，月供可降低约<span class="ho-tip-highlight">¥' + fmt(ext.saved) + '</span>，每月压力下降</div><div class="ho-card-row"><span class="ho-card-label">注意事项：</span>总利息会增加，且部分车贷提前结清需支付违约金，建议先在工具内试算完整成本</div></div></div>');
+            }
+          }
+        }
+        // 一次性还本付息
+        if(method === 'bullet'){
+          redCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 一次性还本付息专属：提前规划还款资金</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">适用场景：</span>如果是短期一次性还本付息贷款，当前距离到期还有一定时间，可提前分批准备还款资金，避免到期一次性还款的压力</div><div class="ho-card-row"><span class="ho-card-label">注意事项：</span><span class="ho-tip-bad">不建议申请新的贷款"以贷养贷"，只会加剧债务负担</span></div></div></div>');
+        }
+        // 随借随还
+        if(method === 'flexible'){
+          redCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 随借随还专属：优先归还部分本金</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">适用场景：</span>如果是循环类随借随还贷款，可优先归还部分本金，降低后续利息支出</div><div class="ho-card-row"><span class="ho-card-label">注意事项：</span>这类贷款多为按日计息，提前还款无违约金，适合有闲置资金时随时结清</div></div></div>');
+        }
+
+      } else {
+        // 普通贷款：通用建议
+        if(term < 360){
+          const ext = calcExtendTerm(term, 12);
+          if(ext.saved > 0){
+            redCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 延长贷款期限</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">调整效果：</span>延长至' + ext.newTerm + '期，月供可降低约<span class="ho-tip-highlight">¥' + fmt(ext.saved) + '</span>，每月压力下降</div><div class="ho-card-row"><span class="ho-card-label">注意事项：</span>总利息将增加约<span class="ho-tip-warn">¥' + fmt(Math.max(0,ext.extraInterest)) + '</span>，还款周期拉长，适合短期现金流紧张的用户</div></div></div>');
+          }
+        }
+        if(debtIncomeRatio > 0.5 && amount > 10000){
+          const reduceAmt = Math.round(amount * 0.1 / 10000) * 10000 || Math.round(amount * 0.1);
+          if(reduceAmt > 0){
+            const r = calcReduceAmount(reduceAmt);
+            redCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 降低贷款金额</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">调整效果：</span>降低<span class="ho-tip-highlight">' + fmt(reduceAmt) + '元</span>，月供可降低约<span class="ho-tip-highlight">¥' + fmt(Math.max(0,r.savedMonthly)) + '</span>，总利息减少约<span class="ho-tip-highlight">¥' + fmt(Math.max(0,r.savedInterest)) + '</span></div><div class="ho-card-row"><span class="ho-card-label">适用场景：</span>兼顾压力与成本的稳妥调整方式</div></div></div>');
+          }
+        }
+      }
+
+      if(redCards.length > 0){
+        const pressureLabel = debtIncomeRatio > 0.5 ? '优先缓解还款压力' : '还款压力偏高';
+        sections.push('<div class="ho-section"><div class="ho-section-title red">🔴 ' + pressureLabel + '<span style="font-size:11px;font-weight:400;color:var(--text-tertiary)">（适合现金流紧张的情况）</span></div>' + redCards.join('') + '</div>');
+      }
     }
 
-    // 优先级3：切换低风险还款方式
-    if(method === 'equal_installment' && annualRate > benchmarkRate * 0.8){
-      const savedByEP = calcSavedBySwitchMethod(amount, term, annualRate, 'equal_installment', 'equal_principal');
-      if(savedByEP > 0) tips.push('切换到等额本金可节省总利息约 ¥' + fmt(savedByEP));
-    }
-    if(method === 'equal_principal_interest'){
-      tips.push('等本等息IRR高于名义费率，建议对比等额本息方案');
+    // ===== 🟡 兼顾成本优化（关联：利率水平 + 利息侵蚀评分） =====
+    {
+      const yellowCards = [];
+      const interestRatio = amount > 0 ? totalInterest / amount : 0;
+
+      // --- 利息侵蚀专项建议（关联利息侵蚀评分维度） ---
+      if(interestRatio > 0.5){
+        // 利息超过本金50%，侵蚀严重
+        if(method === 'equal_installment' && loanCategory !== 'housing'){
+          // 房贷不推荐中途变更还款方式
+          const savedByEP = calcSavedBySwitchMethod(amount, term, annualRate, 'equal_installment', 'equal_principal');
+          if(savedByEP > 0){
+            yellowCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 切换为等额本金还款（降低利息侵蚀）</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">当前问题：</span>利息占本金<span class="ho-tip-warn">' + fmt(interestRatio*100,1) + '%</span>，利息侵蚀较严重</div><div class="ho-card-row"><span class="ho-card-label">调整效果：</span>切换等额本金可节省总利息约<span class="ho-tip-highlight">¥' + fmt(savedByEP) + '</span>，利息侵蚀率降至约<span class="ho-tip-highlight">' + fmt(Math.max(0,(1-savedByEP/totalInterest))*interestRatio*100,1) + '%</span></div><div class="ho-card-row"><span class="ho-card-label">注意事项：</span>前期月供会高于当前方案' + (debtIncomeRatio > 0.5 ? '，<span class="ho-tip-warn">不适合当前还款压力偏大的用户</span>' : '，适合收入稳定、能承受前期压力的用户') + '</div></div></div>');
+          }
+        }
+        if(term > 60 && loanCategory !== 'business'){
+          // 长期限导致利息侵蚀，建议缩短
+          const shortTerm = Math.max(12, Math.round(term * 0.7));
+          let shortMonthly = monthly, shortTotalInt = totalInterest;
+          if(method === 'equal_installment' && mr > 0){
+            shortMonthly = amount * mr * Math.pow(1+mr, shortTerm) / (Math.pow(1+mr, shortTerm) - 1);
+            shortTotalInt = shortMonthly * shortTerm - amount;
+          } else if(method === 'equal_principal' && mr > 0){
+            shortMonthly = amount / shortTerm + amount * mr;
+            shortTotalInt = (shortTerm + 1) * amount * mr / 2;
+          }
+          const savedInt = totalInterest - shortTotalInt;
+          if(savedInt > 0){
+            yellowCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 缩短贷款期限（降低利息侵蚀）</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">当前问题：</span>利息占本金<span class="ho-tip-warn">' + fmt(interestRatio*100,1) + '%</span>，长期限导致利息累积过多</div><div class="ho-card-row"><span class="ho-card-label">调整效果：</span>如缩短至' + shortTerm + '期，总利息可减少约<span class="ho-tip-highlight">¥' + fmt(savedInt) + '</span>，利息侵蚀率降至约<span class="ho-tip-highlight">' + fmt(shortTotalInt/amount*100,1) + '%</span></div><div class="ho-card-row"><span class="ho-card-label">注意事项：</span>月供将增加约<span class="ho-tip-warn">¥' + fmt(shortMonthly - monthly) + '</span>，需确保收入能覆盖</div></div></div>');
+          }
+        }
+      }
+
+      // --- 按贷款类型的差异化建议 ---
+      if(loanCategory === 'housing'){
+        if(annualRate > benchmarkRate){
+          yellowCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 利率协商</div><div class="ho-card-body"><div class="ho-card-row">当前利率高于同类平均<span class="ho-tip-highlight">' + fmt(benchmarkRate,2) + '%</span>，可尝试与银行协商降低利率（商贷部分），或关注LPR调整对浮动利率的影响</div></div></div>');
+        }
+        if(loanType === 'fund' && annualRate > BENCHMARK_RATES.fund){
+          yellowCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 公积金利率提醒</div><div class="ho-card-body"><div class="ho-card-row">公积金贷款利率通常为固定利率，如当前利率高于公积金基准利率<span class="ho-tip-highlight">' + fmt(BENCHMARK_RATES.fund,2) + '%</span>，建议核实利率类型</div></div></div>');
+        }
+        // 房贷利息侵蚀专项：等额本息→等额本金（仅建议，不推荐中途变更）
+        if(interestRatio > 0.3 && method === 'equal_installment'){
+          yellowCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 利息侵蚀提醒</div><div class="ho-card-body"><div class="ho-card-row">当前利息占本金<span class="ho-tip-warn">' + fmt(interestRatio*100,1) + '%</span>，房贷因期限长利息累积较多属正常现象；如为新贷，可在签约时选择等额本金方式降低总利息</div></div></div>');
+        }
+
+      } else if(loanCategory === 'consumer'){
+        if(method === 'equal_principal_interest'){
+          yellowCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 等本等息成本提醒</div><div class="ho-card-body"><div class="ho-card-row">等本等息/等额等息的实际年化利率(IRR)远高于名义费率，建议在工具内对比等额本息方案的真实成本差异</div></div></div>');
+        }
+        if(annualRate > benchmarkRate){
+          yellowCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 利率对比</div><div class="ho-card-body"><div class="ho-card-row">当前利率高于同类平均<span class="ho-tip-highlight">' + fmt(benchmarkRate,2) + '%</span>，消费贷市场利率差异大，建议多对比几家机构的报价</div></div></div>');
+        }
+
+      } else if(loanCategory === 'business'){
+        if(annualRate > benchmarkRate){
+          yellowCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 利率优化</div><div class="ho-card-body"><div class="ho-card-row">经营贷利率受政策影响较大，当前利率高于同类平均<span class="ho-tip-highlight">' + fmt(benchmarkRate,2) + '%</span>，可关注普惠金融优惠政策，或与银行协商调整</div></div></div>');
+        }
+
+      } else if(loanCategory === 'special'){
+        if(loanType === 'carfinance' && annualRate > BENCHMARK_RATES.carfinance){
+          yellowCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 汽车金融贷成本提醒</div><div class="ho-card-body"><div class="ho-card-row">汽车金融贷利率通常高于银行车贷，当前利率<span class="ho-tip-warn">' + fmt(annualRate,2) + '%</span>高于同类平均<span class="ho-tip-highlight">' + fmt(BENCHMARK_RATES.carfinance,2) + '%</span>，如征信良好可考虑转银行车贷</div></div></div>');
+        }
+
+      } else {
+        // 普通贷款
+        if(method === 'equal_installment' && interestRatio <= 0.5){
+          const savedByEP = calcSavedBySwitchMethod(amount, term, annualRate, 'equal_installment', 'equal_principal');
+          if(savedByEP > 0){
+            yellowCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 切换为等额本金还款</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">调整效果：</span>可节省总利息约<span class="ho-tip-highlight">¥' + fmt(savedByEP) + '</span></div><div class="ho-card-row"><span class="ho-card-label">注意事项：</span>前期月供会高于当前方案' + (debtIncomeRatio > 0.5 ? '，<span class="ho-tip-warn">不适合当前还款压力偏大的用户</span>' : '') + '</div></div></div>');
+          }
+        }
+        if(method === 'equal_principal_interest'){
+          yellowCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 等本等息成本提醒</div><div class="ho-card-body"><div class="ho-card-row">等本等息IRR高于名义费率，建议对比等额本息方案的实际成本</div></div></div>');
+        }
+      }
+
+      if(yellowCards.length > 0){
+        sections.push('<div class="ho-section"><div class="ho-section-title yellow">🟡 兼顾成本优化<span style="font-size:11px;font-weight:400;color:var(--text-tertiary)">（适合收入稳定、能承受前期压力的情况）</span></div>' + yellowCards.join('') + '</div>');
+      }
     }
 
-    // 优先级4：微调利率方案
-    if(annualRate > benchmarkRate){
-      tips.push('可尝试协商降低利率至同类平均水平' + fmt(benchmarkRate,2) + '%');
+    // ===== 🟢 降低实际贷款成本（关联：还款灵活性 + 本金利息比例 + 隐性费用） =====
+    {
+      const greenCards = [];
+      const interestRatio = amount > 0 ? totalInterest / amount : 0;
+      const principalPct = totalPayment > 0 ? (amount / totalPayment * 100) : 100;
+      const interestPct = totalPayment > 0 ? (totalInterest / totalPayment * 100) : 0;
+
+      // --- 还款灵活性专项建议（关联还款灵活性评分维度） ---
+      if(method === 'equal_principal_interest'){
+        // 灵活性评分最低(30)，等本等息IRR失真
+        greenCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 等本等息真实成本提醒</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">当前问题：</span>等本等息还款方式灵活性评分最低，名义费率<span class="ho-tip-warn">' + fmt(annualRate,2) + '%</span>远低于实际年化利率(IRR)</div><div class="ho-card-row"><span class="ho-card-label">建议：</span>在工具内切换为"等额本息"对比真实年化利率，了解实际资金成本差异；如为新贷，优先选择等额本息方案</div></div></div>');
+      }
+      if(method === 'bullet' && term > 6){
+        // 一次性还本付息灵活性差，资金占用成本高
+        greenCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 一次性还本付息成本提醒</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">当前问题：</span>一次性还本付息灵活性评分较低，实际资金占用成本高于等额本息</div><div class="ho-card-row"><span class="ho-card-label">建议：</span>在工具内对比等额本息方案的真实年化利率差异，了解分期还款的实际成本优势</div></div></div>');
+      }
+      if(method === 'interest_first' && term > 24){
+        // 先息后本长期限到期还本压力大
+        greenCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 先息后本到期风险提醒</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">当前问题：</span>先息后本虽月供压力小，但到期需一次性归还本金<span class="ho-tip-warn">¥' + fmt(amount) + '</span>，长期限下资金占用成本较高</div><div class="ho-card-row"><span class="ho-card-label">建议：</span>提前规划到期还款资金来源，避免临时周转困难</div></div></div>');
+      }
+
+      // --- 本金/利息比例透视（关联成本透视比例条数据） ---
+      if(interestPct > 40 && amount > 0){
+        greenCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 成本结构透视</div><div class="ho-card-body"><div class="ho-card-row"><span class="ho-card-label">当前比例：</span>总还款中，本金占<span class="ho-tip-highlight">' + fmt(principalPct,1) + '%</span>，利息占<span class="ho-tip-warn">' + fmt(interestPct,1) + '%</span>，利息占比偏高</div><div class="ho-card-row"><span class="ho-card-label">建议：</span>每借入<span class="ho-tip-highlight">¥100</span>，实际需偿还约<span class="ho-tip-warn">¥' + fmt(totalPayment/amount*100,1) + '</span>，其中利息<span class="ho-tip-warn">¥' + fmt(totalInterest/amount*100,1) + '</span>；可通过缩短期限或降低利率来优化</div></div></div>');
+      }
+
+      // --- 隐性费用提醒 ---
+      if(feeAmt > 0){
+        const feePct = amount > 0 ? (feeAmt / amount * 100) : 0;
+        if(loanCategory === 'consumer'){
+          greenCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 避坑提醒</div><div class="ho-card-body"><div class="ho-card-row">这类贷款中，一次性服务费、账户管理费会拉高实际年化利率，服务费占贷款金额<span class="ho-tip-warn">' + fmt(feePct,1) + '%</span></div><div class="ho-card-row">您可在工具内测算真实IRR，对比其他低息方案的成本差异；实际到手金额为<span class="ho-tip-highlight">¥' + fmt(amount - feeAmt) + '</span>，以此为基数计算的真实利率更高</div></div></div>');
+        } else {
+          greenCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 警惕隐性费用</div><div class="ho-card-body"><div class="ho-card-row">一次性服务费<span class="ho-tip-warn">¥' + fmt(feeAmt) + '</span>（占贷款金额' + fmt(feePct,1) + '%），会拉高实际年化利率</div><div class="ho-card-row">实际到手<span class="ho-tip-highlight">¥' + fmt(amount - feeAmt) + '</span>，以此为基数计算的真实利率更高，建议优先对比无额外费用的方案，或测算真实IRR</div></div></div>');
+        }
+      }
+
+      // --- 经营贷合规 ---
+      if(loanCategory === 'business'){
+        greenCards.push('<div class="ho-card"><div class="ho-card-title"><span class="ho-icon">🔹</span> 经营贷合规提醒</div><div class="ho-card-body"><div class="ho-card-row">经营性贷款资金<span class="ho-tip-bad">不得流入房地产、股市等禁入领域</span>，否则银行有权提前收回贷款并影响征信，请保留完整的经营用途凭证</div></div></div>');
+      }
+
+      if(greenCards.length > 0){
+        sections.push('<div class="ho-section"><div class="ho-section-title green">🟢 降低实际贷款成本<span style="font-size:11px;font-weight:400;color:var(--text-tertiary)">（适合关注真实利率的情况）</span></div>' + greenCards.join('') + '</div>');
+      }
     }
 
-    if(feeAmt > 0) tips.push('关注服务费对实际利率的影响，实际到手金额减少');
-
-    optEl.innerHTML = tips.length ? tips.map(t => `<div class="ho-text">💡 ${t}</div>`).join('') : '<div class="ho-text">✅ 当前方案评级良好，无需调整</div>';
+    if(sections.length > 0){
+      optEl.innerHTML = sections.join('');
+    } else {
+      optEl.innerHTML = '<div class="ho-tip" style="color:var(--color-good);font-weight:500">✅ 当前方案评级良好，无需调整</div>';
+    }
   }
 
-  // ===== 收入提示（统一默认值4500元） =====
+  // ===== 收入提示（双模式） =====
   const hintEl = el('healthIncomeHint');
   if(hintEl){
-    const incomeInput = el('monthlyIncome');
-    const hasUserIncome = incomeInput && stripNumberFormatting(incomeInput.value) !== '';
-    if(!hasUserIncome){
-      hintEl.textContent = '⚠️ 未填写收入，评分基于公共数据估算（默认 ¥' + DEFAULT_MONTHLY_INCOME.toLocaleString() + '），结果仅供参考，建议填写真实收入';
+    if(pressureMode === 'estimate'){
+      hintEl.innerHTML = '📊 压力评分为<span style="color:var(--color-warn);font-weight:600">估算模式</span>：从月供绝对值、偿还节奏、期限锁定、利率负担4个维度评估，填写真实收入后切换为<span style="color:var(--color-good);font-weight:600">精确模式</span>，评分更准确、权重更高';
     } else {
-      hintEl.textContent = '';
+      hintEl.innerHTML = '✅ 压力评分为<span style="color:var(--color-good);font-weight:600">精确模式</span>：基于您的真实财务数据评估，还款压力权重占比40%';
     }
   }
 }
@@ -2639,8 +3302,8 @@ function calcSavedBySwitchMethod(amount, term, annualRate, fromMethod, toMethod)
   const mr = annualRate / 100 / 12;
   let fromInterest = 0, toInterest = 0;
   if(fromMethod === 'equal_installment'){
-    const m = amount * mr * Math.pow(1+mr, term) / (Math.pow(1+mr, term) - 1);
-    fromInterest = m * term - amount;
+    if(mr === 0){ fromInterest = 0; }
+    else { const m = amount * mr * Math.pow(1+mr, term) / (Math.pow(1+mr, term) - 1); fromInterest = m * term - amount; }
   }
   if(toMethod === 'equal_principal'){
     toInterest = (term + 1) / 2 * amount * mr;
@@ -2663,8 +3326,68 @@ function setHdBar(barId, scoreId, score, grade){
   if(scoreEl) scoreEl.textContent = Math.round(score);
 }
 
+// ========== 公共现金流构建 ==========
+function buildCashflows(amount, term, annualRate, method, actualAmount, feeMtd, feeAmt){
+  const monthlyRate = annualRate / 100 / 12;
+  let cashflows = [];
+  if(method === 'equal_installment'){
+    let m;
+    if(monthlyRate === 0){ m = amount / term; }
+    else { m = amount * monthlyRate * Math.pow(1+monthlyRate, term) / (Math.pow(1+monthlyRate, term) - 1); }
+    cashflows = [-actualAmount];
+    for(let i=0; i<term; i++) cashflows.push(m);
+    if(feeMtd === 'monthly' && feeAmt > 0) cashflows = cashflows.map((cf,i) => i===0 ? cf : cf - feeAmt/term);
+  } else if(method === 'equal_principal'){
+    cashflows = [-actualAmount];
+    let remain = amount;
+    for(let i=0; i<term; i++){
+      const p = amount/term;
+      const interest = remain * monthlyRate;
+      cashflows.push(p + interest);
+      remain -= p;
+    }
+    if(feeMtd === 'monthly' && feeAmt > 0) cashflows = cashflows.map((cf,i) => i===0 ? cf : cf - feeAmt/term);
+  } else if(method === 'interest_first'){
+    cashflows = [-actualAmount];
+    for(let i=0; i<term-1; i++) cashflows.push(amount * monthlyRate);
+    cashflows.push(amount * monthlyRate + amount);
+    if(feeMtd === 'monthly' && feeAmt > 0) cashflows = cashflows.map((cf,i) => i===0 ? cf : cf - feeAmt/term);
+  } else if(method === 'equal_principal_interest'){
+    const p = amount/term;
+    const interest = amount * monthlyRate;
+    cashflows = [-actualAmount];
+    for(let i=0; i<term; i++) cashflows.push(p + interest);
+    if(feeMtd === 'monthly' && feeAmt > 0) cashflows = cashflows.map((cf,i) => i===0 ? cf : cf - feeAmt/term);
+  } else if(method === 'flexible'){
+    const flexDays = getNum('flexDays') || 30;
+    const dailyRate = annualRate / 100 / 365;
+    const totalInterest = amount * dailyRate * flexDays;
+    cashflows = [-actualAmount];
+    const months = Math.max(1, Math.ceil(flexDays / 30));
+    const monthlyInterest = totalInterest / months;
+    for(let i=0; i<months-1; i++) cashflows.push(monthlyInterest);
+    cashflows.push(monthlyInterest + amount);
+    if(feeMtd === 'monthly' && feeAmt > 0) cashflows = cashflows.map((cf,i) => i===0 ? cf : cf - feeAmt/term);
+  } else {
+    cashflows = [-actualAmount, amount + amount * monthlyRate * term];
+  }
+  return cashflows;
+}
+
 // ========== 服务费APR ==========
 function calcFeeAPR(amount, term, annualRate, method, feeAmt, feeMtd, schedule){
+  // 始终计算实际年化APR并更新概览指标
+  const actualAmount = (feeMtd === 'deduct' && feeAmt > 0) ? amount - feeAmt : amount;
+  if(actualAmount > 0 && term > 0){
+    const aprCashflows = buildCashflows(amount, term, annualRate, method, actualAmount, feeMtd, feeAmt);
+    const irr = computeIRR(aprCashflows);
+    const apr = (irr > 0) ? irr * 12 * 100 : null;
+    setIndValue('indAPR', apr, '%');
+  } else {
+    const aprNode = el('indAPR');
+    if(aprNode){ aprNode.textContent = '∞'; aprNode.classList.add('empty','empty-state'); }
+  }
+
   if(!feeAmt || feeAmt <= 0){
     const fr = el('feeResult');
     const fr2 = el('feeResult2');
@@ -2676,12 +3399,9 @@ function calcFeeAPR(amount, term, annualRate, method, feeAmt, feeMtd, schedule){
     if(hcw2) hcw2.style.display = 'none';
     return;
   }
-  // 用IRR法计算实际年化
-  const monthlyRate = annualRate / 100 / 12;
-  let cashflows = [];
-  let actualAmount = feeMtd === 'deduct' ? amount - feeAmt : amount;
-  // 兜底：扣费后实际到手金额≤0时无法计算
-  if(actualAmount <= 0){
+  // 用IRR法计算服务费APR
+  const feeActualAmount = feeMtd === 'deduct' ? amount - feeAmt : amount;
+  if(feeActualAmount <= 0){
     const fa = el('feeAPR');
     const fa2 = el('feeAPR2');
     if(fa) fa.textContent = 'N/A';
@@ -2689,39 +3409,8 @@ function calcFeeAPR(amount, term, annualRate, method, feeAmt, feeMtd, schedule){
     return;
   }
 
-  if(method === 'equal_installment'){
-    const m = amount * monthlyRate * Math.pow(1+monthlyRate, term) / (Math.pow(1+monthlyRate, term) - 1);
-    cashflows = [-actualAmount];
-    for(let i=0; i<term; i++) cashflows.push(m);
-    if(feeMtd === 'monthly') cashflows = cashflows.map((cf,i) => i===0 ? cf : cf - feeAmt/term);
-  } else if(method === 'equal_principal'){
-    cashflows = [-actualAmount];
-    let remain = amount;
-    for(let i=0; i<term; i++){
-      const p = amount/term;
-      const interest = remain * monthlyRate;
-      cashflows.push(p + interest);
-      remain -= p;
-    }
-    if(feeMtd === 'monthly') cashflows = cashflows.map((cf,i) => i===0 ? cf : cf - feeAmt/term);
-  } else if(method === 'interest_first'){
-    cashflows = [-actualAmount];
-    for(let i=0; i<term-1; i++) cashflows.push(amount * monthlyRate);
-    cashflows.push(amount * monthlyRate + amount);
-    if(feeMtd === 'monthly') cashflows = cashflows.map((cf,i) => i===0 ? cf : cf - feeAmt/term);
-  } else if(method === 'equal_principal_interest'){
-    const p = amount/term;
-    const interest = amount * monthlyRate;
-    cashflows = [-actualAmount];
-    for(let i=0; i<term; i++) cashflows.push(p + interest);
-    if(feeMtd === 'monthly') cashflows = cashflows.map((cf,i) => i===0 ? cf : cf - feeAmt/term);
-  } else {
-    cashflows = [-actualAmount, amount + amount * monthlyRate * term];
-  }
-
-  if(feeMtd === 'upfront') cashflows[0] = cashflows[0]; // already handled by actualAmount
-
-  const apr = computeIRR(cashflows) * 12 * 100;
+  const cashflows = buildCashflows(amount, term, annualRate, method, feeActualAmount, feeMtd, feeAmt);
+  const feeAPR = computeIRR(cashflows) * 12 * 100;
 
   // 显示
   const fr = el('feeResult');
@@ -2730,13 +3419,13 @@ function calcFeeAPR(amount, term, annualRate, method, feeAmt, feeMtd, schedule){
   const fa2 = el('feeAPR2');
   if(fr) fr.style.display = 'block';
   if(fr2) fr2.style.display = 'block';
-  if(fa) fa.textContent = fmt(apr, 2) + '%';
-  if(fa2) fa2.textContent = fmt(apr, 2) + '%';
+  if(fa) fa.textContent = fmt(feeAPR, 2) + '%';
+  if(fa2) fa2.textContent = fmt(feeAPR, 2) + '%';
 
   // 高成本提示
   const hcw = el('highCostWarning');
   const hcw2 = el('highCostWarning2');
-  if(apr > 24){
+  if(feeAPR > 24){
     if(hcw) hcw.style.display = 'block';
     if(hcw2) hcw2.style.display = 'block';
   } else {
@@ -2770,6 +3459,8 @@ function computeIRR(cashflows, guess=0.1){
   }
   // 兜底：如果结果不合理，返回0
   if(!isFinite(rate) || isNaN(rate)) return 0;
+  // 不收敛检查：利率绝对值过小视为失败
+  if(Math.abs(rate) < 1e-10 && maxIter > 50) return 0;
   return rate;
 }
 
@@ -2783,7 +3474,7 @@ function calcEarly(){
   const earlyAmount = getNum('earlyAmount');
   const penalty = getNum('prepaymentPenalty');
 
-  if(!amount || !term || !annualRate || !earlyMonth || !earlyAmount){
+  if(!amount || !term || annualRate < 0 || !earlyMonth || !earlyAmount){
     const er = el('earlyResult2');
     if(er) er.style.display = 'none';
     return;
@@ -2795,7 +3486,7 @@ function calcEarly(){
 
   // 计算已还利息和剩余本金
   if(method === 'equal_installment'){
-    const m = amount * monthlyRate * Math.pow(1+monthlyRate, term) / (Math.pow(1+monthlyRate, term) - 1);
+    const m = monthlyRate === 0 ? amount / term : amount * monthlyRate * Math.pow(1+monthlyRate, term) / (Math.pow(1+monthlyRate, term) - 1);
     for(let i=0; i<earlyMonth && i<term; i++){
       const interest = remain * monthlyRate;
       paidInterest += interest;
@@ -2816,6 +3507,14 @@ function calcEarly(){
     const interest = amount * monthlyRate;
     paidInterest = interest * Math.min(earlyMonth, term);
     remain = amount - p * Math.min(earlyMonth, term);
+  } else if(method === 'flexible'){
+    const flexDays = getNum('flexDays') || 30;
+    const dailyRate = annualRate / 100 / 365;
+    paidInterest = amount * dailyRate * Math.min(earlyMonth * 30, flexDays);
+    remain = amount;
+  } else if(method === 'bullet'){
+    paidInterest = 0;
+    remain = amount;
   }
 
   remain = Math.max(0, remain);
@@ -2849,6 +3548,11 @@ function calcEarly(){
     for(let i=0; i<earlyMonth; i++) cashflows.push(amount * monthlyRate);
   } else if(method === 'equal_principal_interest'){
     for(let i=0; i<earlyMonth; i++) cashflows.push(amount/term + amount*monthlyRate);
+  } else if(method === 'flexible'){
+    const dailyRate = annualRate / 100 / 365;
+    for(let i=0; i<earlyMonth; i++) cashflows.push(amount * dailyRate * 30);
+  } else if(method === 'bullet'){
+    for(let i=0; i<earlyMonth; i++) cashflows.push(0);
   } else {
     for(let i=0; i<earlyMonth; i++) cashflows.push(amount * monthlyRate);
   }
@@ -2869,41 +3573,153 @@ function calcEarly(){
   if(ea2) ea2.textContent = fmt(apr,2)+'%';
 }
 
-// ========== 月供压力 ==========
-function calcPressure(){
-  const monthlyIncome = getNum('monthlyIncome') || DEFAULT_MONTHLY_INCOME;
-  const monthlyDebt = getNum('monthlyDebt') || 0;
+// ========== 我的财务面板 ==========
+function toggleMyFinance(){
+  const toggle = el('myFinanceToggle');
+  const panel = el('myFinancePanel');
+  if(!toggle || !panel) return;
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  toggle.classList.toggle('open', !isOpen);
+  if(!isOpen) calcRealPressure(); // 展开时立即计算
+}
+
+// 自定义支出项
+let expenseItemCounter = 0;
+const EXPENSE_PRESETS = ['房租','餐饮','交通','通讯','水电','保险','教育','医疗','娱乐','其他'];
+
+function addExpenseItem(){
+  const container = el('expenseItems');
+  if(!container) return;
+  const id = ++expenseItemCounter;
+  const row = document.createElement('div');
+  row.className = 'expense-item-row';
+  row.id = 'expenseRow_' + id;
+  row.innerHTML = '<span class="capital-label"><select class="expense-item-select" id="expenseName_'+id+'" onchange="window.onFinanceChange()" style="border:none;background:transparent;color:var(--text-secondary);font-size:12px;outline:none;cursor:pointer;padding:0;-webkit-appearance:none;min-width:48px">' + EXPENSE_PRESETS.map(function(n){return '<option value="'+n+'">'+n+'</option>';}).join('') + '</select></span><input type="number" class="capital-input" id="expenseVal_'+id+'" placeholder="0" oninput="window.onFinanceChange()"><span class="expense-item-del" onclick="window.removeExpenseItem('+id+')">✕</span>';
+  container.appendChild(row);
+  document.getElementById('expenseVal_'+id).focus();
+}
+
+function removeExpenseItem(id){
+  const row = el('expenseRow_' + id);
+  if(row) row.remove();
+  onFinanceChange();
+}
+
+function getExpenseItemsTotal(){
+  let total = 0;
+  const container = el('expenseItems');
+  if(!container) return 0;
+  const inputs = container.querySelectorAll('input[type="number"]');
+  inputs.forEach(function(inp){
+    const v = parseFloat(inp.value);
+    if(v > 0) total += v;
+  });
+  return total;
+}
+
+function onFinanceChange(){
+  calcRealPressure();
+  calcPressure();
+  calc(); // 联动健康评分
+}
+
+function calcRealPressure(){
+  const incomeInput = el('monthlyIncome');
+  const expenseInput = el('monthlyExpense');
+  const debtInput = el('monthlyDebt');
+  const income = incomeInput ? parseFloat(incomeInput.value) || 0 : 0;
+  const expense = expenseInput ? parseFloat(expenseInput.value) || 0 : 0;
+  const debt = debtInput ? parseFloat(debtInput.value) || 0 : 0;
   const monthly = lastMonthly;
-  if(!monthlyIncome || (!monthly && !monthlyDebt)){
-    const pw = el('pressureWrap');
-    const pb = el('pressureBar');
-    if(pb){ pb.style.width = '0%'; pb.className = 'pressure-bar-fill'; }
-    const pp = el('pressurePct');
-    const pl = el('pressureLevel');
-    if(pp) pp.textContent = '0%';
-    if(pl) pl.textContent = '∞';
+
+  const resultEl = el('myFinanceResult');
+  const bar = el('myFinancePressureBar');
+  const pctEl = el('myFinancePressurePct');
+  const levelEl = el('myFinancePressureLevel');
+  const detailEl = el('myFinanceDetail');
+  const hintEl = el('myFinanceHint');
+  const availEl = el('myFinanceAvailable');
+
+  // 可用收入 = 月收入 - 月支出 - 自定义支出项 - 现有月负债
+  const extraExpense = getExpenseItemsTotal();
+  const totalExpense = expense + extraExpense;
+  const available = income - totalExpense - debt;
+
+  // 更新可用收入显示
+  if(availEl){
+    if(income <= 0) availEl.textContent = '--';
+    else if(available <= 0){ availEl.textContent = '¥' + fmt(available); availEl.className = 'capital-value bad'; }
+    else { availEl.textContent = '¥' + fmt(available); availEl.className = 'capital-value primary'; }
+  }
+
+  // 未填写月收入时隐藏压力结果
+  if(resultEl) resultEl.style.display = income <= 0 ? 'none' : 'block';
+
+  if(income <= 0 || available <= 0){
+    if(bar){ bar.style.width = '0%'; bar.className = 'my-finance-pressure-bar-fill'; }
+    if(pctEl) pctEl.textContent = income <= 0 ? '--' : '∞';
+    if(levelEl){
+      if(income <= 0){ levelEl.textContent = '未填写'; levelEl.className = 'my-finance-pressure-level'; }
+      else { levelEl.textContent = '资不抵债'; levelEl.className = 'my-finance-pressure-level overwhelmed'; }
+    }
+    if(detailEl) detailEl.textContent = income > 0 ? '可用收入 ≤ 0，无法承担新增月供' : '填写月收入后计算真实压力';
+    if(hintEl) hintEl.textContent = '填写后评分更准确';
     return;
   }
-  // PRD: 债务收入比 = (月供 + 现有月负债) / 月收入
-  const totalDebt = monthly + monthlyDebt;
-  const ratio = totalDebt / monthlyIncome;
+
+  // 真实压力 = 月供 / 可用收入
+  const ratio = monthly / available;
   const pct = ratio * 100;
-  const displayPct = Math.min(pct, 150); // 允许超过100%显示，上限150%
-  const pb = el('pressureBar');
-  if(pb){
-    pb.style.width = Math.min(displayPct, 100) + '%'; // 进度条最大100%
-    pb.className = 'pressure-bar-fill' + (pct > 70 ? ' danger' : pct > 50 ? ' warn' : '');
+  const displayPct = Math.min(pct, 150);
+
+  if(bar){
+    bar.style.width = Math.min(displayPct, 100) + '%';
+    bar.className = 'my-finance-pressure-bar-fill' + (pct > 70 ? ' danger' : pct > 50 ? ' warn' : '');
   }
-  const pp = el('pressurePct');
-  const pl = el('pressureLevel');
-  if(pp) pp.textContent = fmt(pct, 1) + '%'; // 显示真实比例，不截断
-  if(pl){
-    if(pct <= 30) pl.textContent = '轻松';
-    else if(pct <= 50) pl.textContent = '适中';
-    else if(pct <= 70) pl.textContent = '紧张';
-    else if(pct <= 100) pl.textContent = '危险';
-    else pl.textContent = '资不抵债';
+  if(pctEl) pctEl.textContent = fmt(pct, 1) + '%';
+  if(levelEl){
+    let text, cls;
+    if(pct <= 30){ text = '轻松'; cls = 'easy'; }
+    else if(pct <= 50){ text = '适中'; cls = 'moderate'; }
+    else if(pct <= 70){ text = '紧张'; cls = 'tight'; }
+    else { text = '危险'; cls = 'overwhelmed'; }
+    levelEl.textContent = text;
+    levelEl.className = 'my-finance-pressure-level ' + cls;
   }
+  if(detailEl){
+    const lines = [];
+    lines.push('月收入 ¥' + fmt(income) + ' − 月支出 ¥' + fmt(totalExpense) + (extraExpense > 0 ? '(含明细¥' + fmt(extraExpense) + ')' : '') + ' − 月负债 ¥' + fmt(debt) + ' = 可用收入 ¥' + fmt(available));
+    lines.push('月供 ¥' + fmt(monthly) + ' 占可用收入 ' + fmt(pct, 1) + '%');
+    if(pct > 50) lines.push('⚠️ 建议月供不超过可用收入的50%');
+    detailEl.innerHTML = lines.join('<br>');
+  }
+  if(hintEl) hintEl.textContent = income > 0 ? '月收入 ¥' + fmt(income) : '填写后评分更准确';
+}
+
+// ========== 月供压力 ==========
+function calcPressure(){
+  const incomeInput = el('monthlyIncome');
+  const expenseInput = el('monthlyExpense');
+  const debtInput = el('monthlyDebt');
+  const income = incomeInput ? parseFloat(incomeInput.value) || 0 : 0;
+  const expense = expenseInput ? parseFloat(expenseInput.value) || 0 : 0;
+  const debt = debtInput ? parseFloat(debtInput.value) || 0 : 0;
+  const monthly = lastMonthly;
+  // 自定义支出项汇总
+  const extraExpense = getExpenseItemsTotal();
+  const totalExpense = expense + extraExpense;
+  // 用于健康评分：有月收入时用真实值，否则用默认
+  const effectiveIncome = income > 0 ? income : DEFAULT_MONTHLY_INCOME;
+  // 真实可用收入
+  const available = income > 0 ? (income - totalExpense - debt) : effectiveIncome;
+  // 债务收入比
+  const debtIncomeRatio = available > 0 ? (monthly + debt) / effectiveIncome : 0;
+  // 存储供健康评分使用
+  window._pressureIncome = effectiveIncome;
+  window._pressureDebt = debt;
+  window._pressureAvailable = available;
+  window._pressureRatio = debtIncomeRatio;
 }
 
 function updateMonthlyIncomeState(){
@@ -3001,24 +3817,45 @@ function updateProgressSim(){
 }
 
 // ========== 还款明细渲染 ==========
-function renderSchedule(schedule){
+const SCHEDULE_PAGE_SIZE = 60;
+let _schedulePage = 1;
+
+function renderSchedule(schedule, _page){
   const body = el('scheduleBody');
   if(!body) return;
   if(!schedule.length){
     body.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-tertiary)">输入参数后显示还款明细</div>';
     return;
   }
-  let html = '';
+  _schedulePage = _page || 1;
+  const totalPages = Math.ceil(schedule.length / SCHEDULE_PAGE_SIZE);
+  const start = (_schedulePage - 1) * SCHEDULE_PAGE_SIZE;
+  const end = Math.min(start + SCHEDULE_PAGE_SIZE, schedule.length);
+  const pageData = schedule.slice(start, end);
   let sumPayment=0, sumPrincipal=0, sumInterest=0;
-  schedule.forEach(r => {
-    sumPayment += r.payment;
-    sumPrincipal += r.principal;
-    sumInterest += r.interest;
+  // 先计算全部合计
+  schedule.forEach(r => { sumPayment += r.payment; sumPrincipal += r.principal; sumInterest += r.interest; });
+  let html = '';
+  pageData.forEach(r => {
     html += `<div class="schedule-row"><span class="sr-num">${r.num}</span><span>${r.date}</span><span>${fmt(r.payment)}</span><span>${fmt(r.principal)}</span><span>${fmt(r.interest)}</span><span>${fmt(r.remain)}</span></div>`;
   });
-  html += `<div class="schedule-row"><span class="sr-num">合计</span><span></span><span>${fmt(sumPayment)}</span><span>${fmt(sumPrincipal)}</span><span>${fmt(sumInterest)}</span><span></span></div>`;
+  // 最后一页显示合计
+  if(_schedulePage >= totalPages){
+    html += `<div class="schedule-row"><span class="sr-num">合计</span><span></span><span>${fmt(sumPayment)}</span><span>${fmt(sumPrincipal)}</span><span>${fmt(sumInterest)}</span><span></span></div>`;
+  }
+  // 分页控件
+  if(totalPages > 1){
+    html += '<div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 0;">';
+    if(_schedulePage > 1) html += `<div class="tool-btn" style="padding:4px 12px;font-size:12px;" onclick="window.prevSchedulePage()">上一页</div>`;
+    html += `<span style="font-size:12px;color:var(--text-secondary)">${_schedulePage}/${totalPages}页</span>`;
+    if(_schedulePage < totalPages) html += `<div class="tool-btn" style="padding:4px 12px;font-size:12px;" onclick="window.nextSchedulePage()">下一页</div>`;
+    html += '</div>';
+  }
   body.innerHTML = html;
 }
+
+function prevSchedulePage(){ if(_schedulePage > 1) renderSchedule(scheduleData, _schedulePage - 1); }
+function nextSchedulePage(){ renderSchedule(scheduleData, _schedulePage + 1); }
 
 // ========== 对比 ==========
 function buildCompareTabs(){
@@ -3041,7 +3878,7 @@ function updateCompare(){
   const term = getTermInMonths();
   const annualRate = getNum('annualRate');
   const result = el('compareResult');
-  if(!amount || !term || !annualRate || !result) { if(result) result.innerHTML = ''; return; }
+  if(!amount || !term || annualRate < 0 || !result) { if(result) result.innerHTML = ''; return; }
 
   const mr = annualRate / 100 / 12;
   const method = activeCompareMethod;
@@ -3075,9 +3912,11 @@ function updateCompare(){
     totalPayment = monthly * term;
     totalInterest = amount * mr * term;
   } else if(method === 'flexible'){
-    monthly = amount * (annualRate/100/365) * 30;
-    totalInterest = monthly * term;
+    const flexDays = getNum('flexDays') || 30;
+    const dailyRate = annualRate / 100 / 365;
+    totalInterest = amount * dailyRate * flexDays;
     totalPayment = amount + totalInterest;
+    monthly = totalInterest;
   }
 
   result.innerHTML = `
@@ -3171,7 +4010,18 @@ function importJSON(event){
     try{
       const data = JSON.parse(e.target.result);
       if(!Array.isArray(data)) throw new Error('格式错误');
-      plans = data;
+      plans = data.map(p => {
+        if(!p || typeof p !== 'object') return { name:'方案', ...NEW_PLAN_TEMPLATE };
+        return {
+          name: String(p.name||'方案'), loanType: p.loanType||'', loanAmount: p.loanAmount||'',
+          loanTerm: p.loanTerm||'', termUnit: p.termUnit||'month', annualRate: p.annualRate||'',
+          repaymentMethod: p.repaymentMethod||'', startDate: p.startDate||'',
+          feeAmount: p.feeAmount||0, feeMethod: p.feeMethod||'upfront',
+          monthlyIncome: p.monthlyIncome||'', monthlyDebt: p.monthlyDebt||'',
+          earlyMonth: p.earlyMonth||0, earlyAmount: p.earlyAmount||0,
+          prepaymentPenalty: p.prepaymentPenalty||0, special: p.special||{}
+        };
+      });
       savePlans();
       currentPlanIdx = 0;
       applyPlan(0);
@@ -3208,6 +4058,22 @@ function clearAllData(){
     });
     p.special = {};
   });
+  // 清空我的财务面板输入
+  const monthlyIncome = el('monthlyIncome');
+  const monthlyExpense = el('monthlyExpense');
+  const monthlyDebt = el('monthlyDebt');
+  if(monthlyIncome) monthlyIncome.value = '';
+  if(monthlyExpense) monthlyExpense.value = '';
+  if(monthlyDebt) monthlyDebt.value = '';
+  // 清空自定义支出项
+  const expenseItems = el('expenseItems');
+  if(expenseItems) expenseItems.innerHTML = '';
+  expenseItemCounter = 0;
+  // 清空LPR输入
+  const lpr1 = el('lpr1');
+  const lpr5 = el('lpr5');
+  if(lpr1) lpr1.value = '';
+  if(lpr5) lpr5.value = '';
   savePlans();
   applyPlan(currentPlanIdx);
   toast('数据已清空');
@@ -3270,15 +4136,8 @@ function loadCardState(){
         const section = document.querySelector(`[data-section-id="${id}"]`);
         if(section) section.classList.add('collapsed');
       });
-    } else {
-      // 首次使用：收入与负债模块默认收起
-      const pressureSection = document.querySelector('[data-section-id="pressure"]');
-      if(pressureSection) pressureSection.classList.add('collapsed');
     }
   }catch(e){
-    // 异常兜底：收入与负债模块默认收起
-    const pressureSection = document.querySelector('[data-section-id="pressure"]');
-    if(pressureSection) pressureSection.classList.add('collapsed');
   }
 }
 
@@ -3338,7 +4197,7 @@ function updateAdvice(){
   const art = el('adviceRiskText');
   const act = el('adviceCompareText');
 
-  if(!amount || !term || !annualRate){
+  if(!amount || !term || annualRate < 0){
     if(amt) amt.textContent = '输入参数后获取建议';
     if(aet) aet.textContent = '输入参数后获取建议';
     if(art) art.textContent = '输入参数后获取建议';
@@ -3434,6 +4293,431 @@ function init(){
   window.setCompareMethod = setCompareMethod;
   window.onTermUnitChange = onTermUnitChange;
   window.onTermInput = onTermInput;
+  window.prevSchedulePage = prevSchedulePage;
+  window.nextSchedulePage = nextSchedulePage;
+  window.toggleMyFinance = toggleMyFinance;
+  window.onFinanceChange = onFinanceChange;
+  window.addExpenseItem = addExpenseItem;
+  window.removeExpenseItem = removeExpenseItem;
+
+  // ========== 快速录入 ==========
+  let qiStep = 1;
+  let qiHasFee = false;
+  let qiCache = {}; // 缓存用户输入，跨步骤保留
+
+  function showQuickInput(){
+    qiStep = 1;
+    qiHasFee = false;
+    qiCache = {};
+    renderQuickInput();
+    el('overlay').classList.add('show');
+  }
+
+  function renderQuickInput(){
+    const loanTypeVal = el('loanType').value;
+    const loanAmountVal = el('loanAmount').value;
+    const loanTermVal = el('loanTerm').value;
+    const annualRateVal = el('annualRate').value;
+    const methodVal = el('repaymentMethod').value;
+    const startDateVal = el('startDate').value;
+    const feeAmtVal = el('feeAmount').value;
+    const feeMtdVal = el('feeMethod').value;
+    const typeOptions = [
+      ['normal','普通贷款'],['fund','公积金贷款'],['combo','组合贷款'],
+      ['consumer','消费贷/信用贷'],['business','经营贷'],['renovation','装修贷'],
+      ['education','教育贷'],['car','购车贷款'],['carfinance','汽车金融贷'],
+      ['house','购房贷款'],['second','二押贷款'],['insurance','保单贷'],
+      ['social','社保贷'],['fundcredit','公积金信用贷']
+    ];
+    const methodOptions = [
+      ['equal_installment','等额本息'],['equal_principal','等额本金'],
+      ['interest_first','先息后本'],['bullet','一次性还本付息'],
+      ['equal_principal_interest','等本等息'],['flexible','随借随还']
+    ];
+
+    let html = '<div class="qi-sheet" onclick="event.stopPropagation()">';
+
+    // Header
+    html += '<div class="qi-header"><div class="qi-header-title">快速录入</div><div class="qi-header-close" onclick="window.hideOverlay()">✕</div></div>';
+
+    // Steps
+    html += '<div class="qi-steps">';
+    html += '<div class="qi-step-dot ' + (qiStep === 1 ? 'active' : (qiStep > 1 ? 'done' : '')) + '"></div>';
+    html += '<div class="qi-step-dot ' + (qiStep === 2 ? 'active' : (qiStep > 2 ? 'done' : '')) + '"></div>';
+    html += '<div class="qi-step-dot ' + (qiStep === 3 ? 'active' : '') + '"></div>';
+    html += '<span class="qi-step-label">' + ['贷款参数','服务费','确认'][qiStep-1] + '</span>';
+    html += '</div>';
+
+    // Body
+    html += '<div class="qi-body">';
+
+    if(qiStep === 1){
+      // Step 1: 核心参数（优先使用缓存值）
+      const c = qiCache;
+      const _type = c.type || loanTypeVal;
+      const _amount = c.amount || stripNumberFormatting(loanAmountVal);
+      const _term = c.term || stripNumberFormatting(loanTermVal);
+      const _rate = c.rate || stripNumberFormatting(annualRateVal);
+      const _method = c.method || methodVal;
+      const _date = c.startDate || startDateVal;
+
+      html += '<div class="qi-field"><div class="qi-field-label">贷款类型 <span class="qi-required">必填</span></div>';
+      html += '<div class="qi-input-wrap"><select id="qiLoanType">';
+      html += '<option value="">请选择</option>';
+      typeOptions.forEach(([val,label]) => {
+        html += '<option value="'+val+'"' + (_type===val?' selected':'') + '>'+label+'</option>';
+      });
+      html += '</select></div></div>';
+
+      html += '<div class="qi-field"><div class="qi-field-label">贷款金额 <span class="qi-required">必填</span></div>';
+      html += '<div class="qi-input-wrap"><input type="number" id="qiLoanAmount" placeholder="请输入贷款金额" value="' + _amount + '"><span class="qi-unit">元</span></div></div>';
+
+      html += '<div class="qi-field"><div class="qi-field-label">贷款期限 <span class="qi-required">必填</span></div>';
+      html += '<div class="qi-input-wrap"><input type="number" id="qiLoanTerm" placeholder="请输入期限" value="' + _term + '"><span class="qi-unit">月</span></div></div>';
+
+      html += '<div class="qi-field"><div class="qi-field-label">年利率 <span class="qi-required">必填</span></div>';
+      html += '<div class="qi-input-wrap"><input type="number" id="qiAnnualRate" placeholder="如 4.65" step="0.01" value="' + _rate + '"><span class="qi-unit">%</span></div></div>';
+
+      html += '<div class="qi-field"><div class="qi-field-label">还款方式 <span class="qi-required">必填</span></div>';
+      html += '<div class="qi-input-wrap"><select id="qiMethod">';
+      html += '<option value="">请选择</option>';
+      methodOptions.forEach(([val,label]) => {
+        html += '<option value="'+val+'"' + (_method===val?' selected':'') + '>'+label+'</option>';
+      });
+      html += '</select></div></div>';
+
+      html += '<div class="qi-field"><div class="qi-field-label">起贷日期 <span class="qi-optional">选填</span></div>';
+      html += '<div class="qi-input-wrap"><input type="date" id="qiStartDate" value="' + (_date||'') + '"></div></div>';
+
+    } else if(qiStep === 2){
+      // Step 2: 服务费（优先使用缓存值）
+      const c = qiCache;
+      const _feeAmt = c.feeAmount || feeAmtVal || '';
+      const _feeMtd = c.feeMethod || feeMtdVal || 'upfront';
+
+      html += '<div class="qi-fee-toggle" onclick="window.toggleQiFee()">';
+      html += '<div class="qi-fee-toggle-check' + (qiHasFee?' checked':'') + '"></div>';
+      html += '<div><div class="qi-fee-toggle-text">存在金融服务费</div><div class="qi-fee-toggle-hint">如有服务费、手续费等额外费用，请勾选并填写</div></div>';
+      html += '</div>';
+
+      html += '<div class="qi-fee-fields' + (qiHasFee?' show':'') + '">';
+      html += '<div class="qi-field"><div class="qi-field-label">服务费金额</div>';
+      html += '<div class="qi-input-wrap"><input type="number" id="qiFeeAmount" placeholder="请输入服务费金额" value="' + _feeAmt + '"><span class="qi-unit">元</span></div></div>';
+      html += '<div class="qi-field"><div class="qi-field-label">扣费方式</div>';
+      html += '<div class="qi-input-wrap"><select id="qiFeeMethod">';
+      html += '<option value="upfront"' + (_feeMtd!=='deduct'?' selected':'') + '>前置收取</option>';
+      html += '<option value="deduct"' + (_feeMtd==='deduct'?' selected':'') + '>从贷款中扣除</option>';
+      html += '</select></div></div>';
+      html += '</div>';
+
+    } else if(qiStep === 3){
+      // Step 3: 确认（从缓存读取）
+      const c = qiCache;
+      const typeLabel = typeOptions.find(o=>o[0]===c.type)?.[1] || c.type || '-';
+      const methodLabel = methodOptions.find(o=>o[0]===c.method)?.[1] || c.method || '-';
+
+      html += '<div class="qi-summary">';
+      html += '<div class="qi-summary-row"><span class="label">贷款类型</span><span class="value">' + typeLabel + '</span></div>';
+      html += '<div class="qi-summary-row"><span class="label">贷款金额</span><span class="value">¥' + (c.amount||'-') + '</span></div>';
+      html += '<div class="qi-summary-row"><span class="label">贷款期限</span><span class="value">' + (c.term||'-') + ' 个月</span></div>';
+      html += '<div class="qi-summary-row"><span class="label">年利率</span><span class="value">' + (c.rate||'-') + '%</span></div>';
+      html += '<div class="qi-summary-row"><span class="label">还款方式</span><span class="value">' + methodLabel + '</span></div>';
+      if(c.startDate) html += '<div class="qi-summary-row"><span class="label">起贷日期</span><span class="value">' + c.startDate + '</span></div>';
+      if(qiHasFee){
+        html += '<div class="qi-summary-row"><span class="label">服务费</span><span class="value" style="color:var(--color-warn)">¥' + (c.feeAmount||'0') + '（' + (c.feeMethod==='deduct'?'从贷款中扣除':'前置收取') + '）</span></div>';
+      }
+      html += '</div>';
+    }
+
+    html += '</div>'; // qi-body
+
+    // Footer
+    html += '<div class="qi-footer">';
+    if(qiStep > 1){
+      html += '<div class="qi-btn qi-btn-secondary" onclick="window.qiPrevStep()">上一步</div>';
+    }
+    if(qiStep === 2 && !qiHasFee){
+      html += '<div class="qi-btn qi-btn-skip" onclick="window.qiSkipFee()">跳过，无服务费</div>';
+    }
+    if(qiStep < 3){
+      html += '<div class="qi-btn qi-btn-primary" onclick="window.qiNextStep()">' + (qiStep===1?'下一步：服务费':'下一步：确认') + '</div>';
+    } else {
+      html += '<div class="qi-btn qi-btn-primary" onclick="window.qiConfirm()">确认录入</div>';
+    }
+    html += '</div>';
+
+    html += '</div>'; // qi-sheet
+
+    el('actionSheet').innerHTML = html;
+  }
+
+  function toggleQiFee(){
+    qiHasFee = !qiHasFee;
+    renderQuickInput();
+  }
+
+  function qiSaveStep(){
+    // 缓存当前步骤的用户输入
+    if(qiStep === 1){
+      const qiType = el('qiLoanType');
+      const qiAmount = el('qiLoanAmount');
+      const qiTerm = el('qiLoanTerm');
+      const qiRate = el('qiAnnualRate');
+      const qiMthd = el('qiMethod');
+      const qiDate = el('qiStartDate');
+      qiCache.type = qiType?.value || '';
+      qiCache.amount = qiAmount?.value || '';
+      qiCache.term = qiTerm?.value || '';
+      qiCache.rate = qiRate?.value || '';
+      qiCache.method = qiMthd?.value || '';
+      qiCache.startDate = qiDate?.value || '';
+    }
+    if(qiStep === 2){
+      const qiFeeAmt = el('qiFeeAmount');
+      const qiFeeMtd = el('qiFeeMethod');
+      qiCache.feeAmount = qiFeeAmt?.value || '';
+      qiCache.feeMethod = qiFeeMtd?.value || 'upfront';
+    }
+  }
+
+  function qiNextStep(){
+    if(qiStep === 1){
+      // 验证必填
+      const qiType = el('qiLoanType');
+      const qiAmount = el('qiLoanAmount');
+      const qiTerm = el('qiLoanTerm');
+      const qiRate = el('qiAnnualRate');
+      const qiMthd = el('qiMethod');
+      if(!qiType?.value){ toast('请选择贷款类型'); return; }
+      if(!qiAmount?.value || parseFloat(qiAmount.value) <= 0){ toast('请输入贷款金额'); return; }
+      if(!qiTerm?.value || parseInt(qiTerm.value) < 1){ toast('请输入贷款期限'); return; }
+      if(!qiRate?.value || parseFloat(qiRate.value) < 0){ toast('请输入年利率'); return; }
+      if(!qiMthd?.value){ toast('请选择还款方式'); return; }
+    }
+    if(qiStep === 2 && qiHasFee){
+      const qiFeeAmt = el('qiFeeAmount');
+      if(!qiFeeAmt?.value || parseFloat(qiFeeAmt.value) <= 0){ toast('请输入服务费金额'); return; }
+    }
+    qiSaveStep();
+    qiStep = Math.min(3, qiStep + 1);
+    renderQuickInput();
+  }
+
+  function qiPrevStep(){
+    qiSaveStep();
+    qiStep = Math.max(1, qiStep - 1);
+    renderQuickInput();
+  }
+
+  function qiSkipFee(){
+    qiSaveStep();
+    qiHasFee = false;
+    qiStep = 3;
+    renderQuickInput();
+  }
+
+  function qiConfirm(){
+    // 从缓存读取用户输入
+    const c = qiCache;
+
+    // 先设置贷款类型并触发联动（会预设利率和推荐还款方式）
+    el('loanType').value = c.type || '';
+    onTypeChange();
+
+    // 再用用户输入的值覆盖预设（用户明确输入的优先）
+    el('loanAmount').value = c.amount ? formatNumericDisplay(c.amount) : '';
+    el('loanTerm').value = c.term || '';
+    if(c.rate) el('annualRate').value = c.rate;
+    if(c.method) el('repaymentMethod').value = c.method;
+    if(c.startDate) el('startDate').value = c.startDate;
+
+    // 服务费
+    if(qiHasFee){
+      el('feeAmount').value = c.feeAmount || '0';
+      el('feeMethod').value = c.feeMethod || 'upfront';
+    } else {
+      el('feeAmount').value = '0';
+      el('feeMethod').value = 'upfront';
+    }
+
+    // 触发剩余联动
+    onMethodChange();
+    updateAllModuleLabels();
+    calc();
+
+    hideOverlay();
+    toast('✅ 参数已录入');
+  }
+
+  window.showQuickInput = showQuickInput;
+  window.toggleQiFee = toggleQiFee;
+  window.qiNextStep = qiNextStep;
+  window.qiPrevStep = qiPrevStep;
+  window.qiSkipFee = qiSkipFee;
+  window.qiConfirm = qiConfirm;
+
+  // ========== 评分说明气泡 ==========
+  let _activePopover = null;
+
+  function closeAllPopovers(){
+    if(_activePopover){
+      _activePopover.remove();
+      _activePopover = null;
+    }
+  }
+
+  document.addEventListener('click', function(e){
+    if(_activePopover && !_activePopover.contains(e.target) && !e.target.closest('.hd-score') && !e.target.closest('.health-info-btn')){
+      closeAllPopovers();
+    }
+  });
+
+  function showScoreInfo(e){
+    e.stopPropagation();
+    closeAllPopovers();
+    const p = window._lastHealthData || {};
+    const mode = p.pressureMode || 'estimate';
+    const modeText = mode === 'real' ? '精确模式' : '估算模式';
+    const modeColor = mode === 'real' ? 'var(--color-good)' : 'var(--color-warn)';
+    const weights = mode === 'real'
+      ? '利率25% · 压力40% · 侵蚀20% · 灵活性15%'
+      : '利率35% · 压力25% · 侵蚀25% · 灵活性15%';
+
+    const popover = document.createElement('div');
+    popover.className = 'score-popover';
+    popover.style.position = 'fixed';
+    popover.style.zIndex = '500';
+    popover.innerHTML = `
+      <div class="score-popover-close" onclick="this.parentElement.remove()">✕</div>
+      <div class="score-popover-title">综合评分说明</div>
+      <div class="score-popover-divider"></div>
+      <div class="score-popover-row"><span class="spr-label">评分模式</span><span class="spr-value" style="color:${modeColor}">${modeText}</span></div>
+      <div class="score-popover-row"><span class="spr-label">权重配置</span><span class="spr-value" style="font-size:11px">${weights}</span></div>
+      <div class="score-popover-divider"></div>
+      <div class="score-popover-row"><span class="spr-label">A ≥ 85</span><span class="spr-value" style="color:#34C759">极低成本/低风险</span></div>
+      <div class="score-popover-row"><span class="spr-label">B ≥ 70</span><span class="spr-value" style="color:#30D158">合理范围</span></div>
+      <div class="score-popover-row"><span class="spr-label">C ≥ 55</span><span class="spr-value" style="color:#FFD60A">中等风险</span></div>
+      <div class="score-popover-row"><span class="spr-label">D ≥ 40</span><span class="spr-value" style="color:#FF9500">较高风险</span></div>
+      <div class="score-popover-row"><span class="spr-label">E < 40</span><span class="spr-value" style="color:#FF3B30">高风险</span></div>
+      <div class="score-popover-divider"></div>
+      <div class="score-popover-hint">${mode === 'estimate' ? '📊 当前为估算模式，压力评分基于贷款参数推算。填写真实收入后切换为精确模式，压力权重提升至40%，评分更准确。' : '✅ 当前为精确模式，压力评分基于您的真实财务数据，权重占比最高(40%)。'}</div>
+    `;
+    document.body.appendChild(popover);
+    // 定位
+    const rect = e.target.getBoundingClientRect();
+    const pw = popover.offsetWidth;
+    popover.style.left = Math.max(8, Math.min(window.innerWidth - pw - 8, rect.left + rect.width/2 - pw/2)) + 'px';
+    popover.style.top = (rect.bottom + 8) + 'px';
+    popover.style.transform = 'none';
+    popover.style.animation = 'popIn .2s ease';
+    _activePopover = popover;
+  }
+
+  function showDimensionInfo(e, dim){
+    e.stopPropagation();
+    closeAllPopovers();
+    const p = window._lastHealthData || {};
+    const mode = p.pressureMode || 'estimate';
+
+    const DIM_INFO = {
+      rate: {
+        title: '利率水平评分',
+        desc: '衡量您的贷款利率在同类产品中的竞争力',
+        detail: '以同类贷款基准利率为参照，利率越低分数越高。利率低于基准得高分，高于基准按偏离程度扣分。服务费会额外扣减利率评分。',
+        metrics: [
+          ['您的利率', p.annualRate ? p.annualRate + '%' : '-'],
+          ['同类基准', p.benchmarkRate ? p.benchmarkRate + '%' : '-'],
+          ['偏离幅度', p.annualRate && p.benchmarkRate ? ((p.annualRate - p.benchmarkRate) / p.benchmarkRate * 100).toFixed(1) + '%' : '-'],
+          ['服务费扣减', p.feeAmt > 0 ? '-' + (p.feeAmt / (p.amount||1) * 200).toFixed(1) + '分' : '无']
+        ],
+        weight: mode === 'real' ? '25%' : '35%',
+        hint: '利率是贷款成本的核心指标，每降低0.5%可显著减少总利息支出。'
+      },
+      pressure: {
+        title: '月供压力评分',
+        desc: '衡量月供对您现金流的压力程度',
+        detail: mode === 'real'
+          ? '基于您填写的真实月收入、月支出和月负债，计算月供占可用收入的比例。比例越低分数越高。'
+          : '无收入数据时，从4个维度综合评估：①月供绝对值（不同贷款类型合理月供量级不同）②月供/贷款金额比（偿还节奏紧凑度）③期限锁定（长期不确定性风险）④利率负担（与基准偏离度）',
+        metrics: mode === 'real' ? [
+          ['月供金额', p.monthly ? '¥' + fmt(p.monthly) : '-'],
+          ['月收入', p.income ? '¥' + fmt(p.income) : '-'],
+          ['月负债', p.debt ? '¥' + fmt(p.debt) : '¥0'],
+          ['债务收入比', p.debtIncomeRatio ? (p.debtIncomeRatio*100).toFixed(1) + '%' : '-']
+        ] : [
+          ['月供金额', p.monthly ? '¥' + fmt(p.monthly) : '-'],
+          ['月供/金额比', p.monthly && p.amount ? (p.monthly/p.amount*100).toFixed(2) + '%/月' : '-'],
+          ['贷款期限', p.term ? p.term + '个月' : '-'],
+          ['利率偏离', p.annualRate && p.benchmarkRate ? ((p.annualRate > p.benchmarkRate ? '+' : '') + ((p.annualRate - p.benchmarkRate) / p.benchmarkRate * 100).toFixed(1) + '%' ) : '-'],
+          ['估算收入', p.estimatedIncomeMid ? '¥' + fmt(p.estimatedIncomeMid) : '-']
+        ],
+        weight: mode === 'real' ? '40%' : '25%',
+        hint: mode === 'real' ? '精确模式下此维度权重最高(40%)，如实反映还款压力。' : '估算模式从4个维度评估(月供绝对值35%+偿还节奏25%+期限锁定20%+利率负担20%)，填写真实收入后切换为精确模式，权重提升至40%。'
+      },
+      erosion: {
+        title: '利息侵蚀评分',
+        desc: '衡量利息对贷款本金的侵蚀程度',
+        detail: '计算总利息占贷款本金的比例（利息侵蚀率）。比例越高说明利息负担越重。短期贷款(≤5年)上限120%，长期贷款(>5年)上限200%。',
+        metrics: [
+          ['贷款本金', p.amount ? '¥' + fmt(p.amount) : '-'],
+          ['总利息', p.totalInterest ? '¥' + fmt(p.totalInterest) : '-'],
+          ['利息侵蚀率', p.interestRatio ? (p.interestRatio*100).toFixed(1) + '%' : '-'],
+          ['侵蚀上限', p.term > 60 ? '200%(长期)' : '120%(短期)']
+        ],
+        weight: mode === 'real' ? '20%' : '25%',
+        hint: '利息侵蚀率超过50%意味着利息超过本金的一半，长期贷款需特别关注。'
+      },
+      flex: {
+        title: '还款灵活性评分',
+        desc: '衡量还款方式的灵活性和资金调配空间',
+        detail: '不同还款方式的灵活性差异较大：随借随还最灵活(100分)，先息后本次之(85分)，等额本金(80分)，等额本息(70分)，一次性还本付息短期(60分)/长期(40分)，等本等息最不灵活(30分)。',
+        metrics: [
+          ['还款方式', p.methodLabel || '-'],
+          ['灵活性评分', p.flexScore != null ? p.flexScore + '分' : '-'],
+          ['贷款期限', p.term ? p.term + '个月' : '-']
+        ],
+        weight: '15%',
+        hint: '灵活性影响资金调配空间，灵活的还款方式可在收入波动时降低违约风险。'
+      }
+    };
+
+    const info = DIM_INFO[dim];
+    if(!info) return;
+
+    let metricsHtml = info.metrics.map(([label, value]) =>
+      '<div class="score-popover-row"><span class="spr-label">' + label + '</span><span class="spr-value">' + value + '</span></div>'
+    ).join('');
+
+    const popover = document.createElement('div');
+    popover.className = 'score-popover';
+    popover.style.position = 'fixed';
+    popover.style.zIndex = '500';
+    popover.innerHTML = `
+      <div class="score-popover-close" onclick="this.parentElement.remove()">✕</div>
+      <div class="score-popover-title">${info.title}</div>
+      <div style="font-size:11px;color:var(--text-tertiary);margin-bottom:4px">${info.desc}</div>
+      <div class="score-popover-divider"></div>
+      <div style="font-size:12px;line-height:1.6;margin-bottom:4px">${info.detail}</div>
+      <div class="score-popover-divider"></div>
+      ${metricsHtml}
+      <div class="score-popover-divider"></div>
+      <div class="score-popover-row"><span class="spr-label">当前权重</span><span class="spr-value" style="color:var(--accent)">${info.weight}</span></div>
+      <div class="score-popover-divider"></div>
+      <div class="score-popover-hint">💡 ${info.hint}</div>
+    `;
+    document.body.appendChild(popover);
+    // 定位
+    const rect = e.target.getBoundingClientRect();
+    const pw = popover.offsetWidth;
+    popover.style.left = Math.max(8, Math.min(window.innerWidth - pw - 8, rect.left + rect.width/2 - pw/2)) + 'px';
+    popover.style.top = (rect.bottom + 8) + 'px';
+    popover.style.transform = 'none';
+    popover.style.animation = 'popIn .2s ease';
+    _activePopover = popover;
+  }
+
+  window.showScoreInfo = showScoreInfo;
+  window.showDimensionInfo = showDimensionInfo;
 
   // 初始计算
   calc();
@@ -3442,6 +4726,61 @@ function init(){
 }
 
 init();
+})();
+
+// ========== 数据验证：8场景跑分 ==========
+(function(){
+  const BR = {normal:6.50,fund:3.25,combo:4.50,consumer:7.20,business:4.35,renovation:5.50,education:5.00,car:6.50,carfinance:8.00,house:4.90,second:6.50,insurance:6.00,social:5.50,fundcredit:5.80};
+  function cl(a,r,t,m){
+    if(r<=0) return {monthly:a/t,totalInterest:0};
+    var mr=r/100/12,mo,tp;
+    if(m==="equal_installment"){mo=a*mr*Math.pow(1+mr,t)/(Math.pow(1+mr,t)-1);tp=mo*t;}
+    else if(m==="interest_first"){mo=a*mr;tp=mo*t+a;}
+    else{mo=a/t+a*mr;tp=mo*t;}
+    return {monthly:mo,totalInterest:tp-a};
+  }
+  function ev(amt,ar,tm,mt,lt,real,inc,debt){
+    var br=BR[lt]||6.50,rs=60,ps=60,es=60,fs=60;
+    if(ar<=0)rs=100;else if(br>0)rs=Math.max(0,Math.min(100,100-(ar-br)/br*100));
+    var dir=0,pm=real?"real":"estimate",eim=0;
+    var loan=cl(amt,ar,tm,mt),mo=loan.monthly,ti=loan.totalInterest;
+    if(real){
+      var mi=inc;dir=mi>0?(mo+debt)/mi:0;
+      if(mi<=0)ps=60;else if(dir>=0.7)ps=0;else if(dir>=0.6)ps=20-(dir-0.6)/0.1*20;else if(dir>0.3)ps=85-(dir-0.3)/0.3*65;else ps=85+(0.3-dir)/0.3*15;
+    }else{
+      var HT=["house","fund","combo"],CT=["consumer","renovation","education","insurance","social","fundcredit"],BT=["business","second"];
+      var mas;
+      if(HT.indexOf(lt)>=0){if(mo<=3000)mas=90;else if(mo<=5000)mas=80;else if(mo<=8000)mas=65;else if(mo<=12000)mas=50;else if(mo<=18000)mas=35;else mas=20;}
+      else if(CT.indexOf(lt)>=0){if(mo<=1000)mas=90;else if(mo<=2000)mas=80;else if(mo<=3000)mas=65;else if(mo<=5000)mas=45;else mas=25;}
+      else if(BT.indexOf(lt)>=0){if(mo<=5000)mas=90;else if(mo<=10000)mas=75;else if(mo<=20000)mas=55;else if(mo<=35000)mas=35;else mas=20;}
+      else{if(mo<=2000)mas=90;else if(mo<=4000)mas=75;else if(mo<=7000)mas=55;else if(mo<=12000)mas=35;else mas=20;}
+      var mr2=amt>0?mo/amt:0,mrs;
+      if(mr2<=0.005)mrs=90;else if(mr2<=0.01)mrs=80;else if(mr2<=0.02)mrs=65;else if(mr2<=0.03)mrs=50;else if(mr2<=0.05)mrs=35;else mrs=20;
+      var ts;if(tm<=12)ts=85;else if(tm<=36)ts=80;else if(tm<=60)ts=70;else if(tm<=120)ts=60;else if(tm<=240)ts=50;else if(tm<=360)ts=40;else ts=30;
+      var rbs;if(ar<=0)rbs=95;else if(ar<=br*0.8)rbs=85;else if(ar<=br)rbs=75;else if(ar<=br*1.2)rbs=60;else if(ar<=br*1.5)rbs=40;else rbs=20;
+      ps=Math.round(mas*0.35+mrs*0.25+ts*0.20+rbs*0.20);ps=Math.max(0,Math.min(100,ps));
+      var rl,rh;
+      if(HT.indexOf(lt)>=0){rl=0.3;rh=0.5;}else if(BT.indexOf(lt)>=0){rl=0.2;rh=0.4;}else if(CT.indexOf(lt)>=0){rl=0.15;rh=0.35;}else{rl=0.2;rh=0.4;}
+      var eil=mo>0?mo/rh:0,eih=mo>0?mo/rl:0;eim=(eil+eih)/2;dir=eim>0?mo/eim:0;
+    }
+    ps=Math.max(0,Math.min(100,Math.round(ps)));
+    var ir=amt>0?ti/amt:0,ec=tm>60?2.0:1.2;
+    if(ir<=0)es=100;else es=Math.max(0,Math.min(100,100-(ir/ec)*100));
+    if(mt==="flexible")fs=100;else if(mt==="interest_first")fs=85;else if(mt==="equal_principal")fs=80;else if(mt==="equal_installment")fs=70;else if(mt==="bullet")fs=(tm<=12)?60:40;else if(mt==="equal_principal_interest")fs=30;else fs=60;
+    var tsc;if(pm==="real")tsc=Math.round(rs*0.25+ps*0.40+es*0.20+fs*0.15);else tsc=Math.round(rs*0.35+ps*0.25+es*0.25+fs*0.15);
+    var g;if(tsc>=85)g="A";else if(tsc>=70)g="B";else if(tsc>=55)g="C";else if(tsc>=40)g="D";else g="E";
+    console.log("["+pm+"] "+lt+" "+(amt/10000)+"w/"+(tm/12)+"y/"+ar+"%/"+mt+" => monthly="+Math.round(mo)+" rate="+Math.round(rs)+" pressure="+ps+" erosion="+Math.round(es)+" flex="+fs+" total="+tsc+" grade="+g+(pm==="estimate"?" estIncome="+Math.round(eim):" DIR="+(dir*100).toFixed(1)+"%"));
+  }
+  console.log("====== 评分系统8场景验证 ======");
+  ev(500000,3.5,360,"equal_installment","house",false,0,0);
+  ev(500000,3.5,360,"equal_installment","house",true,15000,0);
+  ev(100000,18,36,"equal_installment","consumer",false,0,0);
+  ev(2000000,4.35,60,"interest_first","business",false,0,0);
+  ev(150000,6.5,36,"equal_installment","car",false,0,0);
+  ev(50000,0,12,"bullet","consumer",false,0,0);
+  ev(100000,18,36,"equal_installment","consumer",true,8000,0);
+  ev(2000000,4.9,360,"equal_installment","house",false,0,0);
+  console.log("====== 验证完成 ======");
 })();
 </script>
 </body>
